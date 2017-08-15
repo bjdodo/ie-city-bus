@@ -1,5 +1,7 @@
 package bjdodo.ie_city_bus.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.sun.jersey.api.client.Client;
@@ -8,6 +10,9 @@ import com.sun.jersey.api.client.WebResource;
 
 @Service
 public class HttpServiceImpl implements HttpService {
+	
+	private static final Logger log = LoggerFactory.getLogger(HttpServiceImpl.class);
+	
 	@Override
 	public String get(String url) {
 		Client c = Client.create();
@@ -16,6 +21,7 @@ public class HttpServiceImpl implements HttpService {
 		if (resp.getStatus() == 200) {
 			return resp.getEntity(String.class);
 		} else {
+			log.warn("http get request to url '%s' returned HTTP code %d", url, resp.getStatus());
 			return "";
 		}
 
