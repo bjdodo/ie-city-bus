@@ -13,6 +13,10 @@ import org.json.JSONObject;
 @Entity
 public class Vehicle {
 
+	public Vehicle() {
+
+	}
+
 	// for sample JSON see bottom of file
 	private Vehicle(JSONObject obj) throws JSONException {
 		super();
@@ -22,7 +26,14 @@ public class Vehicle {
 		this.last_modification_timestamp = obj.getLong("last_modification_timestamp");
 		this.is_deleted = obj.getBoolean("is_deleted");
 		this.category = obj.getInt("category");
-		this.trip_duid = obj.getJSONObject("trip_duid").getString("duid");
+
+		JSONObject jsonTrip = obj.optJSONObject("trip_duid");
+		if (jsonTrip != null) {
+			this.trip_duid = jsonTrip.getString("duid");
+		} else {
+			this.trip_duid = "";
+		}
+
 		this.geo_position_status = obj.getInt("geo_position_status");
 		this.reference_time = new Date(obj.getLong("reference_time"));
 		this.latitude = obj.getDouble("latitude") / 3600000;
@@ -125,25 +136,25 @@ public class Vehicle {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	final private Long id;
-	final private String duid;
-	final private long last_modification_timestamp;
-	final private boolean is_deleted;
-	final private int category;
-	final private String trip_duid;
-	final private int geo_position_status;
-	final private Date reference_time;
-	final private double latitude;
-	final private double longitude;
-	final private int bearing;
-	final private boolean is_accessible;
-	final private String pattern_duid;
-	final private boolean has_bike_rack;
-	final private long vehicle_number;
-	final private long operational_number;
+	private Long id;
+	private String duid;
+	private long last_modification_timestamp;
+	private boolean is_deleted;
+	private int category;
+	private String trip_duid;
+	private int geo_position_status;
+	private Date reference_time;
+	private double latitude;
+	private double longitude;
+	private int bearing;
+	private boolean is_accessible;
+	private String pattern_duid;
+	private boolean has_bike_rack;
+	private long vehicle_number;
+	private long operational_number;
 }
 
-//{ "vehicleTdi":
+// { "vehicleTdi":
 // {"bus_0":
 // {"duid": "6352185209772835696",
 // "last_modification_timestamp": 1502659204867,

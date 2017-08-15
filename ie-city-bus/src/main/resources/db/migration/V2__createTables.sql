@@ -1,10 +1,11 @@
+-- drop table ROUTE;
 -- drop table TRIP;
 -- drop table VEHICLE;
 
 
 
 create table VEHICLE (
-ID BIGINT(19) PRIMARY KEY,
+ID BIGINT(19) PRIMARY KEY auto_increment, --BIGINT(19)
 BEARING int, -- INTEGER(10)
 CATEGORY int,
 DUID VARCHAR(255) UNIQUE,
@@ -23,8 +24,17 @@ VEHICLE_NUMBER long
 );
 
 create table TRIP (
-ID long PRIMARY KEY, --BIGINT(19)
+ID long PRIMARY KEY auto_increment,
 DUID VARCHAR(255) UNIQUE,
 VEHICLEID long NOT NULL references VEHICLE(id)
 );
 
+create table ROUTE (
+ID long PRIMARY KEY auto_increment,
+DUID VARCHAR(255) UNIQUE,
+LAST_MODIFICATION_TIMESTAMP long,
+IS_DELETED bit,
+SHORT_NAME VARCHAR(255),
+NUMBER int,
+CATEGORY int	
+);

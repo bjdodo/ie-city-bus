@@ -7,24 +7,29 @@ import javax.persistence.Id;
 
 @Entity
 public class Trip {
-	
+
+	public Trip() {
+
+	}
+
 	public Trip(Long id, String duid, long vehicleId) {
 		super();
 		this.id = id;
 		this.duid = duid;
 		this.vehicleId = vehicleId;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
+
 	public String getDuid() {
 		return duid;
 	}
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	final private Long id;
-	final private String duid;
-	final private long vehicleId;
+	private Long id;
+	private String duid;
+	private long vehicleId;
 }
