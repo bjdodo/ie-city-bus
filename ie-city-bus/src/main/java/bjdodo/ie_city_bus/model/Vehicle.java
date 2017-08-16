@@ -14,16 +14,14 @@ import org.json.JSONObject;
 public class Vehicle {
 
 	public Vehicle() {
-
 	}
-
 	// for sample JSON see bottom of file
 	private Vehicle(JSONObject obj) throws JSONException {
 		super();
 
 		this.id = obj.optLong("id");
 		this.duid = obj.getString("duid");
-		this.last_modification_timestamp = obj.getLong("last_modification_timestamp");
+		this.last_modification_timestamp = new Date(obj.getLong("last_modification_timestamp"));
 		this.is_deleted = obj.getBoolean("is_deleted");
 		this.category = obj.getInt("category");
 
@@ -35,12 +33,19 @@ public class Vehicle {
 		}
 
 		this.geo_position_status = obj.getInt("geo_position_status");
-		this.reference_time = new Date(obj.getLong("reference_time"));
+		this.reference_time = new Date(obj.getLong("reference_time") * 1000);
 		this.latitude = obj.getDouble("latitude") / 3600000;
 		this.longitude = obj.getDouble("longitude") / 3600000;
 		this.bearing = obj.getInt("bearing");
 		this.is_accessible = obj.getInt("is_accessible") != 0;
-		this.pattern_duid = obj.getJSONObject("pattern_duid").getString("duid");
+
+		JSONObject jsonPatternDuid = obj.optJSONObject("pattern_duid");
+		if (jsonPatternDuid != null) {
+			this.pattern_duid = jsonPatternDuid.getString("duid");
+		} else {
+			this.pattern_duid = "";
+		}
+
 		this.has_bike_rack = obj.getInt("has_bike_rack") != 0;
 		this.vehicle_number = obj.getLong("vehicle_number");
 		this.operational_number = obj.getLong("operational_number");
@@ -51,7 +56,7 @@ public class Vehicle {
 		return new Vehicle(obj);
 	}
 
-	public Vehicle(Long id, String duid, long last_modification_timestamp, boolean is_deleted, int category,
+	public Vehicle(Long id, String duid, Date last_modification_timestamp, boolean is_deleted, int category,
 			String trip_duid, int geo_position_status, Date reference_time, double latitude, double longitude,
 			int bearing, boolean is_accessible, String pattern_duid, boolean has_bike_rack, long vehicle_number,
 			long operational_number) {
@@ -78,7 +83,7 @@ public class Vehicle {
 		return duid;
 	}
 
-	public long getLast_modification_timestamp() {
+	public Date getLast_modification_timestamp() {
 		return last_modification_timestamp;
 	}
 
@@ -138,7 +143,7 @@ public class Vehicle {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String duid;
-	private long last_modification_timestamp;
+	private Date last_modification_timestamp;
 	private boolean is_deleted;
 	private int category;
 	private String trip_duid;

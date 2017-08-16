@@ -6,4 +6,6 @@ public interface DataDownloaderService {
 	public void downloadVehicles() throws JSONException;
 
 	public void downloadRoutes() throws JSONException;
+
+	public void downloadBusStopPoints() throws JSONException;
 }

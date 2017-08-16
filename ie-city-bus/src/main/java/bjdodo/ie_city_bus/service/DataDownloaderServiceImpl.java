@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import bjdodo.ie_city_bus.model.BusStopPoint;
 import bjdodo.ie_city_bus.model.Route;
 import bjdodo.ie_city_bus.model.Vehicle;
+import bjdodo.ie_city_bus.repository.BusStopPointRepository;
 import bjdodo.ie_city_bus.repository.RouteRepository;
 import bjdodo.ie_city_bus.repository.VehicleRepository;
 
@@ -86,7 +88,7 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 		// This text starts with a javascript variable declaration, we trim that off and
 		// the ; from the end
 		if (!resp.startsWith("var obj_routes = ") || !resp.endsWith(";")) {
-			log.error("Unexpected string returned for routes '%s...'", resp.substring(0, 100));
+			log.error(String.format("Unexpected string returned for routes '%s...'", resp.substring(0, 100)));
 			return;
 		}
 		resp = resp.substring("var obj_routes = ".length());
@@ -112,6 +114,43 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 				Route r = Route.fromBuseireannJson(route);
 				if (routeRepository.countByDuid(r.getDuid()) == 0) {
 					routeRepository.saveAndFlush(r);
+				}
+			}
+		}
+	}
+
+	@Autowired
+	private BusStopPointRepository busStopPointRepository;
+	public void downloadBusStopPoints() throws JSONException {
+
+		String resp = httpService.get("http://buseireann.ie/inc/proto/bus_stop_points.php");
+		if (resp == null || resp.isEmpty()) {
+			log.info("http get request returned zero routes");
+			return;
+		}
+
+		// This text starts with a javascript variable declaration, we trim that off and
+		// the ; from the end
+		if (!resp.startsWith("var obj_bus_stop_points = ") || !resp.endsWith(";")) {
+			log.error(String.format("Unexpected string returned for bus stops '{0}...'", resp.substring(0, 100)));
+			return;
+		}
+		resp = resp.substring("var obj_bus_stop_points = ".length());
+		resp = resp.substring(0, resp.length() - 1);
+
+		JSONObject obj = new JSONObject(resp);
+
+		JSONObject bus_stops = obj.getJSONObject("bus_stops");
+
+		int cnt = 0;
+		while (true) {
+			JSONObject route = bus_stops.optJSONObject("bus_stop_" + cnt++);
+			if (route == null) {
+				break;
+			} else {
+				BusStopPoint r = BusStopPoint.fromBuseireannJson(route);
+				if (busStopPointRepository.countByDuid(r.getDuid()) == 0) {
+					busStopPointRepository.saveAndFlush(r);
 				}
 			}
 		}

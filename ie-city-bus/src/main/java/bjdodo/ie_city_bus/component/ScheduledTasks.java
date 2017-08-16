@@ -21,11 +21,13 @@ public class ScheduledTasks {
 	// SimpleDateFormat("HH:mm:ss");
     
     @Scheduled(fixedRate = 60000)
-    public void reportCurrentTime() {
+	public void downloadSlowChangingData() {
         try
         {
 			dataDownloaderService.downloadRoutes();
+			dataDownloaderService.downloadBusStopPoints();
 			dataDownloaderService.downloadVehicles();
+
         }
 		catch (Exception ex) {
 			log.error(ex.getMessage());

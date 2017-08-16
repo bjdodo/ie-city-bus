@@ -1,5 +1,7 @@
 package bjdodo.ie_city_bus.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +17,7 @@ public class Route {
 	}
 
 	
-	public Route(long id, String duid, long last_modification_timestamp, boolean is_deleted, String short_name,
+	public Route(long id, String duid, Date last_modification_timestamp, boolean is_deleted, String short_name,
 			int number, int category) {
 		super();
 		this.id = id;
@@ -30,7 +32,7 @@ public class Route {
 	private Route(JSONObject obj) throws JSONException {
 		this.id = obj.optLong("id");
 		this.duid = obj.getString("duid");
-		this.last_modification_timestamp = obj.getLong("last_modification_timestamp");
+		this.last_modification_timestamp = new Date(obj.getLong("last_modification_timestamp"));
 		this.is_deleted = obj.getBoolean("is_deleted");
 		this.short_name = obj.getString("short_name");
 		this.number = obj.getInt("number");
@@ -49,7 +51,7 @@ public class Route {
 		return duid;
 	}
 
-	public long getLast_modification_timestamp() {
+	public Date getLast_modification_timestamp() {
 		return last_modification_timestamp;
 	}
 
@@ -73,7 +75,7 @@ public class Route {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private String duid;
-	private long last_modification_timestamp;
+	private Date last_modification_timestamp;
 	private boolean is_deleted;
 	private String short_name;
 	private int number;
