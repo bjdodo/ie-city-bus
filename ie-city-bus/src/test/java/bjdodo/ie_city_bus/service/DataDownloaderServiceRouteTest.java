@@ -56,7 +56,7 @@ public class DataDownloaderServiceRouteTest {
 		dataDownloaderService.downloadRoutes();
 
 		ArgumentCaptor<Route> captor = ArgumentCaptor.forClass(Route.class);
-		Mockito.verify(routeRepository).save(captor.capture());
+		Mockito.verify(routeRepository).saveAndFlush(captor.capture());
 
 		Assert.assertEquals(captor.getValue().getDuid(), "6350571126703259824");
 		Assert.assertEquals(captor.getValue().getLast_modification_timestamp(), 1502532767028L);

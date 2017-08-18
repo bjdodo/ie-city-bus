@@ -20,8 +20,7 @@ public class BusStopPoint {
 		this.id = obj.optLong("id");
 		this.duid = obj.getString("duid");
 		this.name = obj.getString("name");
-		this.latitude = obj.getDouble("lat");
-		this.longitude = obj.getDouble("lng");
+		this.latLong = "POINT(" + obj.getDouble("lat") + " " + obj.getDouble("lng") + ")";
 		this.number = obj.getInt("num");
 	}
 
@@ -29,13 +28,13 @@ public class BusStopPoint {
 		return new BusStopPoint(obj);
 	}
 
-	public BusStopPoint(Long id, String duid, String name, double latitude, double longitude, int number) {
+	public BusStopPoint(Long id, String duid, String name, String latLong /* double latitude, double longitude */,
+			int number) {
 		super();
 		this.id = id;
 		this.duid = duid;
 		this.name = name;
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.latLong = latLong;
 		this.number = number;
 	}
 
@@ -51,12 +50,8 @@ public class BusStopPoint {
 		return name;
 	}
 
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
+	public String getLatLong() {
+		return latLong;
 	}
 
 	public int getNumber() {
@@ -68,8 +63,7 @@ public class BusStopPoint {
 	private Long id;
 	private String duid;
 	private String name;
-	private double latitude;
-	private double longitude;
+	private String latLong;
 	private int number;
 }
 

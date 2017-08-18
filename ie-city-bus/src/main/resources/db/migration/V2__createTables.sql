@@ -2,6 +2,9 @@
 -- drop table TRIP;
 -- drop table VEHICLE;
 
+-- setup h2gis http://www.h2gis.org/docs/1.3.1/home/
+CREATE ALIAS IF NOT EXISTS H2GIS_EXTENSION FOR "org.h2gis.ext.H2GISExtension.load";
+CALL H2GIS_EXTENSION();
 
 
 create table VEHICLE (
@@ -14,8 +17,9 @@ HAS_BIKE_RACK bit,
 IS_ACCESSIBLE bit,
 IS_DELETED bit,
 LAST_MODIFICATION_TIMESTAMP Date,
-LATITUDE double,
-LONGITUDE double,
+--LATITUDE double,
+--LONGITUDE double,
+LAT_LONG POINT,
 OPERATIONAL_NUMBER long,
 PATTERN_DUID VARCHAR(255),
 REFERENCE_TIME Date,
@@ -23,11 +27,11 @@ TRIP_DUID VARCHAR(255),
 VEHICLE_NUMBER long
 );
 
-create table TRIP (
-ID long PRIMARY KEY auto_increment,
-DUID VARCHAR(255) UNIQUE,
-VEHICLEID long NOT NULL references VEHICLE(id)
-);
+--create table TRIP (
+--ID long PRIMARY KEY auto_increment,
+--DUID VARCHAR(255) UNIQUE,
+--VEHICLEID long NOT NULL references VEHICLE(id)
+--);
 
 create table ROUTE (
 ID long PRIMARY KEY auto_increment,
@@ -43,7 +47,8 @@ create table BUS_STOP_POINT (
 ID long PRIMARY KEY auto_increment,
 DUID VARCHAR(255) UNIQUE,
 NAME VARCHAR(MAX),
-LATITUDE double,
-LONGITUDE double,
+--LATITUDE double,
+--LONGITUDE double,
+LAT_LONG POINT,
 NUMBER int
 );

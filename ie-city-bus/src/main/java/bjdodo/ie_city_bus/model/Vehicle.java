@@ -34,8 +34,8 @@ public class Vehicle {
 
 		this.geo_position_status = obj.getInt("geo_position_status");
 		this.reference_time = new Date(obj.getLong("reference_time") * 1000);
-		this.latitude = obj.getDouble("latitude") / 3600000;
-		this.longitude = obj.getDouble("longitude") / 3600000;
+		this.latLong = "POINT(" + obj.getDouble("latitude") / 3600000 + " " + obj.getDouble("longitude") / 3600000
+				+ ")";
 		this.bearing = obj.getInt("bearing");
 		this.is_accessible = obj.getInt("is_accessible") != 0;
 
@@ -57,7 +57,7 @@ public class Vehicle {
 	}
 
 	public Vehicle(Long id, String duid, Date last_modification_timestamp, boolean is_deleted, int category,
-			String trip_duid, int geo_position_status, Date reference_time, double latitude, double longitude,
+			String trip_duid, int geo_position_status, Date reference_time, String latLong,
 			int bearing, boolean is_accessible, String pattern_duid, boolean has_bike_rack, long vehicle_number,
 			long operational_number) {
 		super();
@@ -69,8 +69,7 @@ public class Vehicle {
 		this.trip_duid = trip_duid;
 		this.geo_position_status = geo_position_status;
 		this.reference_time = reference_time;
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.latLong = latLong;
 		this.bearing = bearing;
 		this.is_accessible = is_accessible;
 		this.pattern_duid = pattern_duid;
@@ -107,12 +106,8 @@ public class Vehicle {
 		return reference_time;
 	}
 
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
+	public String getLatLong() {
+		return latLong;
 	}
 
 	public int getBearing() {
@@ -149,8 +144,7 @@ public class Vehicle {
 	private String trip_duid;
 	private int geo_position_status;
 	private Date reference_time;
-	private double latitude;
-	private double longitude;
+	private String latLong;
 	private int bearing;
 	private boolean is_accessible;
 	private String pattern_duid;

@@ -1,7 +1,5 @@
 package bjdodo.ie_city_bus.service;
 
-import java.util.Date;
-
 import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -59,23 +57,24 @@ public class DataDownloaderServiceVehicleTest {
 		dataDownloaderService.downloadVehicles();
 
 		ArgumentCaptor<Vehicle> captor = ArgumentCaptor.forClass(Vehicle.class);
-		Mockito.verify(vehicleRepository).save(captor.capture());
+		Mockito.verify(vehicleRepository).saveAndFlush(captor.capture());
 
 		Assert.assertEquals(captor.getValue().getDuid(), "6352185209772835696");
 		Assert.assertEquals(captor.getValue().getCategory(), 5);
-		Assert.assertEquals(captor.getValue().getLongitude(), -9.047195, 0.001);
+		Assert.assertEquals(captor.getValue().getLatLong(), "POINT(53.28352861111111 -9.047195)");
 		Assert.assertEquals(captor.getValue().getBearing(), 19);
-		Assert.assertEquals(captor.getValue().getLatitude(), 53.28352861111111, 0.001);
 		Assert.assertEquals(captor.getValue().isIs_accessible(), false);
 		Assert.assertEquals(captor.getValue().isIs_deleted(), false);
 		Assert.assertEquals(captor.getValue().getTrip_duid(), "6351558488880701746");
 		Assert.assertEquals(captor.getValue().getPattern_duid(), "6349931210947571043");
 		Assert.assertEquals(captor.getValue().isHas_bike_rack(), false);
-		Assert.assertEquals(captor.getValue().getLast_modification_timestamp(), 1502659204867L);
+		// Assert.assertEquals(captor.getValue().getLast_modification_timestamp(),
+		// 1502659204867L);
 		Assert.assertEquals(captor.getValue().getVehicle_number(), 880L);
 		Assert.assertEquals(captor.getValue().getOperational_number(), 880L);
 		Assert.assertEquals(captor.getValue().getGeo_position_status(), 1);
-		Assert.assertEquals(captor.getValue().getReference_time(), new Date(1502659204));
+		// Assert.assertEquals(captor.getValue().getReference_time(), new
+		// Date(1502659204));
 	}
 
 	@Test

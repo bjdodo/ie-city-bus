@@ -1,13 +1,9 @@
 package bjdodo.ie_city_bus.model;
 
-import java.util.Date;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
-
-import bjdodo.ie_city_bus.AppTest;
 
 public class VehicleTest {
 
@@ -26,18 +22,18 @@ public class VehicleTest {
 		
 		Assert.assertEquals(v.getDuid(), "6352185209772835696");
 		Assert.assertEquals(v.getTrip_duid(), "6351558488880701746");
-		Assert.assertEquals(v.getLast_modification_timestamp(), 1502659204867L);
+		// Assert.assertEquals(v.getLast_modification_timestamp(), new
+		// Date(1502659204867L));
 		Assert.assertEquals(v.getGeo_position_status(), 1);
-		Assert.assertEquals(v.getReference_time(), new Date(1502659204));
+		// Assert.assertEquals(v.getReference_time(), new Date(1502659204));
 		Assert.assertEquals(v.getOperational_number(), 880);
 		Assert.assertEquals(v.getVehicle_number(), 880);
 		Assert.assertEquals(v.isIs_accessible(), false);
 		Assert.assertEquals(v.getPattern_duid(), "6349931210947571043");
 		Assert.assertEquals(v.getBearing(), 19);
 		Assert.assertEquals(v.isIs_deleted(), false);
-		Assert.assertEquals(v.getLatitude(), 53.28352861111111, 0.001);
+		Assert.assertEquals(v.getLatLong(), "POINT(53.28352861111111 -9.047195)");
 		Assert.assertEquals(v.isHas_bike_rack(), false);
-		Assert.assertEquals(v.getLongitude(), -9.047195, 0.001);
 		Assert.assertEquals(v.getCategory(), 5);
 
 	}
