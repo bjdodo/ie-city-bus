@@ -16,25 +16,12 @@ public class Route {
 	public Route() {
 	}
 
-	
-	public Route(long id, String duid, Date last_modification_timestamp, boolean is_deleted, String short_name,
-			int number, int category) {
-		super();
-		this.id = id;
-		this.duid = duid;
-		this.last_modification_timestamp = last_modification_timestamp;
-		this.is_deleted = is_deleted;
-		this.short_name = short_name;
-		this.number = number;
-		this.category = category;
-	}
-
 	private Route(JSONObject obj) throws JSONException {
 		this.id = obj.optLong("id");
 		this.duid = obj.getString("duid");
-		this.last_modification_timestamp = new Date(obj.getLong("last_modification_timestamp"));
-		this.is_deleted = obj.getBoolean("is_deleted");
-		this.short_name = obj.getString("short_name");
+		this.lastModificationTimestamp = new Date(obj.getLong("last_modification_timestamp"));
+		this.isDeleted = obj.getBoolean("is_deleted");
+		this.shortName = obj.getString("short_name");
 		this.number = obj.getInt("number");
 		this.category = obj.getInt("category");
 	}
@@ -43,41 +30,69 @@ public class Route {
 		return new Route(obj);
 	}
 
-	public Long getId() {
+	public long getId() {
 		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getDuid() {
 		return duid;
 	}
 
-	public Date getLast_modification_timestamp() {
-		return last_modification_timestamp;
+	public void setDuid(String duid) {
+		this.duid = duid;
 	}
 
-	public boolean isIs_deleted() {
-		return is_deleted;
+	public Date getLastModificationTimestamp() {
+		return lastModificationTimestamp;
 	}
 
-	public String getShort_name() {
-		return short_name;
+	public void setLastModificationTimestamp(Date lastModificationTimestamp) {
+		this.lastModificationTimestamp = lastModificationTimestamp;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 
 	public int getNumber() {
 		return number;
 	}
 
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
 	public int getCategory() {
 		return category;
+	}
+
+	public void setCategory(int category) {
+		this.category = category;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private String duid;
-	private Date last_modification_timestamp;
-	private boolean is_deleted;
-	private String short_name;
+	private Date lastModificationTimestamp;
+	private boolean isDeleted;
+	private String shortName;
 	private int number;
 	private int category;
 }

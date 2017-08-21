@@ -13,12 +13,10 @@ BEARING int, -- INTEGER(10)
 CATEGORY int,
 DUID VARCHAR(255) UNIQUE,
 GEO_POSITION_STATUS int,
-HAS_BIKE_RACK bit,
+BIKE_RACK bit,
 IS_ACCESSIBLE bit,
 IS_DELETED bit,
 LAST_MODIFICATION_TIMESTAMP Date,
---LATITUDE double,
---LONGITUDE double,
 LAT_LONG POINT,
 OPERATIONAL_NUMBER long,
 PATTERN_DUID VARCHAR(255),
@@ -27,11 +25,11 @@ TRIP_DUID VARCHAR(255),
 VEHICLE_NUMBER long
 );
 
---create table TRIP (
---ID long PRIMARY KEY auto_increment,
---DUID VARCHAR(255) UNIQUE,
---VEHICLEID long NOT NULL references VEHICLE(id)
---);
+create table TRIP (
+ID long PRIMARY KEY auto_increment,
+DUID VARCHAR(255) UNIQUE,
+VEHICLEID long NOT NULL references VEHICLE(id)
+);
 
 create table ROUTE (
 ID long PRIMARY KEY auto_increment,
@@ -43,12 +41,23 @@ NUMBER int,
 CATEGORY int	
 );
 
-create table BUS_STOP_POINT (
+create table STOP_POINT (
 ID long PRIMARY KEY auto_increment,
 DUID VARCHAR(255) UNIQUE,
 NAME VARCHAR(MAX),
---LATITUDE double,
---LONGITUDE double,
 LAT_LONG POINT,
 NUMBER int
+);
+
+create table STOP_PASSAGE (
+ID long PRIMARY KEY auto_increment,
+DUID VARCHAR(255) UNIQUE,
+IS_DELETED bit,
+DIRECTION int,
+ARRIVAL_DATA Date,
+DEPARTURE_DATA Date,
+ROUTE_ID NOT NULL references ROUTE(ID),
+TRIP_ID NOT NULL references TRIP(ID),
+STOP_POINT_ID NOT NULL references STOP_POINT(ID)
+--,VEHICLE_ID NOT NULL references VEHICLE(ID) this is defined in trip
 );

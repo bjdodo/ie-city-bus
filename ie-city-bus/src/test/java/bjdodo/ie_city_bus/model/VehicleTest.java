@@ -21,19 +21,19 @@ public class VehicleTest {
 		Vehicle v = Vehicle.fromBuseireannJson(jObj);
 		
 		Assert.assertEquals(v.getDuid(), "6352185209772835696");
-		Assert.assertEquals(v.getTrip_duid(), "6351558488880701746");
+		Assert.assertEquals(v.getTripDuid(), "6351558488880701746");
 		// Assert.assertEquals(v.getLast_modification_timestamp(), new
 		// Date(1502659204867L));
-		Assert.assertEquals(v.getGeo_position_status(), 1);
+		Assert.assertEquals(v.getGeoPositionStatus(), 1);
 		// Assert.assertEquals(v.getReference_time(), new Date(1502659204));
-		Assert.assertEquals(v.getOperational_number(), 880);
-		Assert.assertEquals(v.getVehicle_number(), 880);
-		Assert.assertEquals(v.isIs_accessible(), false);
-		Assert.assertEquals(v.getPattern_duid(), "6349931210947571043");
+		Assert.assertEquals(v.getOperationalNumber(), 880);
+		Assert.assertEquals(v.getVehicleNumber(), 880);
+		Assert.assertEquals(v.isAccessible(), false);
+		Assert.assertEquals(v.getPatternDuid(), "6349931210947571043");
 		Assert.assertEquals(v.getBearing(), 19);
-		Assert.assertEquals(v.isIs_deleted(), false);
+		Assert.assertEquals(v.isDeleted(), false);
 		Assert.assertEquals(v.getLatLong(), "POINT(53.28352861111111 -9.047195)");
-		Assert.assertEquals(v.isHas_bike_rack(), false);
+		Assert.assertEquals(v.hasBikeRack(), false);
 		Assert.assertEquals(v.getCategory(), 5);
 
 	}

@@ -8,27 +8,29 @@ import javax.persistence.Id;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@Entity
-public class BusStopPoint {
+import bjdodo.ie_city_bus.utils.ModelUtils;
 
-	public BusStopPoint() {
+@Entity
+public class StopPoint {
+
+	public StopPoint() {
 	}
 
-	private BusStopPoint(JSONObject obj) throws JSONException {
+	private StopPoint(JSONObject obj) throws JSONException {
 		super();
 
 		this.id = obj.optLong("id");
 		this.duid = obj.getString("duid");
 		this.name = obj.getString("name");
-		this.latLong = "POINT(" + obj.getDouble("lat") + " " + obj.getDouble("lng") + ")";
+		this.latLong = ModelUtils.getPointDBString(obj.getDouble("lat"), obj.getDouble("lng"));
 		this.number = obj.getInt("num");
 	}
 
-	public static BusStopPoint fromBuseireannJson(JSONObject obj) throws JSONException {
-		return new BusStopPoint(obj);
+	public static StopPoint fromBuseireannJson(JSONObject obj) throws JSONException {
+		return new StopPoint(obj);
 	}
 
-	public BusStopPoint(Long id, String duid, String name, String latLong /* double latitude, double longitude */,
+	public StopPoint(Long id, String duid, String name, String latLong /* double latitude, double longitude */,
 			int number) {
 		super();
 		this.id = id;

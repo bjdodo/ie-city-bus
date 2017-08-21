@@ -51,7 +51,7 @@ public class DataDownloaderServiceRouteTest {
 
 		Mockito.when(httpService.get(routeUrl)).thenReturn(jsonRoute);
 
-		Mockito.when(routeRepository.countByDuid("6350571126703259824")).thenReturn(0);
+		Mockito.when(routeRepository.countByDuid("6350571126703259824")).thenReturn(0L);
 
 		dataDownloaderService.downloadRoutes();
 
@@ -59,9 +59,9 @@ public class DataDownloaderServiceRouteTest {
 		Mockito.verify(routeRepository).saveAndFlush(captor.capture());
 
 		Assert.assertEquals(captor.getValue().getDuid(), "6350571126703259824");
-		Assert.assertEquals(captor.getValue().getLast_modification_timestamp(), 1502532767028L);
-		Assert.assertEquals(captor.getValue().isIs_deleted(), false);
-		Assert.assertEquals(captor.getValue().getShort_name(), "403");
+		Assert.assertEquals(captor.getValue().getLastModificationTimestamp(), 1502532767028L);
+		Assert.assertEquals(captor.getValue().isDeleted(), false);
+		Assert.assertEquals(captor.getValue().getShortName(), "403");
 		Assert.assertEquals(captor.getValue().getCategory(), 5);
 		Assert.assertEquals(captor.getValue().getNumber(), 403);
 

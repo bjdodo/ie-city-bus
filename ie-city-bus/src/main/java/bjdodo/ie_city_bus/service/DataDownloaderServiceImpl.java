@@ -1,5 +1,8 @@
 package bjdodo.ie_city_bus.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -7,12 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import bjdodo.ie_city_bus.model.BusStopPoint;
 import bjdodo.ie_city_bus.model.Route;
+import bjdodo.ie_city_bus.model.StopPassage;
+import bjdodo.ie_city_bus.model.StopPoint;
 import bjdodo.ie_city_bus.model.Vehicle;
-import bjdodo.ie_city_bus.repository.BusStopPointRepository;
-import bjdodo.ie_city_bus.repository.RouteRepository;
-import bjdodo.ie_city_bus.repository.VehicleRepository;
 
 @Service
 public class DataDownloaderServiceImpl implements DataDownloaderService {
@@ -42,22 +43,24 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 	@Autowired
 	private HttpService httpService;
 
-	@Autowired
-	private VehicleRepository vehicleRepository;
+	// @Autowired
+	// private VehicleRepository vehicleRepository;
 
 	@Override
-	public void downloadVehicles() throws JSONException {
+	public Map<String, Vehicle> downloadVehicles() throws JSONException {
 
 		String resp = httpService.get(
 				"http://buseireann.ie/inc/proto/vehicleTdi.php?latitude_north=192043441&latitude_south=191572963&longitude_east=-32237122&longitude_west=-32939484");
 		if (resp == null || resp.isEmpty()) {
 			log.info("http get request returned zero vehicles");
-			return;
+			return new HashMap<String, Vehicle>();
 		}
 
 		JSONObject obj = new JSONObject(resp);
 
 		JSONObject vehicleTdi = obj.getJSONObject("vehicleTdi");
+
+		Map<String, Vehicle> ret = new HashMap<>();
 
 		int cnt = 0;
 		while (true) {
@@ -65,31 +68,34 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 			if (bus == null) {
 				break;
 			} else {
-				Vehicle v = Vehicle.fromBuseireannJson(bus);
-				if (vehicleRepository.countByDuid(v.getDuid()) == 0) {
-					vehicleRepository.saveAndFlush(v);
-				}
+				Vehicle vehicle = Vehicle.fromBuseireannJson(bus);
+				ret.put(vehicle.getDuid(), vehicle);
+				// if (vehicleRepository.countByDuid(v.getDuid()) == 0) {
+				// vehicleRepository.saveAndFlush(v);
+				// }
 			}
 		}
+
+		return ret;
 	}
 
-	@Autowired
-	private RouteRepository routeRepository;
+	// @Autowired
+	// private RouteRepository routeRepository;
 
 	@Override
-	public void downloadRoutes() throws JSONException {
+	public Map<String, Route> downloadRoutes() throws JSONException {
 
 		String resp = httpService.get("http://buseireann.ie/inc/proto/routes.php");
 		if (resp == null || resp.isEmpty()) {
 			log.info("http get request returned zero routes");
-			return;
+			return new HashMap<String, Route>();
 		}
 
 		// This text starts with a javascript variable declaration, we trim that off and
 		// the ; from the end
 		if (!resp.startsWith("var obj_routes = ") || !resp.endsWith(";")) {
 			log.error(String.format("Unexpected string returned for routes '%s...'", resp.substring(0, 100)));
-			return;
+			return new HashMap<String, Route>();
 		}
 		resp = resp.substring("var obj_routes = ".length());
 		resp = resp.substring(0, resp.length() - 1);
@@ -106,34 +112,39 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 
 		JSONObject routeTdi = obj.getJSONObject("routeTdi");
 
+		Map<String, Route> ret = new HashMap<>();
+
 		while (true) {
 			JSONObject route = routeTdi.optJSONObject("routes_" + cnt++);
 			if (route == null) {
 				break;
 			} else {
 				Route r = Route.fromBuseireannJson(route);
-				if (routeRepository.countByDuid(r.getDuid()) == 0) {
-					routeRepository.saveAndFlush(r);
-				}
+				ret.put(r.getDuid(), r);
+				// if (routeRepository.countByDuid(r.getDuid()) == 0) {
+				// routeRepository.saveAndFlush(r);
+				// }
 			}
 		}
+		return ret;
 	}
 
-	@Autowired
-	private BusStopPointRepository busStopPointRepository;
-	public void downloadBusStopPoints() throws JSONException {
+	// @Autowired
+	// private BusStopPointRepository busStopPointRepository;
+
+	public Map<String, StopPoint> downloadStopPoints() throws JSONException {
 
 		String resp = httpService.get("http://buseireann.ie/inc/proto/bus_stop_points.php");
 		if (resp == null || resp.isEmpty()) {
 			log.info("http get request returned zero routes");
-			return;
+			return new HashMap<String, StopPoint>();
 		}
 
 		// This text starts with a javascript variable declaration, we trim that off and
 		// the ; from the end
 		if (!resp.startsWith("var obj_bus_stop_points = ") || !resp.endsWith(";")) {
 			log.error(String.format("Unexpected string returned for bus stops '{0}...'", resp.substring(0, 100)));
-			return;
+			return new HashMap<String, StopPoint>();
 		}
 		resp = resp.substring("var obj_bus_stop_points = ".length());
 		resp = resp.substring(0, resp.length() - 1);
@@ -142,17 +153,53 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 
 		JSONObject bus_stops = obj.getJSONObject("bus_stops");
 
+		Map<String, StopPoint> ret = new HashMap<>();
+
 		int cnt = 0;
 		while (true) {
 			JSONObject route = bus_stops.optJSONObject("bus_stop_" + cnt++);
 			if (route == null) {
 				break;
 			} else {
-				BusStopPoint r = BusStopPoint.fromBuseireannJson(route);
-				if (busStopPointRepository.countByDuid(r.getDuid()) == 0) {
-					busStopPointRepository.saveAndFlush(r);
-				}
+				StopPoint busStopPoint = StopPoint.fromBuseireannJson(route);
+				ret.put(busStopPoint.getDuid(), busStopPoint);
+				// BusStopPoint r = BusStopPoint.fromBuseireannJson(route);
+				// if (busStopPointRepository.countByDuid(r.getDuid()) == 0) {
+				// busStopPointRepository.saveAndFlush(r);
+				// }
 			}
 		}
+		return ret;
+	}
+
+	public Map<String, StopPassage> downloadStopPassages(String tripDuid) throws JSONException {
+
+		String resp = httpService.get("http://buseireann.ie/inc/proto/stopPassageTdi.php?trip=" + tripDuid);
+		if (resp == null || resp.isEmpty()) {
+			log.info("http get request returned zero routes");
+			return new HashMap<String, StopPassage>();
+		}
+
+		JSONObject obj = new JSONObject(resp);
+
+		JSONObject stopPassageTdi = obj.getJSONObject("stopPassageTdi");
+
+		Map<String, StopPassage> ret = new HashMap<>();
+
+		int cnt = 0;
+		while (true) {
+			JSONObject route = stopPassageTdi.optJSONObject("passage_" + cnt++);
+			if (route == null) {
+				break;
+			} else {
+				StopPassage stopPassage = StopPassage.fromBuseireannJson(route);
+				ret.put(stopPassage.getDuid(), stopPassage);
+				// BusStopPoint r = BusStopPoint.fromBuseireannJson(route);
+				// if (busStopPointRepository.countByDuid(r.getDuid()) == 0) {
+				// busStopPointRepository.saveAndFlush(r);
+				// }
+			}
+		}
+		return ret;
 	}
 }

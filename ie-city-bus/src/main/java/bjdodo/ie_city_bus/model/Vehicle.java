@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import bjdodo.ie_city_bus.utils.ModelUtils;
+
 @Entity
 public class Vehicle {
 
@@ -21,34 +23,20 @@ public class Vehicle {
 
 		this.id = obj.optLong("id");
 		this.duid = obj.getString("duid");
-		this.last_modification_timestamp = new Date(obj.getLong("last_modification_timestamp"));
-		this.is_deleted = obj.getBoolean("is_deleted");
+		this.lastModificationTimestamp = new Date(obj.getLong("last_modification_timestamp"));
+		this.isDeleted = obj.getBoolean("is_deleted");
 		this.category = obj.getInt("category");
-
-		JSONObject jsonTrip = obj.optJSONObject("trip_duid");
-		if (jsonTrip != null) {
-			this.trip_duid = jsonTrip.getString("duid");
-		} else {
-			this.trip_duid = "";
-		}
-
-		this.geo_position_status = obj.getInt("geo_position_status");
-		this.reference_time = new Date(obj.getLong("reference_time") * 1000);
-		this.latLong = "POINT(" + obj.getDouble("latitude") / 3600000 + " " + obj.getDouble("longitude") / 3600000
-				+ ")";
+		this.tripDuid = ModelUtils.getDuid(obj, "trip_duid");
+		this.geoPositionStatus = obj.getInt("geo_position_status");
+		this.referenceTime = new Date(obj.getLong("reference_time") * 1000);
+		this.latLong = ModelUtils.getPointDBString(obj.getDouble("latitude") / 3600000,
+				obj.getDouble("longitude") / 3600000);
 		this.bearing = obj.getInt("bearing");
-		this.is_accessible = obj.getInt("is_accessible") != 0;
-
-		JSONObject jsonPatternDuid = obj.optJSONObject("pattern_duid");
-		if (jsonPatternDuid != null) {
-			this.pattern_duid = jsonPatternDuid.getString("duid");
-		} else {
-			this.pattern_duid = "";
-		}
-
-		this.has_bike_rack = obj.getInt("has_bike_rack") != 0;
-		this.vehicle_number = obj.getLong("vehicle_number");
-		this.operational_number = obj.getLong("operational_number");
+		this.isAccessible = obj.getInt("is_accessible") != 0;
+		this.patternDuid = ModelUtils.getDuid(obj, "pattern_duid");
+		this.bikeRack = obj.getInt("has_bike_rack") != 0;
+		this.vehicleNumber = obj.getLong("vehicle_number");
+		this.operationalNumber = obj.getLong("operational_number");
 
 	}
 
@@ -56,101 +44,139 @@ public class Vehicle {
 		return new Vehicle(obj);
 	}
 
-	public Vehicle(Long id, String duid, Date last_modification_timestamp, boolean is_deleted, int category,
-			String trip_duid, int geo_position_status, Date reference_time, String latLong,
-			int bearing, boolean is_accessible, String pattern_duid, boolean has_bike_rack, long vehicle_number,
-			long operational_number) {
-		super();
-		this.id = id;
-		this.duid = duid;
-		this.last_modification_timestamp = last_modification_timestamp;
-		this.is_deleted = is_deleted;
-		this.category = category;
-		this.trip_duid = trip_duid;
-		this.geo_position_status = geo_position_status;
-		this.reference_time = reference_time;
-		this.latLong = latLong;
-		this.bearing = bearing;
-		this.is_accessible = is_accessible;
-		this.pattern_duid = pattern_duid;
-		this.has_bike_rack = has_bike_rack;
-		this.vehicle_number = vehicle_number;
-		this.operational_number = operational_number;
+	public Long getId() {
+		return id;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getDuid() {
 		return duid;
 	}
 
-	public Date getLast_modification_timestamp() {
-		return last_modification_timestamp;
+	public void setDuid(String duid) {
+		this.duid = duid;
 	}
 
-	public boolean isIs_deleted() {
-		return is_deleted;
+	public Date getLastModificationTimestamp() {
+		return lastModificationTimestamp;
 	}
 
+	public void setLastModificationTimestamp(Date lastModificationTimestamp) {
+		this.lastModificationTimestamp = lastModificationTimestamp;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 	public int getCategory() {
 		return category;
 	}
 
-	public String getTrip_duid() {
-		return trip_duid;
+	public void setCategory(int category) {
+		this.category = category;
 	}
 
-	public int getGeo_position_status() {
-		return geo_position_status;
+	public String getTripDuid() {
+		return tripDuid;
 	}
 
-	public Date getReference_time() {
-		return reference_time;
+	public void setTripDuid(String tripDuid) {
+		this.tripDuid = tripDuid;
 	}
 
+	public int getGeoPositionStatus() {
+		return geoPositionStatus;
+	}
+
+	public void setGeoPositionStatus(int geoPositionStatus) {
+		this.geoPositionStatus = geoPositionStatus;
+	}
+
+	public Date getReferenceTime() {
+		return referenceTime;
+	}
+
+	public void setReferenceTime(Date referenceTime) {
+		this.referenceTime = referenceTime;
+	}
 	public String getLatLong() {
 		return latLong;
 	}
 
+	public void setLatLong(String latLong) {
+		this.latLong = latLong;
+	}
 	public int getBearing() {
 		return bearing;
 	}
 
-	public boolean isIs_accessible() {
-		return is_accessible;
+	public void setBearing(int bearing) {
+		this.bearing = bearing;
 	}
 
-	public String getPattern_duid() {
-		return pattern_duid;
+	public boolean isAccessible() {
+		return isAccessible;
 	}
 
-	public boolean isHas_bike_rack() {
-		return has_bike_rack;
+	public void setAccessible(boolean isAccessible) {
+		this.isAccessible = isAccessible;
 	}
 
-	public long getVehicle_number() {
-		return vehicle_number;
+	public String getPatternDuid() {
+		return patternDuid;
 	}
 
-	public long getOperational_number() {
-		return operational_number;
+	public void setPatternDuid(String patternDuid) {
+		this.patternDuid = patternDuid;
+	}
+
+	public boolean hasBikeRack() {
+		return bikeRack;
+	}
+
+	public void setBikeRack(boolean bikeRack) {
+		this.bikeRack = bikeRack;
+	}
+
+	public long getVehicleNumber() {
+		return vehicleNumber;
+	}
+
+	public void setVehicleNumber(long vehicleNumber) {
+		this.vehicleNumber = vehicleNumber;
+	}
+
+	public long getOperationalNumber() {
+		return operationalNumber;
+	}
+
+	public void setOperationalNumber(long operationalNumber) {
+		this.operationalNumber = operationalNumber;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String duid;
-	private Date last_modification_timestamp;
-	private boolean is_deleted;
+	private Date lastModificationTimestamp;
+	private boolean isDeleted;
 	private int category;
-	private String trip_duid;
-	private int geo_position_status;
-	private Date reference_time;
+	private String tripDuid;
+	private int geoPositionStatus;
+	private Date referenceTime;
 	private String latLong;
 	private int bearing;
-	private boolean is_accessible;
-	private String pattern_duid;
-	private boolean has_bike_rack;
-	private long vehicle_number;
-	private long operational_number;
+	private boolean isAccessible;
+	private String patternDuid;
+	private boolean bikeRack;
+	private long vehicleNumber;
+	private long operationalNumber;
 }
 
 // { "vehicleTdi":
