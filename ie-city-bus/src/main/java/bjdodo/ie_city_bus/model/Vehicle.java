@@ -1,6 +1,6 @@
 package bjdodo.ie_city_bus.model;
 
-import java.util.Date;
+import java.time.Instant;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,18 +17,17 @@ public class Vehicle {
 
 	public Vehicle() {
 	}
-	// for sample JSON see bottom of file
-	private Vehicle(JSONObject obj) throws JSONException {
-		super();
 
-		this.id = obj.optLong("id");
+	// for sample JSON see bottom of file
+	public void updateFromJson(JSONObject obj) throws JSONException {
+
 		this.duid = obj.getString("duid");
-		this.lastModificationTimestamp = new Date(obj.getLong("last_modification_timestamp"));
+		this.lastModificationTimestamp = Instant.ofEpochMilli(obj.getLong("last_modification_timestamp"));
 		this.isDeleted = obj.getBoolean("is_deleted");
 		this.category = obj.getInt("category");
 		this.tripDuid = ModelUtils.getDuid(obj, "trip_duid");
 		this.geoPositionStatus = obj.getInt("geo_position_status");
-		this.referenceTime = new Date(obj.getLong("reference_time") * 1000);
+		this.referenceTime = Instant.ofEpochSecond(obj.getLong("reference_time"));
 		this.latLong = ModelUtils.getPointDBString(obj.getDouble("latitude") / 3600000,
 				obj.getDouble("longitude") / 3600000);
 		this.bearing = obj.getInt("bearing");
@@ -40,11 +39,7 @@ public class Vehicle {
 
 	}
 
-	public static Vehicle fromBuseireannJson(JSONObject obj) throws JSONException {
-		return new Vehicle(obj);
-	}
-
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -59,11 +54,11 @@ public class Vehicle {
 		this.duid = duid;
 	}
 
-	public Date getLastModificationTimestamp() {
+	public Instant getLastModificationTimestamp() {
 		return lastModificationTimestamp;
 	}
 
-	public void setLastModificationTimestamp(Date lastModificationTimestamp) {
+	public void setLastModificationTimestamp(Instant lastModificationTimestamp) {
 		this.lastModificationTimestamp = lastModificationTimestamp;
 	}
 
@@ -90,6 +85,14 @@ public class Vehicle {
 		this.tripDuid = tripDuid;
 	}
 
+	public Long getTripId() {
+		return tripId;
+	}
+
+	public void setTripId(Long tripId) {
+		this.tripId = tripId;
+	}
+
 	public int getGeoPositionStatus() {
 		return geoPositionStatus;
 	}
@@ -98,11 +101,11 @@ public class Vehicle {
 		this.geoPositionStatus = geoPositionStatus;
 	}
 
-	public Date getReferenceTime() {
+	public Instant getReferenceTime() {
 		return referenceTime;
 	}
 
-	public void setReferenceTime(Date referenceTime) {
+	public void setReferenceTime(Instant referenceTime) {
 		this.referenceTime = referenceTime;
 	}
 	public String getLatLong() {
@@ -160,16 +163,99 @@ public class Vehicle {
 		this.operationalNumber = operationalNumber;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + bearing;
+		result = prime * result + (bikeRack ? 1231 : 1237);
+		result = prime * result + category;
+		result = prime * result + ((duid == null) ? 0 : duid.hashCode());
+		result = prime * result + geoPositionStatus;
+		result = prime * result + (int) (id ^ (operationalNumber >>> 32));
+		result = prime * result + (isAccessible ? 1231 : 1237);
+		result = prime * result + (isDeleted ? 1231 : 1237);
+		result = prime * result + ((lastModificationTimestamp == null) ? 0 : lastModificationTimestamp.hashCode());
+		result = prime * result + ((latLong == null) ? 0 : latLong.hashCode());
+		result = prime * result + (int) (operationalNumber ^ (operationalNumber >>> 32));
+		result = prime * result + ((patternDuid == null) ? 0 : patternDuid.hashCode());
+		result = prime * result + ((referenceTime == null) ? 0 : referenceTime.hashCode());
+		result = prime * result + ((tripDuid == null) ? 0 : tripDuid.hashCode());
+		result = prime * result + (int) (vehicleNumber ^ (vehicleNumber >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vehicle other = (Vehicle) obj;
+		if (bearing != other.bearing)
+			return false;
+		if (bikeRack != other.bikeRack)
+			return false;
+		if (category != other.category)
+			return false;
+		if (duid == null) {
+			if (other.duid != null)
+				return false;
+		} else if (!duid.equals(other.duid))
+			return false;
+		if (geoPositionStatus != other.geoPositionStatus)
+			return false;
+		if (id != other.id)
+			return false;
+		if (isAccessible != other.isAccessible)
+			return false;
+		if (isDeleted != other.isDeleted)
+			return false;
+		if (lastModificationTimestamp == null) {
+			if (other.lastModificationTimestamp != null)
+				return false;
+		} else if (!lastModificationTimestamp.equals(other.lastModificationTimestamp))
+			return false;
+		if (latLong == null) {
+			if (other.latLong != null)
+				return false;
+		} else if (!latLong.equals(other.latLong))
+			return false;
+		if (operationalNumber != other.operationalNumber)
+			return false;
+		if (patternDuid == null) {
+			if (other.patternDuid != null)
+				return false;
+		} else if (!patternDuid.equals(other.patternDuid))
+			return false;
+		if (referenceTime == null) {
+			if (other.referenceTime != null)
+				return false;
+		} else if (!referenceTime.equals(other.referenceTime))
+			return false;
+		if (tripDuid == null) {
+			if (other.tripDuid != null)
+				return false;
+		} else if (!tripDuid.equals(other.tripDuid))
+			return false;
+		if (vehicleNumber != other.vehicleNumber)
+			return false;
+		return true;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private long id;
 	private String duid;
-	private Date lastModificationTimestamp;
+	private Instant lastModificationTimestamp;
 	private boolean isDeleted;
 	private int category;
 	private String tripDuid;
+	private Long tripId;
 	private int geoPositionStatus;
-	private Date referenceTime;
+	private Instant referenceTime;
 	private String latLong;
 	private int bearing;
 	private boolean isAccessible;
@@ -177,6 +263,14 @@ public class Vehicle {
 	private boolean bikeRack;
 	private long vehicleNumber;
 	private long operationalNumber;
+
+	public static String getJSONDuid(JSONObject json) throws JSONException {
+		return json.getString("duid");
+	}
+
+	public static String getJSONTripDuid(JSONObject json) throws JSONException {
+		return ModelUtils.getDuid(json, "trip_duid");
+	}
 }
 
 // { "vehicleTdi":

@@ -16,57 +16,86 @@ public class StopPoint {
 	public StopPoint() {
 	}
 
-	private StopPoint(JSONObject obj) throws JSONException {
-		super();
-
-		this.id = obj.optLong("id");
+	public void updateFromJson(JSONObject obj) throws JSONException {
 		this.duid = obj.getString("duid");
 		this.name = obj.getString("name");
 		this.latLong = ModelUtils.getPointDBString(obj.getDouble("lat"), obj.getDouble("lng"));
 		this.number = obj.getInt("num");
 	}
 
-	public static StopPoint fromBuseireannJson(JSONObject obj) throws JSONException {
-		return new StopPoint(obj);
-	}
-
-	public StopPoint(Long id, String duid, String name, String latLong /* double latitude, double longitude */,
-			int number) {
-		super();
-		this.id = id;
-		this.duid = duid;
-		this.name = name;
-		this.latLong = latLong;
-		this.number = number;
-	}
-
-	public Long getId() {
+	public long getId() {
 		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getDuid() {
 		return duid;
 	}
 
+	public void setDuid(String duid) {
+		this.duid = duid;
+	}
+
 	public String getName() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getLatLong() {
 		return latLong;
 	}
 
+	public void setLatLong(String latLong) {
+		this.latLong = latLong;
+	}
+
 	public int getNumber() {
 		return number;
 	}
 
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public boolean contentEquals(StopPoint other) {
+		if (duid == null) {
+			if (other.duid != null)
+				return false;
+		} else if (!duid.equals(other.duid))
+			return false;
+		if (latLong == null) {
+			if (other.latLong != null)
+				return false;
+		} else if (!latLong.equals(other.latLong))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (number != other.number)
+			return false;
+		return true;
+	}
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private long id;
 	private String duid;
 	private String name;
 	private String latLong;
 	private int number;
+
+	public static String getJSONDuid(JSONObject json) throws JSONException {
+		return json.getString("duid");
+	}
 }
 
 // "bus_stop_5159": {"duid": "6350786630982827515","name": "Tirellan Heights

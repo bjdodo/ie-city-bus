@@ -1,7 +1,8 @@
 package bjdodo.ie_city_bus.model;
 
-import java.util.Date;
+import java.time.Instant;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,14 +13,14 @@ import org.json.JSONObject;
 
 import bjdodo.ie_city_bus.utils.ModelUtils;
 
+@Entity
 public class StopPassage {
 
 	public StopPassage() {
 	}
 
-	private StopPassage(JSONObject obj) throws JSONException {
+	public void updateFromJson(JSONObject obj) throws JSONException {
 
-		this.id = obj.optLong("id");
 		this.duid = obj.getString("duid");
 		this.isDeleted = obj.getBoolean("is_deleted");
 		this.routeDuid = ModelUtils.getDuid(obj, "route_duid");
@@ -28,20 +29,31 @@ public class StopPassage {
 		this.vehicleDuid = ModelUtils.getDuid(obj, "vehicle_duid");
 		this.patternDuid = ModelUtils.getDuid(obj, "pattern_duid");
 		this.direction = obj.getInt("direction");
-		this.arrivalData = new Date(obj.getLong("arrival_data"));
-		this.departureData = new Date(obj.getLong("departure_data"));
 
+		JSONObject arrivalData = obj.optJSONObject("arrival_data");
+		if (arrivalData != null) {
+			this.scheduledArrival = Instant.ofEpochSecond(arrivalData.getLong("scheduled_passage_time_utc"));
+			Long actual = arrivalData.optLong("actual_passage_time_utc");
+			if (actual != null) {
+				this.actualArrival = Instant.ofEpochSecond(actual);
+			}
+		}
+
+		JSONObject departureData = obj.optJSONObject("departure_data");
+		if (departureData != null) {
+			this.scheduledDeparture = Instant.ofEpochSecond(departureData.getLong("scheduled_passage_time_utc"));
+			Long actual = departureData.optLong("actual_passage_time_utc");
+			if (actual != null) {
+				this.actualDeparture = Instant.ofEpochSecond(actual);
+			}
+		}
 	}
 
-	public static StopPassage fromBuseireannJson(JSONObject obj) throws JSONException {
-		return new StopPassage(obj);
-	}
-
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -109,57 +121,65 @@ public class StopPassage {
 		this.direction = direction;
 	}
 
-	public Date getArrivalData() {
-		return arrivalData;
+	public Instant getScheduledArrival() {
+		return scheduledArrival;
 	}
 
-	public void setArrivalData(Date arrivalData) {
-		this.arrivalData = arrivalData;
+	public void setScheduledArrival(Instant scheduledArrival) {
+		this.scheduledArrival = scheduledArrival;
 	}
 
-	public Date getDepartureData() {
-		return departureData;
+	public Instant getScheduledDeparture() {
+		return scheduledDeparture;
 	}
 
-	public void setDepartureData(Date departureData) {
-		this.departureData = departureData;
+	public void setScheduledDeparture(Instant scheduledDeparture) {
+		this.scheduledDeparture = scheduledDeparture;
 	}
 
-	public int getRouteId() {
+	public Instant getActualArrival() {
+		return actualArrival;
+	}
+
+	public void setActualArrival(Instant actualArrival) {
+		this.actualArrival = actualArrival;
+	}
+
+	public Instant getActualDeparture() {
+		return actualDeparture;
+	}
+
+	public void setActualDepartureData(Instant actualDeparture) {
+		this.actualDeparture = actualDeparture;
+	}
+
+	public long getRouteId() {
 		return routeId;
 	}
 
-	public void setRouteId(int routeId) {
+	public void setRouteId(long routeId) {
 		this.routeId = routeId;
 	}
 
-	public int getTripId() {
+	public long getTripId() {
 		return tripId;
 	}
 
-	public void setTripId(int tripId) {
+	public void setTripId(long tripId) {
 		this.tripId = tripId;
 	}
 
-	public int getStopPointId() {
+	public long getStopPointId() {
 		return stopPointId;
 	}
 
-	public void setStopPointId(int stopPointId) {
+	public void setStopPointId(long stopPointId) {
 		this.stopPointId = stopPointId;
-	}
-
-	public int getVehicleId() {
-		return vehicleId;
-	}
-
-	public void setVehicleId(int vehicleId) {
-		this.vehicleId = vehicleId;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private long id;
 	private String duid;
 	private boolean isDeleted;
 	@Transient
@@ -173,13 +193,27 @@ public class StopPassage {
 	@Transient
 	private String patternDuid;
 	private int direction;
-	private Date arrivalData;
-	private Date departureData;
+	private Instant scheduledArrival;
+	private Instant scheduledDeparture;
+	private Instant actualArrival;
+	private Instant actualDeparture;
 
-	private int routeId;
-	private int tripId;
-	private int stopPointId;
-	private int vehicleId;
+	private long routeId;
+	private long tripId;
+	private long stopPointId;
+	// private long vehicleId;
+
+	public static String getJSONDuid(JSONObject json) throws JSONException {
+		return json.getString("duid");
+	}
+
+	public static String getJSONRouteDuid(JSONObject json) throws JSONException {
+		return ModelUtils.getDuid(json, "route_duid");
+	}
+
+	public static String getJSONStopPointDuid(JSONObject json) throws JSONException {
+		return ModelUtils.getDuid(json, "stop_point_duid");
+	}
 }
 
 // {

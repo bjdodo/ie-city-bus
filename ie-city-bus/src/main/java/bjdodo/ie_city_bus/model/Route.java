@@ -1,6 +1,7 @@
 package bjdodo.ie_city_bus.model;
 
-import java.util.Date;
+
+import java.time.Instant;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,18 +17,13 @@ public class Route {
 	public Route() {
 	}
 
-	private Route(JSONObject obj) throws JSONException {
-		this.id = obj.optLong("id");
+	public void updateFromJson(JSONObject obj) throws JSONException {
 		this.duid = obj.getString("duid");
-		this.lastModificationTimestamp = new Date(obj.getLong("last_modification_timestamp"));
+		this.lastModificationTimestamp = Instant.ofEpochMilli(obj.getLong("last_modification_timestamp"));
 		this.isDeleted = obj.getBoolean("is_deleted");
 		this.shortName = obj.getString("short_name");
 		this.number = obj.getInt("number");
 		this.category = obj.getInt("category");
-	}
-
-	public static Route fromBuseireannJson(JSONObject obj) throws JSONException {
-		return new Route(obj);
 	}
 
 	public long getId() {
@@ -46,11 +42,11 @@ public class Route {
 		this.duid = duid;
 	}
 
-	public Date getLastModificationTimestamp() {
+	public Instant getLastModificationTimestamp() {
 		return lastModificationTimestamp;
 	}
 
-	public void setLastModificationTimestamp(Date lastModificationTimestamp) {
+	public void setLastModificationTimestamp(Instant lastModificationTimestamp) {
 		this.lastModificationTimestamp = lastModificationTimestamp;
 	}
 
@@ -86,15 +82,45 @@ public class Route {
 		this.category = category;
 	}
 
+
+	public boolean contentEquals(Route other) {
+		if (category != other.category)
+			return false;
+		if (duid == null) {
+			if (other.duid != null)
+				return false;
+		} else if (!duid.equals(other.duid))
+			return false;
+		if (isDeleted != other.isDeleted)
+			return false;
+		if (lastModificationTimestamp == null) {
+			if (other.lastModificationTimestamp != null)
+				return false;
+		} else if (!lastModificationTimestamp.equals(other.lastModificationTimestamp))
+			return false;
+		if (number != other.number)
+			return false;
+		if (shortName == null) {
+			if (other.shortName != null)
+				return false;
+		} else if (!shortName.equals(other.shortName))
+			return false;
+		return true;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private String duid;
-	private Date lastModificationTimestamp;
+	private Instant lastModificationTimestamp;
 	private boolean isDeleted;
 	private String shortName;
 	private int number;
 	private int category;
+
+	public static String getJSONDuid(JSONObject json) throws JSONException {
+		return json.getString("duid");
+	}
 }
 
 // "routes_114":

@@ -1,12 +1,18 @@
 package bjdodo.ie_city_bus.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import bjdodo.ie_city_bus.model.Vehicle;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 	
-	@Query("select count(v) FROM Vehicle v WHERE v.duid = ?1")
-	long countByDuid(String duid);
+	public Vehicle findByDuid(String duid);
+
+	@Transactional
+	@Modifying
+	@Query("update Vehicle v set v.tripId=?2 where v.id=?1")
+	int updateTripId(long vehicleId, long tripId);
 }
