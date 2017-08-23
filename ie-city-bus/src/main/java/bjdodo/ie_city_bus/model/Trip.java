@@ -51,6 +51,14 @@ public class Trip {
 		this.finished = finished;
 	}
 
+	public int getDirection() {
+		return direction;
+	}
+
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
@@ -58,5 +66,6 @@ public class Trip {
 	private long vehicleId;
 	private long routeId;
 	private int finished;
+	private int direction;
 
 }

@@ -19,4 +19,5 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
 	@Modifying
 	@Query("update Trip t set t.finished=1 where t.duid not in (select v.tripDuid from Vehicle v)")
 	int closeFinishedTrips();
+
 }

@@ -95,7 +95,7 @@ public class ScheduledTasks {
 
 				// We save the vehicle after we have downloaded the route info
 				// because we do not want to save vehicles when they are assigned to
-				// routes that we are not interesed in
+				// routes that we are not interested in
 			} catch (JSONException ex) {
 				log.error("Saving vehicle to DB failed. JSON:\r\n" + vehicle.toString(), ex);
 				continue;
@@ -158,6 +158,13 @@ public class ScheduledTasks {
 			tripInDb.setDuid(vehicleInDb.getTripDuid());
 			tripInDb.setVehicleId(vehicleInDb.getId());
 			tripInDb.setRouteId(routeInDb.getId());
+			try {
+				tripInDb.setDirection(StopPassage.getJSONDirection(stopPassages.values().stream().findFirst().get()));
+			} catch (JSONException ex) {
+				log.warn("Could not set direction on trip", ex);
+				// we carry on
+
+			}
 			tripInDb = tripRepository.saveAndFlush(tripInDb);
 			unfinishedTripsInDb.put(tripInDb.getDuid(), tripInDb);
 
@@ -194,9 +201,9 @@ public class ScheduledTasks {
 					stopPassageInDb.updateFromJson(stopPassage);
 					stopPassageInDb.setTripId(tripInDb.getId());
 					stopPassageInDb.setStopPointId(stopPointInDb.getId());
-					stopPassageInDb.setRouteId(routeInDb.getId());
 					stopPassageInDb = stopPassageRepository.saveAndFlush(stopPassageInDb);
 					tripStopPassagesInDb.put(stopPassageInDb.getDuid(), stopPassageInDb);
+
 				} catch (JSONException ex) {
 					log.error("Saving stopPassage into DB failed. JSON:\r\n" + stopPassage.toString(), ex);
 					continue;

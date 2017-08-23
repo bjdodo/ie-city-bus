@@ -28,7 +28,6 @@ public class StopPassage {
 		this.stopPointDuid = ModelUtils.getDuid(obj, "stop_point_duid");
 		this.vehicleDuid = ModelUtils.getDuid(obj, "vehicle_duid");
 		this.patternDuid = ModelUtils.getDuid(obj, "pattern_duid");
-		this.direction = obj.getInt("direction");
 
 		JSONObject arrivalData = obj.optJSONObject("arrival_data");
 		if (arrivalData != null) {
@@ -113,14 +112,6 @@ public class StopPassage {
 		this.patternDuid = patternDuid;
 	}
 
-	public int getDirection() {
-		return direction;
-	}
-
-	public void setDirection(int direction) {
-		this.direction = direction;
-	}
-
 	public Instant getScheduledArrival() {
 		return scheduledArrival;
 	}
@@ -151,14 +142,6 @@ public class StopPassage {
 
 	public void setActualDepartureData(Instant actualDeparture) {
 		this.actualDeparture = actualDeparture;
-	}
-
-	public long getRouteId() {
-		return routeId;
-	}
-
-	public void setRouteId(long routeId) {
-		this.routeId = routeId;
 	}
 
 	public long getTripId() {
@@ -192,13 +175,12 @@ public class StopPassage {
 	private String vehicleDuid;
 	@Transient
 	private String patternDuid;
-	private int direction;
+
 	private Instant scheduledArrival;
 	private Instant scheduledDeparture;
 	private Instant actualArrival;
 	private Instant actualDeparture;
 
-	private long routeId;
 	private long tripId;
 	private long stopPointId;
 	// private long vehicleId;
@@ -213,6 +195,10 @@ public class StopPassage {
 
 	public static String getJSONStopPointDuid(JSONObject json) throws JSONException {
 		return ModelUtils.getDuid(json, "stop_point_duid");
+	}
+
+	public static int getJSONDirection(JSONObject json) throws JSONException {
+		return json.getInt("direction");
 	}
 }
 
