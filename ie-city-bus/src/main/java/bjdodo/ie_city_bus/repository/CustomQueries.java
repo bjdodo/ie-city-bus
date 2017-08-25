@@ -26,7 +26,7 @@ public class CustomQueries {
 	// select trip.id trip_id, vehicle.id vehicle_id, vehicle.lat_long,
 	// trip.direction, route.short_name, stop_point.name as final_stop
 	// from vehicle
-	// inner join trip on vehicle.trip_id=trip.id
+	// inner join trip on vehicle.current_trip_id=trip.id
 	// inner join route on trip.route_id=route.id
 	// inner join stop_passage on stop_passage.trip_id=trip.id
 	// inner join stop_point on stop_passage.stop_point_id=stop_point.id
@@ -40,7 +40,7 @@ public class CustomQueries {
 						+ "(select max(actual_arrival) actual_arrival, trip_id from stop_passage where  actual_arrival<CURRENT_TIMESTAMP() and trip_id in (select trip_id from vehicle) group by trip_id) current_stop_passage\r\n"
 						+ "inner join stop_passage on stop_passage.trip_id=current_stop_passage.trip_id and stop_passage.actual_arrival=current_stop_passage.actual_arrival\r\n"
 						+ "inner join stop_point on stop_point.id=stop_passage.stop_point_id\r\n"
-						+ "inner join vehicle on vehicle.trip_id=current_stop_passage.trip_id\r\n"
+						+ "inner join vehicle on vehicle.current_trip_id=current_stop_passage.trip_id\r\n"
 						+ "inner join trip on current_stop_passage.trip_id=trip.id\r\n"
 						+ "inner join route on trip.route_id=route.id order by route.short_name",
 				TripDetails.class);
@@ -58,7 +58,7 @@ public class CustomQueries {
 						+ "(select max(actual_arrival) actual_arrival, trip_id from stop_passage where  actual_arrival<CURRENT_TIMESTAMP() and trip_id in (select trip_id from vehicle) group by trip_id) current_stop_passage\r\n"
 						+ "inner join stop_passage on stop_passage.trip_id=current_stop_passage.trip_id and stop_passage.actual_arrival=current_stop_passage.actual_arrival\r\n"
 						+ "inner join stop_point on stop_point.id=stop_passage.stop_point_id\r\n"
-						+ "inner join vehicle on vehicle.trip_id=current_stop_passage.trip_id\r\n"
+						+ "inner join vehicle on vehicle.current_trip_id=current_stop_passage.trip_id\r\n"
 						+ "inner join trip on current_stop_passage.trip_id=trip.id\r\n"
 						+ "inner join route on trip.route_id=route.id where route.short_name=:route",
 				TripDetails.class);

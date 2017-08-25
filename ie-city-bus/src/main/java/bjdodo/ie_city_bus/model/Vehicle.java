@@ -43,9 +43,10 @@ public class Vehicle {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
+
 	public String getDuid() {
 		return duid;
 	}
@@ -69,6 +70,7 @@ public class Vehicle {
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
+
 	public int getCategory() {
 		return category;
 	}
@@ -85,12 +87,12 @@ public class Vehicle {
 		this.tripDuid = tripDuid;
 	}
 
-	public Long getTripId() {
-		return tripId;
+	public Long getCurrentTripId() {
+		return currentTripId;
 	}
 
-	public void setTripId(Long tripId) {
-		this.tripId = tripId;
+	public void setCurrentTripId(Long currentTripId) {
+		this.currentTripId = currentTripId;
 	}
 
 	public int getGeoPositionStatus() {
@@ -108,6 +110,7 @@ public class Vehicle {
 	public void setReferenceTime(Instant referenceTime) {
 		this.referenceTime = referenceTime;
 	}
+
 	public String getLatLong() {
 		return latLong;
 	}
@@ -115,6 +118,7 @@ public class Vehicle {
 	public void setLatLong(String latLong) {
 		this.latLong = latLong;
 	}
+
 	public int getBearing() {
 		return bearing;
 	}
@@ -139,7 +143,7 @@ public class Vehicle {
 		this.patternDuid = patternDuid;
 	}
 
-	public boolean hasBikeRack() {
+	public boolean isBikeRack() {
 		return bikeRack;
 	}
 
@@ -171,7 +175,7 @@ public class Vehicle {
 	private boolean isDeleted;
 	private int category;
 	private String tripDuid;
-	private Long tripId;
+	private Long currentTripId;
 	private int geoPositionStatus;
 	private Instant referenceTime;
 	private String latLong;

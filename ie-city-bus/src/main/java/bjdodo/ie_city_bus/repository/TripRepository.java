@@ -17,7 +17,7 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
 
 	@Transactional
 	@Modifying
-	@Query("update Trip t set t.finished=1 where t.duid not in (select v.tripDuid from Vehicle v)")
+	@Query("update Trip t set t.finished=1 where t.finished=0 and t.id not in (select v.currentTripId from Vehicle v)")
 	int closeFinishedTrips();
 
 }

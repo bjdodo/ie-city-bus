@@ -83,30 +83,31 @@ public class Route {
 	}
 
 
-	public boolean contentEquals(Route other) {
-		if (category != other.category)
-			return false;
-		if (duid == null) {
-			if (other.duid != null)
-				return false;
-		} else if (!duid.equals(other.duid))
-			return false;
-		if (isDeleted != other.isDeleted)
-			return false;
-		if (lastModificationTimestamp == null) {
-			if (other.lastModificationTimestamp != null)
-				return false;
-		} else if (!lastModificationTimestamp.equals(other.lastModificationTimestamp))
-			return false;
-		if (number != other.number)
-			return false;
-		if (shortName == null) {
-			if (other.shortName != null)
-				return false;
-		} else if (!shortName.equals(other.shortName))
-			return false;
-		return true;
-	}
+	// public boolean contentEquals(Route other) {
+	// if (category != other.category)
+	// return false;
+	// if (duid == null) {
+	// if (other.duid != null)
+	// return false;
+	// } else if (!duid.equals(other.duid))
+	// return false;
+	// if (isDeleted != other.isDeleted)
+	// return false;
+	// if (lastModificationTimestamp == null) {
+	// if (other.lastModificationTimestamp != null)
+	// return false;
+	// } else if
+	// (!lastModificationTimestamp.equals(other.lastModificationTimestamp))
+	// return false;
+	// if (number != other.number)
+	// return false;
+	// if (shortName == null) {
+	// if (other.shortName != null)
+	// return false;
+	// } else if (!shortName.equals(other.shortName))
+	// return false;
+	// return true;
+	// }
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

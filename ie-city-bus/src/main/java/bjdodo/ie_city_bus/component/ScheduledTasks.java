@@ -104,7 +104,7 @@ public class ScheduledTasks {
 			if (vehicleInDb.getTripDuid() == null || vehicleInDb.getTripDuid().isEmpty()) {
 
 				log.info("vehicle has no trips. Vehicle duid: " + vehicleInDb.getDuid());
-				vehicleInDb.setTripId(null);
+				vehicleInDb.setCurrentTripId(null);
 				vehicleInDb = vehicleRepository.saveAndFlush(vehicleInDb);
 				vehiclesInDb.put(vehicleInDb.getDuid(), vehicleInDb);
 				continue;
@@ -145,7 +145,7 @@ public class ScheduledTasks {
 
 			routeInDb = routeRepository.saveAndFlush(routeInDb);
 			routesInDb.put(routeInDb.getDuid(), routeInDb);
-			vehicleInDb = vehicleRepository.saveAndFlush(vehicleInDb);
+			vehicleInDb = vehicleRepository.save(vehicleInDb);
 			vehiclesInDb.put(vehicleInDb.getDuid(), vehicleInDb);
 
 			// We need to save the trip early because the stop passage has a foreign key
@@ -163,12 +163,13 @@ public class ScheduledTasks {
 			} catch (JSONException ex) {
 				log.warn("Could not set direction on trip", ex);
 				// we carry on
-
 			}
 			tripInDb = tripRepository.saveAndFlush(tripInDb);
 			unfinishedTripsInDb.put(tripInDb.getDuid(), tripInDb);
 
-			vehicleRepository.updateTripId(vehicleInDb.getId(), tripInDb.getId());
+			vehicleInDb.setCurrentTripId(tripInDb.getId());
+			vehicleInDb = vehicleRepository.saveAndFlush(vehicleInDb);
+			vehiclesInDb.put(vehicleInDb.getDuid(), vehicleInDb);
 
 			Map<String, StopPassage> tripStopPassagesInDb = new HashMap<>();
 			stopPassageRepository.findByTripId(tripInDb.getId()).stream()
