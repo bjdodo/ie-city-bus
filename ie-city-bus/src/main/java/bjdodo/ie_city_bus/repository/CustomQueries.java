@@ -50,7 +50,7 @@ public class CustomQueries {
 		return query.getResultList();
 	}
 
-	public List<TripDetails> getActiveTripDetails(String routeShortName) {
+	public List<TripDetails> getRouteTripDetails(String routeShortName) {
 		// @formatter:off
 		Query query = entityManager.createNativeQuery(
 				"select vehicle.id vehicle_id, vehicle.lat_long, route.short_name route, current_stop_passage.trip_id trip_id, trip.direction, current_stop_passage.actual_arrival last_arrival, stop_passage.id last_arrival_stop_passage_id, stop_point.name last_arrival_stop_point_name\r\n"
@@ -68,23 +68,7 @@ public class CustomQueries {
 		return query.getResultList();
 	}
 
-	// public List<TripDetails> getTripDetails(long tripId) {
-	// // @formatter:off
-	// Query query = entityManager.createNativeQuery(
-	// " select vehicle.lat_long, trip.direction, route.short_name, stop_point.name
-	// as finalstop\r\n"
-	// + " from vehicle\r\n" + " inner join trip on vehicle.id=trip.vehicle_id\r\n"
-	// + " inner join route on trip.route_id=route.id\r\n"
-	// + " inner join stop_passage on stop_passage.trip_id=trip.id\r\n"
-	// + " inner join stop_point on stop_passage.stop_point_id=stop_point.id\r\n"
-	// + " where stop_passage.scheduled_departure is null and trip.id=:tripid\r\n"
-	// + " order by route.short_name",
-	// TripDetails.class);
-	// // @formatter:on
-	// query.setParameter("tripid", tripId);
-	//
-	// return query.getResultList();
-	// }
+
 
 
 }
