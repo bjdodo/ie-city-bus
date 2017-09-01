@@ -164,7 +164,7 @@ public class ScheduledTasks {
 				log.warn("Could not set direction on trip", ex);
 				// we carry on
 			}
-			tripInDb = tripRepository.saveAndFlush(tripInDb);
+			tripInDb = tripRepository.save(tripInDb);
 			unfinishedTripsInDb.put(tripInDb.getDuid(), tripInDb);
 
 			vehicleInDb.setCurrentTripId(tripInDb.getId());
@@ -205,11 +205,25 @@ public class ScheduledTasks {
 					stopPassageInDb = stopPassageRepository.saveAndFlush(stopPassageInDb);
 					tripStopPassagesInDb.put(stopPassageInDb.getDuid(), stopPassageInDb);
 
+					if (stopPassageInDb.getScheduledDeparture() == null && stopPoint != null) {
+						tripInDb.setDestinationStopName(stopPointInDb.getName());
+					}
+					if (stopPassageInDb.getScheduledDeparture() == null) {
+						tripInDb.setActualFinish(stopPassageInDb.getActualArrival());
+						tripInDb.setScheduledFinish(stopPassageInDb.getScheduledArrival());
+					}
+					if (stopPassageInDb.getScheduledArrival() == null) {
+						tripInDb.setActualStart(stopPassageInDb.getActualDeparture());
+						tripInDb.setScheduledStart(stopPassageInDb.getScheduledDeparture());
+					}
+
 				} catch (JSONException ex) {
 					log.error("Saving stopPassage into DB failed. JSON:\r\n" + stopPassage.toString(), ex);
 					continue;
 				}
 			}
+			tripInDb = tripRepository.saveAndFlush(tripInDb);
+			unfinishedTripsInDb.put(tripInDb.getDuid(), tripInDb);
 		}
 
 		tripRepository.closeFinishedTrips();

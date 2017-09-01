@@ -54,36 +54,36 @@ public class Trip {
 		this.destinationStopName = destinationStopName;
 	}
 
-	public Instant getScheduledArrival() {
-		return scheduledArrival;
+	public Instant getScheduledFinish() {
+		return scheduledFinish;
 	}
 
-	public void setScheduledArrival(Instant scheduledArrival) {
-		this.scheduledArrival = scheduledArrival;
+	public void setScheduledFinish(Instant scheduledFinish) {
+		this.scheduledFinish = scheduledFinish;
 	}
 
-	public Instant getScheduledDeparture() {
-		return scheduledDeparture;
+	public Instant getScheduledStart() {
+		return scheduledStart;
 	}
 
-	public void setScheduledDeparture(Instant scheduledDeparture) {
-		this.scheduledDeparture = scheduledDeparture;
+	public void setScheduledStart(Instant scheduledStart) {
+		this.scheduledStart = scheduledStart;
 	}
 
-	public Instant getActualArrival() {
-		return actualArrival;
+	public Instant getActualFinish() {
+		return actualFinish;
 	}
 
-	public void setActualArrival(Instant actualArrival) {
-		this.actualArrival = actualArrival;
+	public void setActualFinish(Instant actualFinish) {
+		this.actualFinish = actualFinish;
 	}
 
-	public Instant getActualDeparture() {
-		return actualDeparture;
+	public Instant getActualStart() {
+		return actualStart;
 	}
 
-	public void setActualDeparture(Instant actualDeparture) {
-		this.actualDeparture = actualDeparture;
+	public void setActualStart(Instant actualStart) {
+		this.actualStart = actualStart;
 	}
 
 	@Id
@@ -95,9 +95,9 @@ public class Trip {
 	private int finished;
 	private int direction;
 	private String destinationStopName;
-	private Instant scheduledArrival;
-	private Instant scheduledDeparture;
-	private Instant actualArrival;
-	private Instant actualDeparture;
+	private Instant scheduledFinish;
+	private Instant scheduledStart;
+	private Instant actualFinish;
+	private Instant actualStart;
 
 }
