@@ -8,31 +8,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import bjdodo.ie_city_bus.model.Route;
-import bjdodo.ie_city_bus.model.customquery.TripDetails;
-import bjdodo.ie_city_bus.repository.CustomQueries;
+import bjdodo.ie_city_bus.model.customquery.ActiveTrip;
+import bjdodo.ie_city_bus.model.customquery.ActiveTripRepository;
 import bjdodo.ie_city_bus.repository.RouteRepository;
 
 @RestController
+@RequestMapping("/routes")
 public class RouteController {
 
 	@Autowired
-	CustomQueries customQueries;
+	ActiveTripRepository activeTripsRepository;
 
 	@Autowired
 	RouteRepository routeRepository;
 
-	@RequestMapping("/routes/")
+	@RequestMapping("")
 	List<Route> get() {
 		return routeRepository.findAll();
 	}
 
-	@RequestMapping("/routes/{routeShortName}/")
+	@RequestMapping("/{routeShortName}")
 	List<Route> get(@PathVariable String routeShortName) {
 		return routeRepository.findByShortName(routeShortName);
 	}
 
-	@RequestMapping("/routes/{routeShortName}/trips/")
-	public List<TripDetails> getTripsForRoute(@PathVariable String routeShortName) {
-		return customQueries.getRouteTripDetails(routeShortName);
+	@RequestMapping("/{routeShortName}/activetrips")
+	public List<ActiveTrip> getTripsForRoute(@PathVariable String routeShortName) {
+		return activeTripsRepository.getRouteActiveTrips(routeShortName);
 	}
 }

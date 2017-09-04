@@ -212,6 +212,9 @@ public class ScheduledTasks {
 						tripInDb.setActualFinish(stopPassageInDb.getActualArrival());
 						tripInDb.setScheduledFinish(stopPassageInDb.getScheduledArrival());
 					}
+					if (stopPassageInDb.getScheduledArrival() == null && stopPoint != null) {
+						tripInDb.setOriginStopName(stopPointInDb.getName());
+					}
 					if (stopPassageInDb.getScheduledArrival() == null) {
 						tripInDb.setActualStart(stopPassageInDb.getActualDeparture());
 						tripInDb.setScheduledStart(stopPassageInDb.getScheduledDeparture());

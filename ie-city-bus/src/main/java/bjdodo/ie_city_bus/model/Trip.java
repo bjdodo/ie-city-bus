@@ -54,6 +54,13 @@ public class Trip {
 		this.destinationStopName = destinationStopName;
 	}
 
+	public String getOriginStopName() {
+		return originStopName;
+	}
+
+	public void setOriginStopName(String originStopName) {
+		this.originStopName = originStopName;
+	}
 	public Instant getScheduledFinish() {
 		return scheduledFinish;
 	}
@@ -95,6 +102,7 @@ public class Trip {
 	private int finished;
 	private int direction;
 	private String destinationStopName;
+	private String originStopName;
 	private Instant scheduledFinish;
 	private Instant scheduledStart;
 	private Instant actualFinish;
