@@ -1,10 +1,12 @@
-package bjdodo.ie_city_bus.model.customquery;
+package bjdodo.ie_city_bus.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import bjdodo.ie_city_bus.model.ActiveTrip;
 
 
 @Repository

@@ -1,4 +1,4 @@
-package bjdodo.ie_city_bus.model.customquery;
+package bjdodo.ie_city_bus.model;
 
 import java.time.Instant;
 
