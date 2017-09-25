@@ -14,7 +14,7 @@ import bjdodo.ie_city_bus.repository.ActiveTripRepository;
 import bjdodo.ie_city_bus.repository.RouteRepository;
 
 @RestController
-@RequestMapping("/routes")
+@RequestMapping("/api/route")
 public class RouteController {
 
 	@Autowired
@@ -37,4 +37,5 @@ public class RouteController {
 	public List<ActiveTrip> getTripsForRoute(@PathVariable String routeShortName) {
 		return activeTripsRepository.getRouteActiveTrips(routeShortName);
 	}
+
 }

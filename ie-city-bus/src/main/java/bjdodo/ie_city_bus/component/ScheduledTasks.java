@@ -19,6 +19,7 @@ import bjdodo.ie_city_bus.model.StopPassage;
 import bjdodo.ie_city_bus.model.StopPoint;
 import bjdodo.ie_city_bus.model.Trip;
 import bjdodo.ie_city_bus.model.Vehicle;
+import bjdodo.ie_city_bus.model.customquery.CustomDBStatementCalls;
 import bjdodo.ie_city_bus.repository.RouteRepository;
 import bjdodo.ie_city_bus.repository.StopPassageRepository;
 import bjdodo.ie_city_bus.repository.StopPointRepository;
@@ -53,6 +54,9 @@ public class ScheduledTasks {
 	@Autowired
 	StopPassageRepository stopPassageRepository;
 
+	@Autowired
+	CustomDBStatementCalls customDBStatementCalls;
+
 	@Scheduled(fixedRate = 60000)
 	public void downloadSlowChangingData() {
 		
@@ -84,10 +88,12 @@ public class ScheduledTasks {
 
 		for (JSONObject vehicle : vehicles.values()) {
 
+			boolean vehicleIsNew = false;
 			Vehicle vehicleInDb = null;
 			try {
 				vehicleInDb = vehiclesInDb.get(Vehicle.getJSONDuid(vehicle));
 				if (vehicleInDb == null) {
+					vehicleIsNew = true;
 					vehicleInDb = new Vehicle();
 				}
 
@@ -140,6 +146,14 @@ public class ScheduledTasks {
 
 			if (!monitoredRoutesLst.contains(routeInDb.getShortName())) {
 				log.info("route ignored " + routeInDb.getShortName());
+				if (!vehicleIsNew) {
+					// If a vehicle is now assigned to a route that we ignore we need to finish the
+					// current trip of the vehicle.
+					// So we'll set the tripid for the vehicle null.
+					vehicleInDb.setTripDuid(null);
+					vehicleInDb.setCurrentTripId(null);
+					vehicleRepository.saveAndFlush(vehicleInDb);
+				}
 				continue;
 			}
 
@@ -153,7 +167,18 @@ public class ScheduledTasks {
 			// and finished later after all the stop passages are saved.
 			Trip tripInDb = unfinishedTripsInDb.get(vehicleInDb.getTripDuid());
 			if (tripInDb == null) {
-				tripInDb = new Trip();
+				// This is just to be on the safe side. If a trip is closed prematurely and
+				// something new is logged against it then we would crash. The trip would not be
+				// in the unfinished list so we'd create a new instance with the same duid and
+				// then the unique constraint would complain. This extra check is a bit slower
+				// but a lot safer.
+				tripInDb = tripRepository.findByDuid(vehicleInDb.getTripDuid());
+				if (tripInDb == null) {
+					tripInDb = new Trip();
+				} else {
+					tripInDb.setFinished(0);
+				}
+
 			}
 			tripInDb.setDuid(vehicleInDb.getTripDuid());
 			tripInDb.setVehicleId(vehicleInDb.getId());
@@ -164,7 +189,12 @@ public class ScheduledTasks {
 				log.warn("Could not set direction on trip", ex);
 				// we carry on
 			}
+			try {
 			tripInDb = tripRepository.save(tripInDb);
+			} catch (Exception ex) {
+				log.error("failed to save trip: " + tripInDb);
+				throw ex;
+			}
 			unfinishedTripsInDb.put(tripInDb.getDuid(), tripInDb);
 
 			vehicleInDb.setCurrentTripId(tripInDb.getId());
@@ -229,8 +259,8 @@ public class ScheduledTasks {
 			unfinishedTripsInDb.put(tripInDb.getDuid(), tripInDb);
 		}
 
+		customDBStatementCalls.setStaleVehiclesDeleted();
 		tripRepository.closeFinishedTrips();
-
 	}
 
 

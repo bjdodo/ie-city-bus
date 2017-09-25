@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 @Entity
 public class Trip {
 
@@ -108,4 +110,9 @@ public class Trip {
 	private Instant actualFinish;
 	private Instant actualStart;
 
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+
+	}
 }

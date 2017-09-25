@@ -90,29 +90,7 @@ public class ActiveTrip {
 		this.actualFinish = actualFinish;
 	}
 
-	public Instant getLastArrival() {
-		return lastArrival;
-	}
 
-	public void setLastArrival(Instant lastArrival) {
-		this.lastArrival = lastArrival;
-	}
-
-	public long getLastArrivalStopPassageId() {
-		return lastArrivalStopPassageId;
-	}
-
-	public void setLastArrivalStopPassageId(long lastArrivalStopPassageId) {
-		this.lastArrivalStopPassageId = lastArrivalStopPassageId;
-	}
-
-	public String getLastArrivalStopPointName() {
-		return lastArrivalStopPointName;
-	}
-
-	public void setLastArrivalStopPointName(String lastArrivalStopPointName) {
-		this.lastArrivalStopPointName = lastArrivalStopPointName;
-	}
 
 	@Id
 	private long tripId;
@@ -126,7 +104,4 @@ public class ActiveTrip {
 	private Instant actualStart;
 	private Instant scheduledFinish;
 	private Instant actualFinish;
-	private Instant lastArrival;
-	private long lastArrivalStopPassageId;
-	private String lastArrivalStopPointName;
 }

@@ -1,6 +1,6 @@
 package bjdodo.ie_city_bus.model.customquery;
 
-import java.util.Arrays;
+import java.time.Instant;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,9 +8,10 @@ import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class CustomQueries {
+public class CustomDBStatementCalls {
 
 	@Autowired
 	private EntityManager entityManager;
@@ -59,17 +60,31 @@ public class CustomQueries {
 	// South (Stop No 9)')
 	// )
 	// order by spg.actualDeparture
+	//
+	// public List<Object> findTrips(String originStop, String[] destinationStops) {
+	// String query = "select t, spg from ActiveTrip t, Vehicle v, StopPassage spg,
+	// StopPoint spt"
+	// + " where v.currentTripId=t.id and spg.tripId=t.id and
+	// spg.stopPointId=spt.id"
+	// + " and spt.name=:originStop and spg.actualDeparture>=now() and t.id IN ("
+	// + " select spg.tripId from StopPassage spg, StopPoint spt, Vehicle v where"
+	// + " spg.stopPointId=spt.id and v.currentTripId=spg.tripId and
+	// spg.actualArrival>now() and spt.name in (:destinationStops) )"
+	// + " order by spg.actualDeparture";
+	// Query q = entityManager.createQuery(query);
+	// q.setParameter("originStop", originStop);
+	// q.setParameter("destinationStops", Arrays.asList(destinationStops));
+	// return q.getResultList();
+	// }
 
-	public List<Object> findTrips(String originStop, String[] destinationStops) {
-		String query = "select t, spg from ActiveTrip t, Vehicle v, StopPassage spg, StopPoint spt"
-				+ " where v.currentTripId=t.id and spg.tripId=t.id and spg.stopPointId=spt.id"
-				+ " and spt.name=:originStop and spg.actualDeparture>=now() and t.id IN ("
-				+ " select spg.tripId from StopPassage spg, StopPoint spt, Vehicle v where"
-				+ " spg.stopPointId=spt.id and v.currentTripId=spg.tripId and spg.actualArrival>now() and spt.name in (:destinationStops) )"
-				+ " order by spg.actualDeparture";
-		Query q = entityManager.createQuery(query);
-		q.setParameter("originStop", originStop);
-		q.setParameter("destinationStops", Arrays.asList(destinationStops));
-		return q.getResultList();
+	@Transactional
+	public int setStaleVehiclesDeleted() {
+
+		Query q = entityManager
+				.createQuery("UPDATE Vehicle  v set v.isDeleted=true where v.referenceTime<:referenceTime");
+		// If a vehicle hasn't communicated in for an hour we'll say it is deleted.
+		// If it calls in again the flag will be unset anyway.
+		q.setParameter("referenceTime", Instant.now().minusSeconds(1800));
+		return q.executeUpdate();
 	}
 }

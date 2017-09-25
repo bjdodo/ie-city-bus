@@ -14,7 +14,7 @@ import bjdodo.ie_city_bus.model.ActiveTrip;
 import bjdodo.ie_city_bus.repository.ActiveTripRepository;
 
 @RestController
-@RequestMapping("/activetrips")
+@RequestMapping("/api/activetrip")
 public class ActiveTripsController {
 
 	@Autowired
@@ -32,6 +32,9 @@ public class ActiveTripsController {
 			}
 			return activeTripsRepository.getActiveTripsById(array);
 		}
+
+		// URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().
+		// path("/{idOfNewResource}").buildAndExpand(idOfNewResource).toUri();
 	}
 
 	@RequestMapping(value = "/{tripId}", method = RequestMethod.GET)
