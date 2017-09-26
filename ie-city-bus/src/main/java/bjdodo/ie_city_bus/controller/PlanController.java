@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import bjdodo.ie_city_bus.component.ScheduledTasks;
-import bjdodo.ie_city_bus.model.customquery.CustomDBStatementCalls;
+import bjdodo.ie_city_bus.repository.CustomDBStatementCalls;
 
 @RestController
 @RequestMapping("/api/plan")

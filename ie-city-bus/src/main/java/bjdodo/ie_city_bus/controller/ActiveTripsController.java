@@ -22,7 +22,7 @@ public class ActiveTripsController {
 
 	// http://localhost:8090/activetrips?tripIds=2,3
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public List<ActiveTrip> getTripDetails(@RequestParam(required = false) List<Long> tripIds) {
+	public List<ActiveTrip> getTrip(@RequestParam(required = false) List<Long> tripIds) {
 		if (tripIds == null || tripIds.isEmpty()) {
 			return activeTripsRepository.getActiveTrips();
 		} else {
@@ -38,6 +38,17 @@ public class ActiveTripsController {
 	}
 
 	@RequestMapping(value = "/{tripId}", method = RequestMethod.GET)
+	public List<ActiveTrip> getTrip(@PathVariable(required = true) Long tripId) {
+
+		if (tripId != null) {
+			return activeTripsRepository.getActiveTripsById(new long[] { tripId });
+		} else {
+			return new ArrayList<>();
+		}
+
+	}
+
+	@RequestMapping(value = "/{tripId}/details", method = RequestMethod.GET)
 	public List<ActiveTrip> getTripDetails(@PathVariable(required = true) Long tripId) {
 
 		if (tripId != null) {
@@ -47,4 +58,11 @@ public class ActiveTripsController {
 		}
 
 	}
+
+	// select stop_point.name, stop_point.lat_long,
+	// stop_passage.scheduled_departure, stop_passage.actual_departure,
+	// stop_passage.scheduled_arrival, stop_passage.actual_arrival from stop_passage
+	// inner join stop_point on stop_point.id=stop_passage.stop_point_id
+	// where trip_id=482
+	// order by stop_passage.scheduled_arrival
 }

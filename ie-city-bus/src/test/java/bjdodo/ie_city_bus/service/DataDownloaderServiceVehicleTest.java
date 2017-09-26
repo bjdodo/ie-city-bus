@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import bjdodo.ie_city_bus.repository.VehicleRepository;
+import bjdodo.ie_city_bus.repository.crud.VehicleRepository;
 
 public class DataDownloaderServiceVehicleTest {
 

@@ -1,11 +1,11 @@
-package bjdodo.ie_city_bus.repository;
+package bjdodo.ie_city_bus.repository.crud;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import bjdodo.ie_city_bus.model.StopPassage;
+import bjdodo.ie_city_bus.model.crud.StopPassage;
 
 public interface StopPassageRepository extends JpaRepository<StopPassage, Long> {
 

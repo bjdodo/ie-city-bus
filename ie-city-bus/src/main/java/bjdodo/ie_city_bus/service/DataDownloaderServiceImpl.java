@@ -31,6 +31,7 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 			return new HashMap<String, JSONObject>();
 		}
 
+		log.trace("downloadVehicles " + resp);
 		JSONObject obj = new JSONObject(resp);
 
 		JSONObject vehicleTdi = obj.getJSONObject("vehicleTdi");
@@ -58,6 +59,8 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 			log.info("http get request returned zero routes");
 			return new HashMap<String, JSONObject>();
 		}
+
+		// log.trace("downloadRoutes " + resp);
 
 		// This text starts with a javascript variable declaration, we trim that off and
 		// the ; from the end
@@ -101,6 +104,8 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 			return new HashMap<String, JSONObject>();
 		}
 
+		// log.trace("downloadStopPoints " + resp);
+
 		// This text starts with a javascript variable declaration, we trim that off and
 		// the ; from the end
 		if (!resp.startsWith("var obj_bus_stop_points = ") || !resp.endsWith(";")) {
@@ -135,6 +140,8 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 			log.info("http get request returned zero routes");
 			return new HashMap<String, JSONObject>();
 		}
+
+		log.trace("downloadStopPassages [tripduid:" + tripDuid + "] " + resp);
 
 		JSONObject obj = new JSONObject(resp);
 

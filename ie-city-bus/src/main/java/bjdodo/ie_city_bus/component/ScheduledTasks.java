@@ -14,17 +14,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import bjdodo.ie_city_bus.model.Route;
-import bjdodo.ie_city_bus.model.StopPassage;
-import bjdodo.ie_city_bus.model.StopPoint;
-import bjdodo.ie_city_bus.model.Trip;
-import bjdodo.ie_city_bus.model.Vehicle;
-import bjdodo.ie_city_bus.model.customquery.CustomDBStatementCalls;
-import bjdodo.ie_city_bus.repository.RouteRepository;
-import bjdodo.ie_city_bus.repository.StopPassageRepository;
-import bjdodo.ie_city_bus.repository.StopPointRepository;
-import bjdodo.ie_city_bus.repository.TripRepository;
-import bjdodo.ie_city_bus.repository.VehicleRepository;
+import bjdodo.ie_city_bus.model.crud.Route;
+import bjdodo.ie_city_bus.model.crud.StopPassage;
+import bjdodo.ie_city_bus.model.crud.StopPoint;
+import bjdodo.ie_city_bus.model.crud.Trip;
+import bjdodo.ie_city_bus.model.crud.Vehicle;
+import bjdodo.ie_city_bus.repository.CustomDBStatementCalls;
+import bjdodo.ie_city_bus.repository.crud.RouteRepository;
+import bjdodo.ie_city_bus.repository.crud.StopPassageRepository;
+import bjdodo.ie_city_bus.repository.crud.StopPointRepository;
+import bjdodo.ie_city_bus.repository.crud.TripRepository;
+import bjdodo.ie_city_bus.repository.crud.VehicleRepository;
 import bjdodo.ie_city_bus.service.DataDownloaderService;
 
 @Component

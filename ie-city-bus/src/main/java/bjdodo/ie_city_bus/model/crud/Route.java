@@ -1,4 +1,4 @@
-package bjdodo.ie_city_bus.model;
+package bjdodo.ie_city_bus.model.crud;
 
 
 import java.time.Instant;

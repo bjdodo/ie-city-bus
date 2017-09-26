@@ -1,11 +1,11 @@
-package bjdodo.ie_city_bus.repository;
+package bjdodo.ie_city_bus.repository.crud;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import bjdodo.ie_city_bus.model.Vehicle;
+import bjdodo.ie_city_bus.model.crud.Vehicle;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 

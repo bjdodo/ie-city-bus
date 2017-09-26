@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import bjdodo.ie_city_bus.model.customquery.CustomDBStatementCalls;
+import bjdodo.ie_city_bus.repository.CustomDBStatementCalls;
 
 @RestController
 @RequestMapping("/api/sandbox")

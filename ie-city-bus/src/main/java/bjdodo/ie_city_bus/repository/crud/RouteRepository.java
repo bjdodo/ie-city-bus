@@ -1,10 +1,10 @@
-package bjdodo.ie_city_bus.repository;
+package bjdodo.ie_city_bus.repository.crud;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import bjdodo.ie_city_bus.model.Route;
+import bjdodo.ie_city_bus.model.crud.Route;
 
 public interface RouteRepository extends JpaRepository<Route, Long> {
 

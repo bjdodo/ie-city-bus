@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import bjdodo.ie_city_bus.model.ActiveTrip;
-import bjdodo.ie_city_bus.model.Route;
+import bjdodo.ie_city_bus.model.crud.Route;
 import bjdodo.ie_city_bus.repository.ActiveTripRepository;
-import bjdodo.ie_city_bus.repository.RouteRepository;
+import bjdodo.ie_city_bus.repository.crud.RouteRepository;
 
 @RestController
 @RequestMapping("/api/route")

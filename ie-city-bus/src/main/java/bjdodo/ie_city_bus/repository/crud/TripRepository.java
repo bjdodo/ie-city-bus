@@ -1,4 +1,4 @@
-package bjdodo.ie_city_bus.repository;
+package bjdodo.ie_city_bus.repository.crud;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-import bjdodo.ie_city_bus.model.Trip;
+import bjdodo.ie_city_bus.model.crud.Trip;
 
 public interface TripRepository extends JpaRepository<Trip, Long> {
 

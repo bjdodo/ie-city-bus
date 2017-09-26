@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import bjdodo.ie_city_bus.repository.RouteRepository;
+import bjdodo.ie_city_bus.repository.crud.RouteRepository;
 
 public class DataDownloaderServiceRouteTest {
 
