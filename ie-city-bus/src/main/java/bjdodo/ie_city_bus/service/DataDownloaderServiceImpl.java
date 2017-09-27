@@ -141,7 +141,7 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 			return new HashMap<String, JSONObject>();
 		}
 
-		log.trace("downloadStopPassages [tripduid:" + tripDuid + "] " + resp);
+		// log.trace("downloadStopPassages [tripduid:" + tripDuid + "] " + resp);
 
 		JSONObject obj = new JSONObject(resp);
 

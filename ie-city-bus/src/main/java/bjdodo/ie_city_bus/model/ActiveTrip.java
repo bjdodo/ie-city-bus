@@ -92,9 +92,14 @@ public class ActiveTrip {
 
 
 
-	@Id
+
 	private long tripId;
 	private int tripDirection;
+	// vehicleId is the id because apparently the system allows 2 buses to be
+	// assigned to the same trip
+	// Then our query returns 2 trips with the same id because vehicleId is
+	// different and JQL gets confused
+	@Id
 	private long vehicleId;
 	private String vehicleLatLong;
 	private String routeShortName;

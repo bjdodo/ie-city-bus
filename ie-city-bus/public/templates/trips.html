@@ -1,0 +1,40 @@
+<html  ng-app="myApp">
+
+ <body>
+    
+    
+    <table>
+      <thead>
+        <tr>
+          <!--<th>Trip</th> -->
+          <th>Route</th>
+          <th>Origin</th>
+          <th>Destination</th>
+          <th>Bus location</th>
+          <th>Scheduled start</th>
+          <!-- <th>Actual start</th>
+          <th>Scheduled finish</th>
+          <th>Calculated finish</th>-->
+          <th>Route delay</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="trip in activeTrips">
+       	  <!-- <td>{{trip.tripId}}</td> -->
+          <td>{{trip.routeShortName}}</td>
+          <td>{{trip.originStopName}}</td>
+          <td>{{trip.destinationStopName}}</td>
+          <td><a target="_blank" href="http://www.openstreetmap.org/search?query={{trip.vehicleLatLong.substring(7,trip.vehicleLatLong.length-1).replace(' ', ',')}}#map=15/{{main.trip.vehicleLatLong.substring(7,trip.vehicleLatLong.length-1).replace(' ', '/')}}&layers=T">{{trip.vehicleLatLong.substring(7,trip.vehicleLatLong.length-1).replace(' ', ',')}}</a></td>
+          <td>{{trip.scheduledStart.epochSecond*1000 | date: 'HH:mm' }}</td>
+          <!--<td>{{trip.actualStart.epochSecond*1000 | date: 'HH:mm' }}</td>
+          <td>{{trip.scheduledFinish.epochSecond*1000 | date: 'HH:mm' }}</td>
+          <td>{{trip.actualFinish.epochSecond*1000 | date: 'HH:mm' }}</td>-->
+          <td>{{((trip.actualFinish.epochSecond-trip.scheduledFinish.epochSecond)/60).toFixed(0)}} mins</td>
+          <td><a href="#/tripdetails">here</a></td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </body>
+</html>
