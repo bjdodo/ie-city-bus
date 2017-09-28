@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import bjdodo.ie_city_bus.model.ActiveTrip;
+import bjdodo.ie_city_bus.model.TripDetail;
 import bjdodo.ie_city_bus.repository.ActiveTripRepository;
 
 @RestController
@@ -49,14 +50,8 @@ public class ActiveTripsController {
 	}
 
 	@RequestMapping(value = "/{tripId}/details", method = RequestMethod.GET)
-	public List<ActiveTrip> getTripDetails(@PathVariable(required = true) Long tripId) {
-
-		if (tripId != null) {
-			return activeTripsRepository.getActiveTripsById(new long[] { tripId });
-		} else {
-			return new ArrayList<>();
-		}
-
+	public List<TripDetail> getTripDetails(@PathVariable(required = true) Long tripId) {
+		return activeTripsRepository.getTripDetails(tripId);
 	}
 
 	// select stop_point.name, stop_point.lat_long,
