@@ -5,15 +5,15 @@
 	margin: 8px;
 	text-align: left;
 	border-collapse: collapse;
-	border: 1px solid #69c;
+	border: 1px solid #6c9;
 }
 .maintable th
 {
 	padding: 6px 4px 6px 4px;
 	font-weight: normal;
 	font-size: 14px;
-	color: #039;
-	border-bottom: 1px dashed #69c;
+	color: #093;
+	border-bottom: 1px dashed #6c9;
 	
 }
 .maintable th.center
@@ -24,7 +24,7 @@
 .maintable td
 {
 	padding: 4px 4px 4px 4px;
-	color: #669;
+	color: #696;
 }
 
 .maintable td.center
@@ -34,8 +34,8 @@
 
 .maintable tbody tr:hover td
 {
-	color: #339;
-	background: #d0dafd;
+	color: #393;
+	background: #d0fdda;
 }
 
 
