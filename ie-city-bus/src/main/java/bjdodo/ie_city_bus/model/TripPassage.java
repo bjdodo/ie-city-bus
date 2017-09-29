@@ -9,7 +9,7 @@ import org.hibernate.annotations.Immutable;
 
 @Entity
 @Immutable
-public class TripDetail {
+public class TripPassage {
 
 	public long getStopPassageId() {
 		return stopPassageId;
@@ -61,6 +61,14 @@ public class TripDetail {
 	public void setActualArrival(Instant actualArrival) {
 		this.actualArrival = actualArrival;
 	}
+	public long getStopNumber() {
+		return stopNumber;
+	}
+	public void setStopNumber(long stopNumber) {
+		this.stopNumber = stopNumber;
+	}
+
+
 	@Id
 	private long stopPassageId;
 	private long tripId;
@@ -70,4 +78,5 @@ public class TripDetail {
 	private Instant actualDeparture;
 	private Instant scheduledArrival;
 	private Instant actualArrival;
+	private long stopNumber;
 }

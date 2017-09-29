@@ -11,7 +11,7 @@ import javax.persistence.Transient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import bjdodo.ie_city_bus.utils.ModelUtils;
+import bjdodo.ie_city_bus.utils.Utils;
 
 @Entity
 public class StopPassage {
@@ -23,11 +23,11 @@ public class StopPassage {
 
 		this.duid = obj.getString("duid");
 		this.isDeleted = obj.getBoolean("is_deleted");
-		this.routeDuid = ModelUtils.getDuid(obj, "route_duid");
-		this.tripDuid = ModelUtils.getDuid(obj, "trip_duid");
-		this.stopPointDuid = ModelUtils.getDuid(obj, "stop_point_duid");
-		this.vehicleDuid = ModelUtils.getDuid(obj, "vehicle_duid");
-		this.patternDuid = ModelUtils.getDuid(obj, "pattern_duid");
+		this.routeDuid = Utils.getDuid(obj, "route_duid");
+		this.tripDuid = Utils.getDuid(obj, "trip_duid");
+		this.stopPointDuid = Utils.getDuid(obj, "stop_point_duid");
+		this.vehicleDuid = Utils.getDuid(obj, "vehicle_duid");
+		this.patternDuid = Utils.getDuid(obj, "pattern_duid");
 
 		JSONObject arrivalData = obj.optJSONObject("arrival_data");
 		if (arrivalData != null) {
@@ -190,11 +190,11 @@ public class StopPassage {
 	}
 
 	public static String getJSONRouteDuid(JSONObject json) throws JSONException {
-		return ModelUtils.getDuid(json, "route_duid");
+		return Utils.getDuid(json, "route_duid");
 	}
 
 	public static String getJSONStopPointDuid(JSONObject json) throws JSONException {
-		return ModelUtils.getDuid(json, "stop_point_duid");
+		return Utils.getDuid(json, "stop_point_duid");
 	}
 
 	public static int getJSONDirection(JSONObject json) throws JSONException {

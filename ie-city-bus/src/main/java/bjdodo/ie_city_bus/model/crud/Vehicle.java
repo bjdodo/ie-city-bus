@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import bjdodo.ie_city_bus.utils.ModelUtils;
+import bjdodo.ie_city_bus.utils.Utils;
 
 @Entity
 public class Vehicle {
@@ -25,14 +25,14 @@ public class Vehicle {
 		this.lastModificationTimestamp = Instant.ofEpochMilli(obj.getLong("last_modification_timestamp"));
 		this.isDeleted = obj.getBoolean("is_deleted");
 		this.category = obj.getInt("category");
-		this.tripDuid = ModelUtils.getDuid(obj, "trip_duid");
+		this.tripDuid = Utils.getDuid(obj, "trip_duid");
 		this.geoPositionStatus = obj.getInt("geo_position_status");
 		this.referenceTime = Instant.ofEpochSecond(obj.getLong("reference_time"));
-		this.latLong = ModelUtils.getPointDBString(obj.getDouble("latitude") / 3600000,
+		this.latLong = Utils.getPointDBString(obj.getDouble("latitude") / 3600000,
 				obj.getDouble("longitude") / 3600000);
 		this.bearing = obj.getInt("bearing");
 		this.isAccessible = obj.getInt("is_accessible") != 0;
-		this.patternDuid = ModelUtils.getDuid(obj, "pattern_duid");
+		this.patternDuid = Utils.getDuid(obj, "pattern_duid");
 		this.bikeRack = obj.getInt("has_bike_rack") != 0;
 		this.vehicleNumber = obj.getLong("vehicle_number");
 		this.operationalNumber = obj.getLong("operational_number");
@@ -191,7 +191,7 @@ public class Vehicle {
 	}
 
 	public static String getJSONTripDuid(JSONObject json) throws JSONException {
-		return ModelUtils.getDuid(json, "trip_duid");
+		return Utils.getDuid(json, "trip_duid");
 	}
 }
 

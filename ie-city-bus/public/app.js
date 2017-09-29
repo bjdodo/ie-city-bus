@@ -56,7 +56,7 @@
 	    
 	    function updateData() {
 	    	// update active trips
-	    	var promise = $http.get('api/activetrip/' + $scope.tripId + '/details');
+	    	var promise = $http.get('api/activetrip/' + $scope.tripId + '/passages');
 		    promise.then(function(response) {
 		      $scope.tripDetails = response.data;
 		    });

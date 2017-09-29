@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import bjdodo.ie_city_bus.utils.ModelUtils;
+import bjdodo.ie_city_bus.utils.Utils;
 
 @Entity
 public class StopPoint {
@@ -19,7 +19,7 @@ public class StopPoint {
 	public void updateFromJson(JSONObject obj) throws JSONException {
 		this.duid = obj.getString("duid");
 		this.name = obj.getString("name");
-		this.latLong = ModelUtils.getPointDBString(obj.getDouble("lat"), obj.getDouble("lng"));
+		this.latLong = Utils.getPointDBString(obj.getDouble("lat"), obj.getDouble("lng"));
 		this.number = obj.getInt("num");
 	}
 

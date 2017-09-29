@@ -3,6 +3,9 @@ package bjdodo.ie_city_bus.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,15 +14,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import bjdodo.ie_city_bus.model.ActiveTrip;
-import bjdodo.ie_city_bus.model.TripDetail;
+import bjdodo.ie_city_bus.model.TripPassage;
+import bjdodo.ie_city_bus.model.crud.Vehicle;
 import bjdodo.ie_city_bus.repository.ActiveTripRepository;
+import bjdodo.ie_city_bus.repository.crud.VehicleRepository;
+import bjdodo.ie_city_bus.utils.Tuple;
+import bjdodo.ie_city_bus.utils.Utils;
 
 @RestController
 @RequestMapping("/api/activetrip")
 public class ActiveTripsController {
 
+	private static final Logger log = LoggerFactory.getLogger(ActiveTripsController.class);
+
 	@Autowired
 	ActiveTripRepository activeTripsRepository;
+
+	@Autowired
+	VehicleRepository vehicleRepository;
 
 	// http://localhost:8090/activetrips?tripIds=2,3
 	@RequestMapping(value = "", method = RequestMethod.GET)
@@ -49,9 +61,56 @@ public class ActiveTripsController {
 
 	}
 
-	@RequestMapping(value = "/{tripId}/details", method = RequestMethod.GET)
-	public List<TripDetail> getTripDetails(@PathVariable(required = true) Long tripId) {
-		return activeTripsRepository.getTripDetails(tripId);
+	static class TripPassageController extends TripPassage {
+
+		public TripPassageController() {
+		}
+
+		public TripPassageController(TripPassage tripPassage) {
+			BeanUtils.copyProperties(tripPassage, this);
+		}
+
+		private long metersFromVehicle;
+
+		public long getMetersFromVehicle() {
+			return metersFromVehicle;
+		}
+
+		public void setMetersFromVehicle(long metersFromVehicle) {
+			this.metersFromVehicle = metersFromVehicle;
+		}
+	}
+	@RequestMapping(value = "/{tripId}/passages", method = RequestMethod.GET)
+	public List<TripPassageController> getTripPassages(@PathVariable(required = true) Long tripId) {
+		List<TripPassageController> ret = new ArrayList<>();
+
+		List<TripPassage> passages = activeTripsRepository.getTripPassages(tripId);
+		List<Vehicle> vehicles = vehicleRepository.findByCurrentTripId(tripId);
+		Vehicle vehicle = vehicles.size() == 1 ? vehicles.get(0) : null;
+		if (vehicle == null)
+		{
+			String vehicleIds = "";
+			for (Vehicle v : vehicles)
+			{
+				vehicleIds += v.getDuid() + ",";
+			}
+			log.warn(String.format("These vehicles have the tripid %s in question: %s", tripId, vehicleIds));
+		}
+
+		for (TripPassage tripPassage : passages) {
+			TripPassageController tpc = new TripPassageController(tripPassage);
+
+			if (vehicle != null) {
+				Tuple<Double, Double> vehicleLatLong = Utils.getPointFromDBPoint(vehicle.getLatLong());
+				Tuple<Double, Double> stopLatLong = Utils.getPointFromDBPoint(tpc.getStopLatLong());
+
+				tpc.setMetersFromVehicle((long) Utils.distFrom(
+						vehicleLatLong.x, vehicleLatLong.y, stopLatLong.x, stopLatLong.y));
+			}
+			ret.add(tpc);
+		}
+		return ret;
+
 	}
 
 	// select stop_point.name, stop_point.lat_long,
