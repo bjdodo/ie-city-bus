@@ -52,14 +52,20 @@
 	
 	app.controller('TripDetailsController', function($scope, $http, $interval, $routeParams) {
 		$scope.tripId = $routeParams.tripId;
-		$scope.tripDetails = '';
+		$scope.tripPassage = '';
 	    
 	    function updateData() {
-	    	// update active trips
-	    	var promise = $http.get('api/activetrip/' + $scope.tripId + '/passages');
-		    promise.then(function(response) {
-		      $scope.tripDetails = response.data;
+	    	var promiseTrip = $http.get('api/activetrip/' + $scope.tripId);
+	    	promiseTrip.then(function(response) {
+		      $scope.tripData = response.data.length ==1 ? response.data[0] : null;
 		    });
+		    
+	    	var promisePassages = $http.get('api/activetrip/' + $scope.tripId + '/passages');
+	    	promisePassages.then(function(response) {
+		      $scope.tripPassages = response.data;
+		    });
+		    
+		    
 	    }
 	    updateData();
 	    $interval(updateData, 30*1000);

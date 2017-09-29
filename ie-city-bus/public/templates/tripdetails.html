@@ -1,7 +1,18 @@
 <html  ng-app="myApp">
 
  <body>
- <h1>trip details {{tripId}}</h1></html>
+
+<div>
+
+<table>
+<tr><td>Route:</td><td>{{tripData.routeShortName}}</td></tr>
+<tr><td>Bus:</td><td> <a target="_blank" href="{{tripData.vehicleLatLong | pointToMapUrl}}">map</a></td></tr>
+</table>
+
+
+
+
+ </div>
  
  <table class="maintable">
       <thead>
@@ -15,16 +26,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="detail in tripDetails">
+        <tr ng-repeat="passage in tripPassages">
        	  <!-- <td>{{trip.tripId}}</td> -->
-       	  <td>{{detail.stopNumber}}</td>
-          <td>{{detail.stopName}}</td>
-          <td class="center"><a target="_blank" href="{{detail.stopLatLong | pointToMapUrl}}">map</a></td>
-          <td class="center">{{detail.scheduledDeparture == null ? detail.scheduledArrival.epochSecond*1000 : detail.scheduledDeparture.epochSecond*1000 | date: 'HH:mm' }}</td>
-          <td class="center">{{detail.actualDeparture == null ? detail.actualArrival.epochSecond*1000 : detail.actualDeparture.epochSecond*1000 | date: 'HH:mm' }}</td>
-          <td class="center">{{detail.metersFromVehicle}}</td>
+       	  <td>{{passage.stopNumber}}</td>
+          <td>{{passage.stopName}}</td>
+          <td class="center"><a target="_blank" href="{{passage.stopLatLong | pointToMapUrl}}">map</a></td>
+          <td class="center">{{passage.scheduledDeparture == null ? passage.scheduledArrival.epochSecond*1000 : passage.scheduledDeparture.epochSecond*1000 | date: 'HH:mm' }}</td>
+          <td class="center">{{passage.actualDeparture == null ? passage.actualArrival.epochSecond*1000 : passage.actualDeparture.epochSecond*1000 | date: 'HH:mm' }}</td>
+          <td class="center">{{passage.metersFromVehicle}}</td>
         </tr>
       </tbody>
     </table>
  </body>
 </html>
+
