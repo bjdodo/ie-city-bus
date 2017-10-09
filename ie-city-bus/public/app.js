@@ -28,15 +28,13 @@
 	app.controller('TripsController', function($scope, $http, $interval) {
 		$scope.activeTrips = '';
 	    
-	    function updateData() {
+		$scope.updateData = function () {
 	    	// update active trips
 	    	var promise = $http.get('api/activetrip');
 		    promise.then(function(response) {
 		      $scope.activeTrips = response.data;
 		    });
 	    }
-	    updateData();
-	    $interval(updateData, 30*1000);
 	    
 	    $scope.getLatLongForPoint = function(pointdecl) {
 	    	alert(pointdecl.substring(7,pointdecl.length-1).replace(' ', ','));
@@ -48,13 +46,20 @@
 	    	return "http://www.openstreetmap.org/search?query=" + latlong + "#map=15/" + latlong + "&layers=T";
 	    }
 	    
+	    $scope.updateData();
+	    $scope.cancelUpdateData = $interval($scope.updateData, 30*1000);
+	    
+	    $scope.$on('$destroy', function iVeBeenDismissed() {
+	    	$interval.cancel($scope.cancelUpdateData);
+	    });
+	    
 	  });
 	
 	app.controller('TripDetailsController', function($scope, $http, $interval, $routeParams) {
 		$scope.tripId = $routeParams.tripId;
 		$scope.tripPassage = '';
 	    
-	    function updateData() {
+		$scope.updateData = function() {
 	    	var promiseTrip = $http.get('api/activetrip/' + $scope.tripId);
 	    	promiseTrip.then(function(response) {
 		      $scope.tripData = response.data.length ==1 ? response.data[0] : null;
@@ -64,11 +69,15 @@
 	    	promisePassages.then(function(response) {
 		      $scope.tripPassages = response.data;
 		    });
-		    
-		    
 	    }
-	    updateData();
-	    $interval(updateData, 30*1000);
+	    
+		$scope.updateData();
+		$scope.cancelUpdateData = $interval($scope.updateData, 30*1000);
+	    
+	    $scope.$on('$destroy', function iVeBeenDismissed() {
+	    	$interval.cancel($scope.cancelUpdateData);
+	    });
+	    
 	  });
 
 }());

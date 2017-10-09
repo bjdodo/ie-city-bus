@@ -58,8 +58,10 @@ public class ScheduledTasks {
 	CustomDBStatementCalls customDBStatementCalls;
 
 	@Scheduled(fixedRate = 60000)
-	public void downloadSlowChangingData() {
+	public void downloadData() {
 		
+		log.info("ScheduledTasks downloadData() starting...");
+
 		List<String> monitoredRoutesLst = Arrays.asList(monitoredRoutes.split(","));
 		
 		Map<String, Route> routesInDb = new HashMap<>();
@@ -109,7 +111,7 @@ public class ScheduledTasks {
 
 			if (vehicleInDb.getTripDuid() == null || vehicleInDb.getTripDuid().isEmpty()) {
 
-				log.info("vehicle has no trips. Vehicle duid: " + vehicleInDb.getDuid());
+				log.debug("vehicle has no trips. Vehicle duid: " + vehicleInDb.getDuid());
 				vehicleInDb.setCurrentTripId(null);
 				vehicleInDb = vehicleRepository.saveAndFlush(vehicleInDb);
 				vehiclesInDb.put(vehicleInDb.getDuid(), vehicleInDb);
@@ -124,7 +126,7 @@ public class ScheduledTasks {
 				continue;
 			}
 			if (stopPassages.isEmpty()) {
-				log.warn("trip has no stops? tripduid: " + vehicleInDb.getTripDuid());
+				log.debug("trip has no stops? tripduid: " + vehicleInDb.getTripDuid());
 				continue;
 			}
 
@@ -145,7 +147,7 @@ public class ScheduledTasks {
 			}
 
 			if (!monitoredRoutesLst.contains(routeInDb.getShortName())) {
-				log.info("route ignored " + routeInDb.getShortName());
+				log.debug("route ignored " + routeInDb.getShortName());
 				if (!vehicleIsNew) {
 					// If a vehicle is now assigned to a route that we ignore we need to finish the
 					// current trip of the vehicle.

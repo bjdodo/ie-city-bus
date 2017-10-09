@@ -36,6 +36,8 @@ public class ActiveTripsController {
 	// http://localhost:8090/activetrips?tripIds=2,3
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public List<ActiveTrip> getTrip(@RequestParam(required = false) List<Long> tripIds) {
+		log.info("ActiveTripsController.getTrip(list)");
+
 		if (tripIds == null || tripIds.isEmpty()) {
 			return activeTripsRepository.getActiveTrips();
 		} else {
@@ -53,6 +55,8 @@ public class ActiveTripsController {
 	@RequestMapping(value = "/{tripId}", method = RequestMethod.GET)
 	public List<ActiveTrip> getTrip(@PathVariable(required = true) Long tripId) {
 
+		log.info("ActiveTripsController.getTrip");
+
 		if (tripId != null) {
 			return activeTripsRepository.getActiveTripsById(new long[] { tripId });
 		} else {
@@ -61,12 +65,12 @@ public class ActiveTripsController {
 
 	}
 
-	static class TripPassageController extends TripPassage {
+	static class TripPassageCtrlData extends TripPassage {
 
-		public TripPassageController() {
+		public TripPassageCtrlData() {
 		}
 
-		public TripPassageController(TripPassage tripPassage) {
+		public TripPassageCtrlData(TripPassage tripPassage) {
 			BeanUtils.copyProperties(tripPassage, this);
 		}
 
@@ -81,8 +85,11 @@ public class ActiveTripsController {
 		}
 	}
 	@RequestMapping(value = "/{tripId}/passages", method = RequestMethod.GET)
-	public List<TripPassageController> getTripPassages(@PathVariable(required = true) Long tripId) {
-		List<TripPassageController> ret = new ArrayList<>();
+	public List<TripPassageCtrlData> getTripPassages(@PathVariable(required = true) Long tripId) {
+
+		log.info("ActiveTripsController.getTripPassages " + tripId);
+
+		List<TripPassageCtrlData> ret = new ArrayList<>();
 
 		List<TripPassage> passages = activeTripsRepository.getTripPassages(tripId);
 		List<Vehicle> vehicles = vehicleRepository.findByCurrentTripId(tripId);
@@ -98,7 +105,7 @@ public class ActiveTripsController {
 		}
 
 		for (TripPassage tripPassage : passages) {
-			TripPassageController tpc = new TripPassageController(tripPassage);
+			TripPassageCtrlData tpc = new TripPassageCtrlData(tripPassage);
 
 			if (vehicle != null) {
 				Tuple<Double, Double> vehicleLatLong = Utils.getPointFromDBPoint(vehicle.getLatLong());
