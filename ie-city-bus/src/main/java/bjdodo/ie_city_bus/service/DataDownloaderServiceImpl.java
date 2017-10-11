@@ -1,5 +1,15 @@
 package bjdodo.ie_city_bus.service;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +18,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,18 +29,84 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 	@Autowired
 	private HttpService httpService;
 
-	// @Value("${ie_city_bus.routes}")
-	// private String latLongRectangle;
+	// This is injected from the config file
+	@Value("${ie_city_bus.latLongRectangle}")
+	private String latLongRectangle;
+
+	@Value("${ie_city_bus.downloadedDataSaveDir}")
+	private String downloadedDataSaveDir;
+
+	private String logTimeStamp;
+
+	// This is only useful for managing the logfiles if we save the downloaded data
+	// for diagnostics
+	public void startDownloadBatch() {
+
+		logTimeStamp = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of("Z"))
+				.format(Instant.now(Clock.systemUTC())).replaceAll("-", "").replaceAll(":", "");
+
+		if (downloadedDataSaveDir == null || downloadedDataSaveDir.isEmpty()) {
+			return;
+		}
+
+		File logDir = new File(downloadedDataSaveDir);
+		if (!logDir.exists() || !logDir.isDirectory()) {
+			log.debug(
+					"saveDataToLog() cannot do its job because downloadedDataSaveDir points to a non-existent directory");
+			return;
+		}
+
+		File dir = new File(downloadedDataSaveDir);
+		File[] files = dir.listFiles();
+		Arrays.sort(files, Collections.reverseOrder());
+		for (int idx = 2000; idx < files.length; ++idx) {
+			files[idx].delete();
+		}
+	}
+
+	private void saveDataToLog(String logName, String data) {
+
+		if (downloadedDataSaveDir == null || downloadedDataSaveDir.isEmpty()) {
+			return;
+		}
+
+		File logDir = new File(downloadedDataSaveDir);
+		if (!logDir.exists() || !logDir.isDirectory()) {
+			log.debug(
+					"saveDataToLog() cannot do its job because downloadedDataSaveDir points to a non-existent directory");
+			return;
+		}
+
+		if (!downloadedDataSaveDir.endsWith(File.separator)) {
+			downloadedDataSaveDir += File.separator;
+		}
+
+		File logFile = new File(downloadedDataSaveDir + logTimeStamp + "_" + logName + ".log");
+
+		// log.info("Saving downloaded data into " + logFile.getPath());
+
+		try (FileWriter fw = new FileWriter(logFile)) {
+			try (PrintWriter pw = new PrintWriter(fw)) {
+				pw.append(data);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			log.error("saveDataToLog() caught an exception", e);
+		}
+
+	}
 
 	@Override
 	public Map<String, JSONObject> downloadVehicles() throws JSONException {
 
 		String resp = httpService.get(
-				"http://buseireann.ie/inc/proto/vehicleTdi.php?latitude_north=192043441&latitude_south=191572963&longitude_east=-32237122&longitude_west=-32939484");
+				"http://buseireann.ie/inc/proto/vehicleTdi.php?" + latLongRectangle);
+		saveDataToLog("downloadVehicles", resp);
 		if (resp == null || resp.isEmpty()) {
 			log.info("http get request returned zero vehicles");
 			return new HashMap<String, JSONObject>();
 		}
+
 
 		log.trace("downloadVehicles " + resp);
 		JSONObject obj = new JSONObject(resp);
@@ -55,6 +132,7 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 	public Map<String, JSONObject> downloadRoutes() throws JSONException {
 
 		String resp = httpService.get("http://buseireann.ie/inc/proto/routes.php");
+		// saveDataToLog("downloadRoutes", resp);
 		if (resp == null || resp.isEmpty()) {
 			log.info("http get request returned zero routes");
 			return new HashMap<String, JSONObject>();
@@ -99,6 +177,7 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 	public Map<String, JSONObject> downloadStopPoints() throws JSONException {
 
 		String resp = httpService.get("http://buseireann.ie/inc/proto/bus_stop_points.php");
+		// saveDataToLog("downloadStopPoints", resp);
 		if (resp == null || resp.isEmpty()) {
 			log.info("http get request returned zero routes");
 			return new HashMap<String, JSONObject>();
@@ -136,6 +215,7 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 	public Map<String, JSONObject> downloadStopPassages(String tripDuid) throws JSONException {
 
 		String resp = httpService.get("http://buseireann.ie/inc/proto/stopPassageTdi.php?trip=" + tripDuid);
+		saveDataToLog("downloadStopPassages+" + tripDuid, resp);
 		if (resp == null || resp.isEmpty()) {
 			log.info("http get request returned zero routes");
 			return new HashMap<String, JSONObject>();

@@ -17,8 +17,13 @@
 		});
 	app.filter("pointToMapUrl", function() {
 		  return function(pointdecl) {
-		    	var latlong = pointdecl.substring(7,pointdecl.length-1).replace(' ', ',');
-		    	return "http://www.openstreetmap.org/search?query=" + latlong + "#map=14/" + latlong + "&layers=T";
+			  if (pointdecl == null) {
+				  return "";
+			  }
+			  
+			  var latlong = pointdecl.substring(7,pointdecl.length-1).replace(' ', ',');
+			  //return "http://www.openstreetmap.org/search?query=" + latlong + "#map=14/" + latlong + "&layers=T";
+			  return "https://www.google.com/maps/?q=" + latlong;
 		    };
 		});
 	

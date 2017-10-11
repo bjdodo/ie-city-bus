@@ -120,6 +120,7 @@ public class ActiveTripsController {
 
 	}
 
+
 	// select stop_point.name, stop_point.lat_long,
 	// stop_passage.scheduled_departure, stop_passage.actual_departure,
 	// stop_passage.scheduled_arrival, stop_passage.actual_arrival from stop_passage

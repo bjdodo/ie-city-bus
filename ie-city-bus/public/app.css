@@ -1,8 +1,15 @@
+.subpagediv
+{
+	display: inline-block;
+	font-size: 14px;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+}
+
+
 .maintable
 {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 12px;
-	margin: 8px;
 	text-align: left;
 	border-collapse: collapse;
 	border: 1px solid #6c9;
@@ -14,7 +21,6 @@
 	font-size: 14px;
 	color: #093;
 	border-bottom: 1px dashed #6c9;
-	
 }
 .maintable th.center
 {

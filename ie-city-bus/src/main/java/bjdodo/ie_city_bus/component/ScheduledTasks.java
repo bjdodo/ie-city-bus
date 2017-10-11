@@ -62,6 +62,8 @@ public class ScheduledTasks {
 		
 		log.info("ScheduledTasks downloadData() starting...");
 
+		dataDownloaderService.startDownloadBatch();
+
 		List<String> monitoredRoutesLst = Arrays.asList(monitoredRoutes.split(","));
 		
 		Map<String, Route> routesInDb = new HashMap<>();

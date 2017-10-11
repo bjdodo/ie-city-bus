@@ -6,6 +6,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface DataDownloaderService {
+	public void startDownloadBatch();
+
 	public Map<String, JSONObject> downloadVehicles() throws JSONException;
 
 	public Map<String, JSONObject> downloadRoutes() throws JSONException;
