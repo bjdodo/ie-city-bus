@@ -31,10 +31,10 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 
 	// This is injected from the config file
 	@Value("${ie_city_bus.latLongRectangle}")
-	private String latLongRectangle;
+	String latLongRectangle;
 
 	@Value("${ie_city_bus.downloadedDataSaveDir}")
-	private String downloadedDataSaveDir;
+	String downloadedDataSaveDir;
 
 	private String logTimeStamp;
 

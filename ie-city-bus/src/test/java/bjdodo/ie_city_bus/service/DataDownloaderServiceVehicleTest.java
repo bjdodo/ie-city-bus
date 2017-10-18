@@ -1,13 +1,20 @@
 package bjdodo.ie_city_bus.service;
 
+import java.util.Map;
+
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import bjdodo.ie_city_bus.repository.crud.VehicleRepository;
+import bjdodo.ie_city_bus.utils.Utils;
 
 public class DataDownloaderServiceVehicleTest {
 
@@ -23,6 +30,8 @@ public class DataDownloaderServiceVehicleTest {
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
+		ReflectionTestUtils.setField(dataDownloaderService, "latLongRectangle",
+				"latitude_north=192043441&latitude_south=191572963&longitude_east=-32237122&longitude_west=-32939484");
 	}
 
 	String vehicleUrl = "http://buseireann.ie/inc/proto/vehicleTdi.php?latitude_north=192043441&latitude_south=191572963&longitude_east=-32237122&longitude_west=-32939484";
@@ -53,51 +62,25 @@ public class DataDownloaderServiceVehicleTest {
 	@Test
 	public void testDownloadVehicles() throws JSONException {
 
-		// // String url =
-		// //
-		// "http://buseireann.ie/inc/proto/vehicleTdi.php?latitude_north=192043441&latitude_south=191572963&longitude_east=-32237122&longitude_west=-32939484";
-		//
-		// Mockito.when(httpService.get(vehicleUrl)).thenReturn(jsonVehicle);
-		//
-		// Mockito.when(vehicleRepository.countByDuid("6352185209772835696")).thenReturn(0L);
-		//
-		// dataDownloaderService.downloadVehicles();
-		//
-		// ArgumentCaptor<Vehicle> captor = ArgumentCaptor.forClass(Vehicle.class);
-		// Mockito.verify(vehicleRepository).saveAndFlush(captor.capture());
-		//
-		// Assert.assertEquals(captor.getValue().getDuid(), "6352185209772835696");
-		// Assert.assertEquals(captor.getValue().getCategory(), 5);
-		// Assert.assertEquals(captor.getValue().getLatLong(), "POINT(53.28352861111111
-		// -9.047195)");
-		// Assert.assertEquals(captor.getValue().getBearing(), 19);
-		// Assert.assertEquals(captor.getValue().isAccessible(), false);
-		// Assert.assertEquals(captor.getValue().isDeleted(), false);
-		// Assert.assertEquals(captor.getValue().getTripDuid(), "6351558488880701746");
-		// Assert.assertEquals(captor.getValue().getPatternDuid(),
-		// "6349931210947571043");
-		// Assert.assertEquals(captor.getValue().hasBikeRack(), false);
-		// // Assert.assertEquals(captor.getValue().getLast_modification_timestamp(),
-		// // 1502659204867L);
-		// Assert.assertEquals(captor.getValue().getVehicleNumber(), 880L);
-		// Assert.assertEquals(captor.getValue().getOperationalNumber(), 880L);
-		// Assert.assertEquals(captor.getValue().getGeoPositionStatus(), 1);
-		// // Assert.assertEquals(captor.getValue().getReference_time(), new
-		// // Date(1502659204));
-	}
+		Mockito.when(httpService.get(vehicleUrl)).thenReturn(jsonVehicle);
 
-	@Test
-	public void testDownloadVehiclesAlreadyExists() throws JSONException {
+		Map<String, JSONObject> vehicles = dataDownloaderService.downloadVehicles();
 
-		// Mockito.when(httpService.get(vehicleUrl)).thenReturn(jsonVehicle);
-		//
-		// Mockito.when(vehicleRepository.countByDuid("6352185209772835696")).thenReturn(1L);
-		//
-		// dataDownloaderService.downloadVehicles();
-		//
-		// Mockito.verify(vehicleRepository,
-		// Mockito.never()).save(Mockito.any(Vehicle.class));
-
+		Assert.assertEquals("6352185209772835696", vehicles.get("6352185209772835696").get("duid"));
+		Assert.assertEquals(5, vehicles.get("6352185209772835696").get("category"));
+		Assert.assertEquals(191820703, vehicles.get("6352185209772835696").get("latitude"));
+		Assert.assertEquals(-32569902, vehicles.get("6352185209772835696").get("longitude"));
+		Assert.assertEquals(19, vehicles.get("6352185209772835696").get("bearing"));
+		Assert.assertEquals(0, vehicles.get("6352185209772835696").get("is_accessible"));
+		Assert.assertEquals(false, vehicles.get("6352185209772835696").get("is_deleted"));
+		Assert.assertEquals("6351558488880701746", Utils.getDuid(vehicles.get("6352185209772835696"), "trip_duid"));
+		Assert.assertEquals("6349931210947571043", Utils.getDuid(vehicles.get("6352185209772835696"), "pattern_duid"));
+		Assert.assertEquals(0, vehicles.get("6352185209772835696").get("has_bike_rack"));
+		Assert.assertEquals(1502659204867L, vehicles.get("6352185209772835696").get("last_modification_timestamp"));
+		Assert.assertEquals(880, vehicles.get("6352185209772835696").get("vehicle_number"));
+		Assert.assertEquals(880, vehicles.get("6352185209772835696").get("operational_number"));
+		Assert.assertEquals(1, vehicles.get("6352185209772835696").get("geo_position_status"));
+		Assert.assertEquals(1502659204, vehicles.get("6352185209772835696").get("reference_time"));
 	}
 
 }

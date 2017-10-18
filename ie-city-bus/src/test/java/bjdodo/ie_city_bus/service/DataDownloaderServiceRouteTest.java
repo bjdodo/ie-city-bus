@@ -1,13 +1,17 @@
 package bjdodo.ie_city_bus.service;
 
+import java.util.Map;
+
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import bjdodo.ie_city_bus.repository.crud.RouteRepository;
 
 public class DataDownloaderServiceRouteTest {
 
@@ -17,8 +21,8 @@ public class DataDownloaderServiceRouteTest {
 	@Mock
 	private HttpService httpService;
 
-	@Mock
-	private RouteRepository routeRepository;
+	// @Mock
+	// private RouteRepository routeRepository;
 
 	@Before
 	public void init() {
@@ -45,23 +49,20 @@ public class DataDownloaderServiceRouteTest {
 	@Test
 	public void testDownloadRoutes() throws JSONException {
 
-		// Mockito.when(httpService.get(routeUrl)).thenReturn(jsonRoute);
-		//
-		// Mockito.when(routeRepository.countByDuid("6350571126703259824")).thenReturn(0L);
-		//
-		// dataDownloaderService.downloadRoutes();
-		//
-		// ArgumentCaptor<Route> captor = ArgumentCaptor.forClass(Route.class);
-		// Mockito.verify(routeRepository).saveAndFlush(captor.capture());
-		//
-		// Assert.assertEquals(captor.getValue().getDuid(), "6350571126703259824");
-		// Assert.assertEquals(captor.getValue().getLastModificationTimestamp(),
-		// 1502532767028L);
-		// Assert.assertEquals(captor.getValue().isDeleted(), false);
-		// Assert.assertEquals(captor.getValue().getShortName(), "403");
-		// Assert.assertEquals(captor.getValue().getCategory(), 5);
-		// Assert.assertEquals(captor.getValue().getNumber(), 403);
 
+		Mockito.when(httpService.get(routeUrl)).thenReturn(jsonRoute);
+
+		Map<String, JSONObject> routes = dataDownloaderService.downloadRoutes();
+
+		ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+		Mockito.verify(httpService).get(captor.capture());
+		Assert.assertEquals(routeUrl, captor.getValue());
+
+		Assert.assertEquals("6350571126703259824", routes.get("6350571126703259824").get("duid"));
+		Assert.assertEquals(1502532767028L, routes.get("6350571126703259824").get("last_modification_timestamp"));
+		Assert.assertEquals(false, routes.get("6350571126703259824").get("is_deleted"));
+		Assert.assertEquals(5, routes.get("6350571126703259824").get("category"));
+		Assert.assertEquals(403, routes.get("6350571126703259824").get("number"));
 	}
 
 }
