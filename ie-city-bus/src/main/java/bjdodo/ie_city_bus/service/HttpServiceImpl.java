@@ -17,6 +17,8 @@ public class HttpServiceImpl implements HttpService {
 	@Override
 	public String get(String url) {
 		Client c = Client.create();
+		c.setConnectTimeout(5000);
+		c.setReadTimeout(15000);
 		WebResource service = c.resource(url);
 		ClientResponse resp = service.get(ClientResponse.class);
 		if (resp.getStatus() == HttpStatus.OK.value()) {

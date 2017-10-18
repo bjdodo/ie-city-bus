@@ -82,7 +82,7 @@ public class CustomDBStatementCalls {
 
 		Query q = entityManager
 				.createQuery("UPDATE Vehicle  v set v.isDeleted=true where v.referenceTime<:referenceTime");
-		// If a vehicle hasn't communicated in for an hour we'll say it is deleted.
+		// If a vehicle hasn't communicated in for 30 minutes we'll say it is deleted.
 		// If it calls in again the flag will be unset anyway.
 		q.setParameter("referenceTime", Instant.now().minusSeconds(1800));
 		return q.executeUpdate();

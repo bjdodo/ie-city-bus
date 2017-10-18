@@ -95,6 +95,30 @@ public class Trip {
 		this.actualStart = actualStart;
 	}
 
+	public Long getNearestStopPointId() {
+		return nearestStopPointId;
+	}
+
+	public void setNearestStopPointId(Long nearestStopPointId) {
+		this.nearestStopPointId = nearestStopPointId;
+	}
+
+	public Double getNearestStopPointDistance() {
+		return nearestStopPointDistance;
+	}
+
+	public void setNearestStopPointDistance(Double nearestStopPointDistance) {
+		this.nearestStopPointDistance = nearestStopPointDistance;
+	}
+
+	public Double getProgress() {
+		return progress;
+	}
+
+	public void setProgress(Double progress) {
+		this.progress = progress;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
@@ -109,10 +133,13 @@ public class Trip {
 	private Instant scheduledStart;
 	private Instant actualFinish;
 	private Instant actualStart;
+	private Long nearestStopPointId;
+	private Double nearestStopPointDistance;
+	private Double progress;
+
 
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
-
 	}
 }

@@ -90,15 +90,36 @@ public class ActiveTrip {
 		this.actualFinish = actualFinish;
 	}
 
+	public String getNearestStopPointName() {
+		return nearestStopPointName;
+	}
 
+	public void setNearestStopPointName(String nearestStopPointName) {
+		this.nearestStopPointName = nearestStopPointName;
+	}
 
+	public Double getNearestStopPointDistance() {
+		return nearestStopPointDistance;
+	}
+
+	public void setNearestStopPointDistance(Double nearestStopPointDistance) {
+		this.nearestStopPointDistance = nearestStopPointDistance;
+	}
+
+	public Double getTripProgress() {
+		return tripProgress;
+	}
+
+	public void setTripProgress(Double tripProgress) {
+		this.tripProgress = tripProgress;
+	}
 
 	private long tripId;
 	private int tripDirection;
 	// vehicleId is the id because apparently the system allows 2 buses to be
 	// assigned to the same trip
 	// Then our query returns 2 trips with the same id because vehicleId is
-	// different and JQL gets confused
+	// different and JPQL gets confused
 	@Id
 	private long vehicleId;
 	private String vehicleLatLong;
@@ -109,4 +130,7 @@ public class ActiveTrip {
 	private Instant actualStart;
 	private Instant scheduledFinish;
 	private Instant actualFinish;
+	private String nearestStopPointName;
+	private Double nearestStopPointDistance;
+	private Double tripProgress;
 }
