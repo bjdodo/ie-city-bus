@@ -12,7 +12,6 @@
 		  .when("/tripdetails/:tripId", {
 			controller : "TripDetailsController",
 		    templateUrl : "templates/tripdetails.html"
-			//  template : "<h1>aaa</h1>"
 		  })
 		});
 	app.filter("pointToMapUrl", function() {
@@ -95,26 +94,6 @@
 		$scope.tripPassage = '';
 		
 		$scope.mapData = {view : null, pins : []};
-		
-//		$scope.mapData = {
-//				view : {
-//				      latitude: 45,
-//				      longitude: 86,
-//				      zoom: 1
-//				    },
-//				    pins : [{
-//				        latitude: 45,
-//				        longitude: 86,
-//				        description: 'hun',
-//				        pngFile: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Marker-Inside-Chartreuse-icon.png'
-//				      },{
-//				        latitude: 52,
-//				        longitude: -9,
-//				        description: 'ie',
-//				        pngFile: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Marker-Inside-Chartreuse-icon.png'
-//				      }]
-//				    };
-		
 	    
 		$scope.updateData = function() {
 	    	var promiseTrip = $http.get('api/activetrip/' + $scope.tripId);
@@ -131,8 +110,9 @@
 		    		  				pins : [{
 		    		  					latitude: latlong.latitude,
 		    		  					longitude: latlong.longitude,
-		    		  					description: 'bus',
-		    		  					pngFile: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Marker-Inside-Chartreuse-icon.png'
+		    		  					description: '<b>' + $scope.tripData.routeShortName + '</b><br/>' +
+		    		  								'Destination: ' + $scope.tripData.destinationStopName,
+		    		  					pngFile: 'img/bus.png'
 		    		  				}]
 		    	  };
 		    	}
