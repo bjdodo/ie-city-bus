@@ -1,3 +1,8 @@
+body
+{
+	padding-top: 30px;
+}
+
 .subpagediv
 {
 	display: inline-block;
@@ -42,6 +47,11 @@
 {
 	color: #393;
 	background: #d0fdda;
+}
+
+#mapdiv
+{
+	height: 400px;
 }
 
 

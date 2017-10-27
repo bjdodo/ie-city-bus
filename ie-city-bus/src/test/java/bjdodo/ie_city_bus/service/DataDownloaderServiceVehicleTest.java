@@ -13,7 +13,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import bjdodo.ie_city_bus.repository.crud.VehicleRepository;
 import bjdodo.ie_city_bus.utils.Utils;
 
 public class DataDownloaderServiceVehicleTest {
@@ -24,8 +23,6 @@ public class DataDownloaderServiceVehicleTest {
 	@Mock
 	private HttpService httpService;
 
-	@Mock
-	private VehicleRepository vehicleRepository;
 
 	@Before
 	public void init() {

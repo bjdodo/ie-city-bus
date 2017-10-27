@@ -17,7 +17,7 @@ public class ScheduledTasks {
 	private DataSavingService dataSavingService;
 
 	@Scheduled(fixedRate = 60000)
-	public void downloadData() {
+	public void downloadAndSaveData() {
 		dataSavingService.downloadAndSaveAll();
 	}
 

@@ -1,76 +1,59 @@
-<html  ng-app="myApp">
+<html ng-app="myApp">
+<body>
+	<div class="subpagediv">
 
-<head>
-<style>
+		<a href="#">&lt; Back</a>
 
-#container {
-  display: flex;                  /* establish flex container */
-  flex-direction: row;            /* default value; can be omitted */
-  flex-wrap: nowrap;              /* default value; can be omitted */
-  justify-content: space-between; /* switched from default (flex-start, see below) */
-  background-color: lightyellow;
-  /*display: inline-block;*/
-}
-#container > div {
-  /*width: 100px;
-  height: 100px;*/
-  border: 2px dashed red;
-}
+		<div ng-show="tripData.routeShortName != null">
 
-</style>
+			<table style="width: 100%">
+				<tr>
+					<td>Route: {{tripData.routeShortName}}</td>
+					<!-- <td style="text-align: right"><a target="_blank"
+						href="{{tripData.vehicleLatLong | pointToMapUrl}}">Bus on the map</a></td> -->
+			</table>
+		</div>
 
-</head>
- <body>
+		<div ng-show="tripData.routeShortName == null">Trip has finished
+		</div>
 
-<div class="subpagediv" >
+		<div>
+			<open-street-map model="mapData" container-div-id='mapdiv' ng-show='!!mapData' />
 
-<a href="#">&lt; Back</a>
+			<table class="maintable">
+				<thead>
+					<tr>
+						<th colspan="3" title="The link map shows the stop on a map">Stop</th>
+						<th class="center">Scheduled</th>
+						<th class="center"
+							title="Provided by Bus Eireann. Times in the past are recorded, in the future calculated.">Actual</th>
+						<th class="center"
+							title="Line of sight distance between the bus and the stop">Bus
+							distance</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="passage in tripPassages">
+						<!-- <td>{{trip.tripId}}</td> -->
+						<td>{{passage.stopNumber}}</td>
+						<td>{{passage.stopName}}</td>
+						<td class="center"><a target="_blank"
+							href="{{passage.stopLatLong | pointToMapUrl}}">map</a></td>
+						<td class="center">{{passage.scheduledDeparture == null ?
+							passage.scheduledArrival.epochSecond*1000 :
+							passage.scheduledDeparture.epochSecond*1000 | date: 'HH:mm' }}</td>
+						<td class="center">{{passage.actualDeparture == null ?
+							passage.actualArrival.epochSecond*1000 :
+							passage.actualDeparture.epochSecond*1000 | date: 'HH:mm' }}</td>
+						<td class="center">{{passage.metersFromVehicle}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
 
-<div ng-show="tripData.routeShortName != null">
-
-<table style="width:100%">
-<tr>
-<td>
-Route: {{tripData.routeShortName}}
-</td>
-<td style="text-align:right">
-<a target="_blank" href="{{tripData.vehicleLatLong | pointToMapUrl}}">Bus on the map</a>
-</td>
-</table>
-</div>
-
-<div ng-show="tripData.routeShortName == null">
-Trip has finished
-</div>
 
 
-
-
- 
- <table class="maintable"  >
-      <thead>
-        <tr>
-          <th colspan="3">Stop</th>
-          <th class="center">Scheduled</th>
-          <th class="center">Actual/calculated</th>
-          <th class="center" title="Line of sight distance">Bus distance</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="passage in tripPassages">
-       	  <!-- <td>{{trip.tripId}}</td> -->
-       	  <td>{{passage.stopNumber}}</td>
-          <td>{{passage.stopName}}</td>
-          <td class="center"><a target="_blank" href="{{passage.stopLatLong | pointToMapUrl}}">map</a></td>
-          <td class="center">{{passage.scheduledDeparture == null ? passage.scheduledArrival.epochSecond*1000 : passage.scheduledDeparture.epochSecond*1000 | date: 'HH:mm' }}</td>
-          <td class="center">{{passage.actualDeparture == null ? passage.actualArrival.epochSecond*1000 : passage.actualDeparture.epochSecond*1000 | date: 'HH:mm' }}</td>
-          <td class="center">{{passage.metersFromVehicle}}</td>
-        </tr>
-      </tbody>
-    </table>
- </body>
- 
- </div>
- 
 </html>
 

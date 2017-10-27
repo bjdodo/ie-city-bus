@@ -39,6 +39,24 @@ public class Vehicle {
 
 	}
 
+	// This is only for unit tests and for symmetry
+	/*
+	 * public void updateToJson(JSONObject obj) throws JSONException {
+	 * obj.put("duid", this.duid); obj.put("last_modification_timestamp",
+	 * this.lastModificationTimestamp.toEpochMilli()); obj.put("is_deleted",
+	 * this.isDeleted ? 1 : 0); obj.put("category", this.category);
+	 * obj.put("trip_duid", this.tripDuid); obj.put("geo_position_status",
+	 * this.geoPositionStatus); obj.put("reference_time",
+	 * this.referenceTime.getEpochSecond()); obj.put("longitude", 3600000 *
+	 * Utils.getPointFromDBPoint(this.latLong).x); obj.put("latitude", 3600000 *
+	 * Utils.getPointFromDBPoint(this.latLong).y); obj.put("bearing", this.bearing);
+	 * obj.put("is_accessible", this.isAccessible ? 1 : 0); obj.put("pattern_duid",
+	 * new JSONObject()); obj.getJSONObject("pattern_guid").put("duid",
+	 * this.patternDuid); obj.put("has_bike_rack", this.bikeRack ? 1 : 0);
+	 * obj.put("vehicle_number", this.vehicleNumber); obj.put("operational_number",
+	 * this.operationalNumber); }
+	 */
+
 	public long getId() {
 		return id;
 	}

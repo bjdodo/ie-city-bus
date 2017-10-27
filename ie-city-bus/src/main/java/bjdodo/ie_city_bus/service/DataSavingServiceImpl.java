@@ -35,7 +35,7 @@ public class DataSavingServiceImpl implements DataSavingService {
 
 	// This is injected from the config file
 	@Value("${ie_city_bus.monitoredroutes}")
-	private String monitoredRoutes;
+	String monitoredRoutes;
 
 	@Autowired
 	private DataDownloaderService dataDownloaderService;
@@ -103,10 +103,9 @@ public class DataSavingServiceImpl implements DataSavingService {
 				}
 
 				vehicleInDb.updateFromJson(vehicle);
-
-				// We save the vehicle after we have downloaded the route info
+				// We only save the vehicle after we have downloaded the trip info
 				// because we do not want to save vehicles when they are assigned to
-				// routes that we are not interested in
+				// trips that we are not interested in
 			} catch (JSONException ex) {
 				log.error("Saving vehicle to DB failed. JSON:\r\n" + vehicle.toString(), ex);
 				continue;
@@ -121,9 +120,12 @@ public class DataSavingServiceImpl implements DataSavingService {
 				continue;
 			}
 
+
 			Map<String, JSONObject> stopPassages = null;
 			try {
+				log.info("Downloading stop passages for trip " + vehicleInDb.getTripDuid());
 				stopPassages = dataDownloaderService.downloadStopPassages(vehicleInDb.getTripDuid());
+				log.info("Downloading stop passages done");
 			} catch (JSONException ex) {
 				log.error("Downloading stop passages failed", ex);
 				continue;

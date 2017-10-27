@@ -27,8 +27,38 @@
 		    };
 		});
 	
-//	app.controller('MainController', function($scope, $http, $interval) {
-//	  });
+	app.directive('openStreetMap', function() {
+	  return {
+		    restrict: "E",
+		    scope: {
+		      model : '=',
+		      containerDivId: '@'
+		    },
+		    link: function(scope, element, attrs, controller) {
+
+		      // the parent node for OSM has to be a div
+		      var osm_div = document.createElement("div");
+		      osm_div.id = scope.containerDivId;
+		      element.append(osm_div);
+
+		      scope.osm = new OSMWrapper();
+		      scope.osm.create(osm_div);
+		      
+		      scope.$watch("model.view", function () {
+		          console.log("watch triggered for view");
+		          scope.osm.setCenter(scope.model.view.latitude, scope.model.view.longitude, scope.model.view.zoom);
+		        }, true);
+		        
+		        scope.$watch("model.pins", function () {
+		          console.log("watch triggered for pins");
+		          scope.osm.removeAllPins();
+		          for (var idx=0;idx< scope.model.pins.length;++idx) {
+		            scope.osm.addPin(scope.model.pins[idx].latitude, scope.model.pins[idx].longitude, scope.model.pins[idx].description, scope.model.pins[idx].pngFile);
+		          }
+		        }, true);
+	      }
+	    }
+	  });
 	
 	app.controller('TripsController', function($scope, $http, $interval) {
 		$scope.activeTrips = '';
@@ -63,11 +93,49 @@
 	app.controller('TripDetailsController', function($scope, $http, $interval, $routeParams) {
 		$scope.tripId = $routeParams.tripId;
 		$scope.tripPassage = '';
+		
+		$scope.mapData = {view : null, pins : []};
+		
+//		$scope.mapData = {
+//				view : {
+//				      latitude: 45,
+//				      longitude: 86,
+//				      zoom: 1
+//				    },
+//				    pins : [{
+//				        latitude: 45,
+//				        longitude: 86,
+//				        description: 'hun',
+//				        pngFile: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Marker-Inside-Chartreuse-icon.png'
+//				      },{
+//				        latitude: 52,
+//				        longitude: -9,
+//				        description: 'ie',
+//				        pngFile: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Marker-Inside-Chartreuse-icon.png'
+//				      }]
+//				    };
+		
 	    
 		$scope.updateData = function() {
 	    	var promiseTrip = $http.get('api/activetrip/' + $scope.tripId);
 	    	promiseTrip.then(function(response) {
-		      $scope.tripData = response.data.length ==1 ? response.data[0] : null;
+		      $scope.tripData = response.data.length == 1 ? response.data[0] : null;
+		      if ($scope.tripData != null) {
+		    	  var latlong = utils.splitLatlong($scope.tripData.vehicleLatLong);
+		    	  $scope.mapData = { 
+		    			  			view : {
+		    		  					latitude: latlong.latitude,
+		    		  					longitude: latlong.longitude,
+		    		  					zoom: 12
+		    		  				},
+		    		  				pins : [{
+		    		  					latitude: latlong.latitude,
+		    		  					longitude: latlong.longitude,
+		    		  					description: 'bus',
+		    		  					pngFile: 'http://icons.iconarchive.com/icons/icons-land/vista-map-markers/32/Map-Marker-Marker-Inside-Chartreuse-icon.png'
+		    		  				}]
+		    	  };
+		    	}
 		    });
 		    
 	    	var promisePassages = $http.get('api/activetrip/' + $scope.tripId + '/passages');
@@ -82,6 +150,8 @@
 	    $scope.$on('$destroy', function iVeBeenDismissed() {
 	    	$interval.cancel($scope.cancelUpdateData);
 	    });
+	    
+	    
 	    
 	  });
 
