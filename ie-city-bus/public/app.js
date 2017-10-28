@@ -27,9 +27,6 @@
 		    };
 		});
 	
-//	app.controller('MainController', function($scope, $http, $interval) {
-//	  });
-	
 	app.controller('TripsController', function($scope, $http, $interval) {
 		$scope.activeTrips = '';
 	    
