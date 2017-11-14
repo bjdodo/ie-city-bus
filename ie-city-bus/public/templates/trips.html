@@ -42,8 +42,8 @@
 						<!-- <td class="center"><a target="_blank"
 						href="{{trip.vehicleLatLong | pointToMapUrl}}">map</a></td> -->
 						<td>{{trip.nearestStopPointName}}</td>
-						<td>{{trip.scheduledStart.epochSecond*1000 | date: 'HH:mm' }}</td>
-						<td>{{((trip.actualFinish.epochSecond-trip.scheduledFinish.epochSecond)/60).toFixed(0)}}
+						<td>{{trip.scheduledStart * 1000 | date: 'HH:mm' }}</td>
+						<td>{{((trip.actualFinish-trip.scheduledFinish)/60).toFixed(0)}}
 							min(s)</td>
 						<td class="center"><a href="#/tripdetails/{{trip.tripId}}">details</a></td>
 					</tr>
