@@ -106,7 +106,7 @@
 							// update active trips
 							var promise = $http.get('api/activetrip');
 							promise.then(function(response) {
-								$scope.activeTrips = response.data;							
+								$scope.activeTrips = response.data;
 								$scope.routes = busroutes.get();
 								$scope.calculateSelectedActiveTrips();
 								$scope.refreshMap();
