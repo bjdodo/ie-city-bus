@@ -2,6 +2,7 @@ body
 {
 	padding-top: 20px;
 	padding-bottom: 20px;
+	background-color: #bbb;
 }
 
 .subpagediv
@@ -51,8 +52,13 @@ body
 .maintable tbody tr:hover td
 {
 	color: #393;
-	background: #d0fdda;
+	background: #b0fdb0;
 }
+
+.maintable tr:nth-child(even) {background: #e8ffe8}
+.maintable tr:nth-child(odd) {background: #FFF}
+
+
 
 #mapdiv
 {

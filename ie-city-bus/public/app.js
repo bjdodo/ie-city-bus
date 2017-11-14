@@ -94,7 +94,7 @@
 	app
 			.controller(
 					'TripsController',
-					function($scope, $http, $interval, busroutes) {
+					function($scope, $http, $interval, $filter, busroutes) {
 						$scope.activeTrips = '';
 
 						$scope.mapData = {
@@ -164,8 +164,14 @@
 											description : '<b>'
 													+ $scope.selectedActiveTrips[idx].routeShortName
 													+ '</b><br/>'
-													+ 'Destination: '
+													+ 'trip start at '
+													+ $filter('date')(new Date($scope.selectedActiveTrips[idx].scheduledStart * 1000), 'HH:mm')
+													+ '<br/>'
+													+ 'from ' + $scope.selectedActiveTrips[idx].originStopName
+													+ '<br/>'
+													+ 'to '
 													+ $scope.selectedActiveTrips[idx].destinationStopName,
+													
 											pngFile : 'img/bus.png'
 										});
 							}
