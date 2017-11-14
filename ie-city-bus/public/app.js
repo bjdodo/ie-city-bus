@@ -78,6 +78,7 @@
 						return a.shortName > b.shortName;
 					});
 				});
+				return [];
 			}
 
 			return routes;
@@ -105,11 +106,8 @@
 							// update active trips
 							var promise = $http.get('api/activetrip');
 							promise.then(function(response) {
-								$scope.activeTrips = response.data;
-								if ($scope.routes == null) {
-									$scope.routes = busroutes.get();
-								}
-
+								$scope.activeTrips = response.data;							
+								$scope.routes = busroutes.get();
 								$scope.calculateSelectedActiveTrips();
 								$scope.refreshMap();
 							});
