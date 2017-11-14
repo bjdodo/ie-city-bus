@@ -18,12 +18,12 @@
 		</div>
 
 		<div>
-			<open-street-map model="mapData" container-div-id='mapdiv' ng-show='!!mapData' />
+			<open-street-map model="mapData" container-div-id='mapdiv' ng-show='!!mapData && !!mapData.view' />
 
 			<table class="maintable">
 				<thead>
 					<tr>
-						<th colspan="3" title="The link map shows the stop on a map">Stop</th>
+						<th colspan="2">Stop</th>
 						<th class="center">Scheduled</th>
 						<th class="center"
 							title="Provided by Bus Eireann. Times in the past are recorded, in the future calculated.">Actual</th>
@@ -37,8 +37,8 @@
 						<!-- <td>{{trip.tripId}}</td> -->
 						<td>{{passage.stopNumber}}</td>
 						<td>{{passage.stopName}}</td>
-						<td class="center"><a target="_blank"
-							href="{{passage.stopLatLong | pointToMapUrl}}">map</a></td>
+						<!-- <td class="center"><a target="_blank"
+							href="{{passage.stopLatLong | pointToMapUrl}}">map</a></td> -->
 						<td class="center">{{passage.scheduledDeparture == null ?
 							passage.scheduledArrival.epochSecond*1000 :
 							passage.scheduledDeparture.epochSecond*1000 | date: 'HH:mm' }}</td>

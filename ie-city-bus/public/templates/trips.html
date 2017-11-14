@@ -1,36 +1,53 @@
-<html  ng-app="myApp">
+<html ng-app="myApp">
 
- <body>
-    <div class="subpagediv">
-    
-    <table class="maintable">
-      <thead>
-        <tr>
-          <!--<th>Trip</th> -->
-          <th>Route</th>
-          <th>Origin</th>
-          <th>Destination</th>
-          <th class="center">Bus</th>
-          <th class="center">Nearest stop</th>
-          <th>Start</th>
-          <th>Delay</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="trip in activeTrips">
-          <td>{{trip.routeShortName}}</td>
-          <td>{{trip.originStopName}}</td>
-          <td>{{trip.destinationStopName}}</td>
-          <td class="center"><a target="_blank" href="{{trip.vehicleLatLong | pointToMapUrl}}">map</a></td>
-          <td>{{trip.nearestStopPointName}}</td>
-          <td>{{trip.scheduledStart.epochSecond*1000 | date: 'HH:mm' }}</td>
-          <td>{{((trip.actualFinish.epochSecond-trip.scheduledFinish.epochSecond)/60).toFixed(0)}} min(s)</td>
-          <td class="center"><a href="#/tripdetails/{{trip.tripId}}">details</a></td>
-        </tr>
-      </tbody>
-    </table>
-    
-    </div>
-  </body>
+<body>
+	<div class="subpagediv container">
+
+		<div class="panel">
+
+			<span ng-repeat="r in routes"><input type="checkbox" ng-click="onRouteSelectionChanged()"
+					ng-model="r.onmap">{{r.shortName}}</input> </span>
+
+			<open-street-map model="mapData" container-div-id='mapdiv'
+				ng-show='!!mapData && !!mapData.view' />
+			
+		</div>
+
+		<table class="maintable">
+			<thead>
+				<tr>
+					<!--<th>Trip</th> -->
+					<th>Route</th>
+					<th>Origin</th>
+					<th>Destination</th>
+					<th class="center">Map</th>
+					<th class="center">Nearest stop</th>
+					<th>Start</th>
+					<th>Delay</th>
+					<th></th>
+				</tr>
+			</thead>
+			
+			<!-- ng-show="selectedRoutes.length === 0 || selectedRoutes.indexOf(trip.routeShortName) >= 0" -->
+			<tbody ng-repeat="trip in activeTrips">
+				<tr>
+					<td>{{trip.routeShortName}}</td>
+					<td>{{trip.originStopName}}</td>
+					<td>{{trip.destinationStopName}}</td>
+					<td class="center"><a target="_blank"
+						href="{{trip.vehicleLatLong | pointToMapUrl}}">map</a></td>
+					<td>{{trip.nearestStopPointName}}</td>
+					<td>{{trip.scheduledStart.epochSecond*1000 | date: 'HH:mm' }}</td>
+					<td>{{((trip.actualFinish.epochSecond-trip.scheduledFinish.epochSecond)/60).toFixed(0)}}
+						min(s)</td>
+					<td class="center"><a href="#/tripdetails/{{trip.tripId}}">details</a></td>
+				</tr>
+			</tbody>
+		</table>
+
+
+		
+
+	</div>
+</body>
 </html>

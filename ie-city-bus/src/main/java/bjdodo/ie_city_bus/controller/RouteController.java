@@ -43,5 +43,4 @@ public class RouteController {
 
 		return activeTripsRepository.getRouteActiveTrips(routeShortName);
 	}
-
 }
