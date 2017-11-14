@@ -4,6 +4,7 @@ function OSMWrapper() {
     var vectorLayer = null;
     var epsg4326 = null;
     var projectTo = null;
+    var controls = null;
    
     var osm_create = function(div_or_id) {
       //http://dev.openlayers.org/docs/files/OpenLayers/Map-js.html
@@ -17,7 +18,7 @@ function OSMWrapper() {
         map.addLayer(vectorLayer);
        
         //Add a selector control to the vectorLayer with popup functions
-        var controls = {
+        controls = {
           selector: new OpenLayers.Control.SelectFeature(vectorLayer, { onSelect: createPopup, onUnselect: destroyPopup })
         };
 
@@ -30,7 +31,7 @@ function OSMWrapper() {
               true,
               function() { controls['selector'].unselectAll(); }
           );
-          //feature.popup.closeOnMove = true;
+          feature.popup.closeOnMove = true;
           map.addPopup(feature.popup);
         }
 
@@ -44,6 +45,7 @@ function OSMWrapper() {
     }
    
     var osm_removeAllFeatures = function() {
+    	controls['selector'].unselectAll();
         vectorLayer.removeAllFeatures();
     }
    
