@@ -90,93 +90,109 @@
 		};
 	});
 
-	app.controller('TripsController', function($scope, $http, $interval,
-			busroutes) {
-		$scope.activeTrips = '';
+	app
+			.controller(
+					'TripsController',
+					function($scope, $http, $interval, busroutes) {
+						$scope.activeTrips = '';
 
-		$scope.mapData = {
-			view : null,
-			pins : []
-		};
+						$scope.mapData = {
+							view : null,
+							pins : []
+						};
 
-		$scope.updateData = function() {
-			// update active trips
-			var promise = $http.get('api/activetrip');
-			promise.then(function(response) {
-				$scope.activeTrips = response.data;
-				if ($scope.routes == null) {
-					$scope.routes = busroutes.get();
-				}
-				
-				if ($scope.selectedRoutes == null) {
-					$scope.selectedRoutes = [];
-				}
-				$scope.refreshMap();
-			});
-		}
-		
-		$scope.onRouteSelectionChanged = function() {
-			$scope.selectedRoutes = [];
-			for (idx=0; idx<$scope.routes.length; ++idx) {
-				if ($scope.routes[idx].onmap) {
-					$scope.selectedRoutes.push($scope.routes[idx].shortName);
-				}
-			}
-			
-			$scope.refreshMap();
-		}
+						$scope.updateData = function() {
+							// update active trips
+							var promise = $http.get('api/activetrip');
+							promise.then(function(response) {
+								$scope.activeTrips = response.data;
+								if ($scope.routes == null) {
+									$scope.routes = busroutes.get();
+								}
 
-		$scope.refreshMap = function() {
-			if ($scope.mapData == null || $scope.mapData.view == null) {
-				$scope.mapData = {
-					view : {
-						latitude : 53.27452,
-						longitude : -9.04784,
-						zoom : 12
-					}
-				};
-			}
-			
-			var pinsArr = [];
-			for (idx = 0; idx < $scope.activeTrips.length; ++idx) {
-				
-				if ($scope.selectedRoutes != null && $scope.selectedRoutes.length !== 0 && $scope.selectedRoutes.indexOf($scope.activeTrips[idx].routeShortName) < 0) {
-					continue;
-				}
-				var latlong = utils
-						.splitLatlong($scope.activeTrips[idx].vehicleLatLong);
-				pinsArr.push({
-					latitude : latlong.latitude,
-					longitude : latlong.longitude,
-					description : '<b>'
-							+ $scope.activeTrips[idx].routeShortName
-							+ '</b><br/>' + 'Destination: '
-							+ $scope.activeTrips[idx].destinationStopName,
-					pngFile : 'img/bus.png'
-				});
-			}
+								$scope.calculateSelectedActiveTrips();
+								$scope.refreshMap();
+							});
+						}
 
-			$scope.mapData.pins = pinsArr;
-		}
-		
-		$scope.getLatLongForPoint = function(pointdecl) {
-			alert(pointdecl.substring(7, pointdecl.length - 1)
-					.replace(' ', ','));
-			return pointdecl.substring(7, pointdecl.length - 1).replace(' ',
-					',');
-		}
+						$scope.calculateSelectedActiveTrips = function() {
+							$scope.selectedRoutes = [];
+							for (idx = 0; idx < $scope.routes.length; ++idx) {
+								if ($scope.routes[idx].onmap) {
+									$scope.selectedRoutes
+											.push($scope.routes[idx].shortName);
+								}
+							}
+							$scope.selectedActiveTrips = [];
+							for (idx = 0; idx < $scope.activeTrips.length; ++idx) {
 
+								if ($scope.selectedRoutes != null
+										&& $scope.selectedRoutes.length !== 0
+										&& $scope.selectedRoutes
+												.indexOf($scope.activeTrips[idx].routeShortName) < 0) {
+									continue;
+								}
+								$scope.selectedActiveTrips
+										.push($scope.activeTrips[idx]);
+							}
+						}
 
-		// This is where the polling is set up
-		$scope.updateData();
-		$scope.cancelUpdateData = $interval($scope.updateData, 30 * 1000);
+						$scope.onRouteSelectionChanged = function() {
+							$scope.calculateSelectedActiveTrips();
+							$scope.refreshMap();
+						}
 
-		// When the user navigates away we'll cancel the polling
-		$scope.$on('$destroy', function iVeBeenDismissed() {
-			$interval.cancel($scope.cancelUpdateData);
-		});
+						$scope.refreshMap = function() {
+							if ($scope.mapData == null
+									|| $scope.mapData.view == null) {
+								$scope.mapData = {
+									view : {
+										latitude : 53.27452,
+										longitude : -9.04784,
+										zoom : 12
+									}
+								};
+							}
 
-	});
+							var pinsArr = [];
+							for (idx = 0; idx < $scope.selectedActiveTrips.length; ++idx) {
+
+								var latlong = utils
+										.splitLatlong($scope.selectedActiveTrips[idx].vehicleLatLong);
+								pinsArr
+										.push({
+											latitude : latlong.latitude,
+											longitude : latlong.longitude,
+											description : '<b>'
+													+ $scope.selectedActiveTrips[idx].routeShortName
+													+ '</b><br/>'
+													+ 'Destination: '
+													+ $scope.selectedActiveTrips[idx].destinationStopName,
+											pngFile : 'img/bus.png'
+										});
+							}
+
+							$scope.mapData.pins = pinsArr;
+						}
+
+						$scope.getLatLongForPoint = function(pointdecl) {
+							alert(pointdecl.substring(7, pointdecl.length - 1)
+									.replace(' ', ','));
+							return pointdecl.substring(7, pointdecl.length - 1)
+									.replace(' ', ',');
+						}
+
+						// This is where the polling is set up
+						$scope.updateData();
+						$scope.cancelUpdateData = $interval($scope.updateData,
+								30 * 1000);
+
+						// When the user navigates away we'll cancel the polling
+						$scope.$on('$destroy', function iVeBeenDismissed() {
+							$interval.cancel($scope.cancelUpdateData);
+						});
+
+					});
 
 	app.controller('TripDetailsController', function($scope, $http, $interval,
 			$routeParams) {

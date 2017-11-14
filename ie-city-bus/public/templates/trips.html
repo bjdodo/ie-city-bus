@@ -20,7 +20,7 @@
 					<th>Route</th>
 					<th>Origin</th>
 					<th>Destination</th>
-					<th class="center">Map</th>
+					<!-- <th class="center">Map</th> -->
 					<th class="center">Nearest stop</th>
 					<th>Start</th>
 					<th>Delay</th>
@@ -29,13 +29,13 @@
 			</thead>
 			
 			<!-- ng-show="selectedRoutes.length === 0 || selectedRoutes.indexOf(trip.routeShortName) >= 0" -->
-			<tbody ng-repeat="trip in activeTrips">
+			<tbody ng-repeat="trip in selectedActiveTrips">
 				<tr>
 					<td>{{trip.routeShortName}}</td>
 					<td>{{trip.originStopName}}</td>
 					<td>{{trip.destinationStopName}}</td>
-					<td class="center"><a target="_blank"
-						href="{{trip.vehicleLatLong | pointToMapUrl}}">map</a></td>
+					<!-- <td class="center"><a target="_blank"
+						href="{{trip.vehicleLatLong | pointToMapUrl}}">map</a></td> -->
 					<td>{{trip.nearestStopPointName}}</td>
 					<td>{{trip.scheduledStart.epochSecond*1000 | date: 'HH:mm' }}</td>
 					<td>{{((trip.actualFinish.epochSecond-trip.scheduledFinish.epochSecond)/60).toFixed(0)}}
