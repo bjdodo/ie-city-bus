@@ -5,7 +5,7 @@
 
 		<a href="#">&lt; Back</a>
 
-		<div ng-show="tripData.routeShortName != null">
+		<div class="col-lg-12" ng-show="tripData.routeShortName != null">
 
 			<table style="width: 100%">
 				<tr>
@@ -15,22 +15,22 @@
 			</table>
 		</div>
 
-		<div ng-show="tripData.routeShortName == null">Trip has finished
+		<div class="col-lg-12" ng-show="tripData.routeShortName == null">Trip has finished
 		</div>
 
-		<div>
+		<div class="col-lg-12">
 			<open-street-map model="mapData" container-div-id='mapdiv' ng-show='!!mapData && !!mapData.view' />
 
 			<table class="maintable">
 				<thead>
 					<tr>
 						<th colspan="2">Stop</th>
-						<th class="center">Scheduled</th>
+						<th class="center"><span class="d-none d-sm-block">Scheduled</span><span class="d-sm-none">Sch.</span></th>
 						<th class="center"
 							title="Provided by Bus Eireann. Times in the past are recorded, in the future calculated.">Actual</th>
 						<th class="center"
-							title="Line of sight distance between the bus and the stop">Bus
-							distance</th>
+							title="Line of sight distance between the bus and the stop">
+								<span class="d-none d-sm-block">Bus distance</span><span class="d-sm-none">Bus dist.</span></th>
 					</tr>
 				</thead>
 				<tbody>

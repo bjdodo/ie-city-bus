@@ -22,7 +22,7 @@
 					<tr>
 						<!--<th>Trip</th> -->
 						<th>Route</th>
-						<th class="hidden-xs hidden-sm">Origin</th>
+						<th class="d-none d-sm-block">Origin</th>
 						<th>Destination</th>
 						
 						<th>Nearest stop</th>
@@ -36,12 +36,12 @@
 				<tbody>
 					<tr ng-repeat="trip in selectedActiveTrips">
 						<td><a href="#/tripdetails/{{trip.tripId}}">{{trip.routeShortName}}</a></td>
-						<td class="hidden-xs hidden-sm">{{trip.originStopName}}</td>
+						<td class="d-none d-sm-block">{{trip.originStopName}}</td>
 						<td>{{trip.destinationStopName}}</td>
 						<td>{{trip.nearestStopPointName}}</td>
 						<td>{{trip.scheduledStart * 1000 | date: 'HH:mm' }}</td>
 						<td>{{((trip.actualFinish-trip.scheduledFinish)/60).toFixed(0)}}
-							min(s)</td>
+							<span class="d-none d-sm-block">min(s)</span><span class="d-sm-none">m</span></td>
 						<!-- <td class="center"><a href="#/tripdetails/{{trip.tripId}}">details</a></td> -->
 					</tr>
 				</tbody>
