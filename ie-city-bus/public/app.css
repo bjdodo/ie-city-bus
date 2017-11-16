@@ -1,68 +1,110 @@
-body
-{
-	padding-top: 20px;
-	padding-bottom: 20px;
+/******* page *******/
+body {
 	background-color: #bbb;
 }
 
-.subpagediv
-{
+.subpagediv {
 	font-size: 14px;
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 }
 
-.footerdiv
-{
+.footerdiv {
+	
 }
 
+.container-fluid {
+	padding-left: 0px;
+	padding-right: 0px;
+}
 
-.maintable
-{
+@media ( min-width : 992px) {
+	body {
+		padding-top: 20px;
+		padding-bottom: 20px;
+	}
+	.container-fluid {
+		padding-left: 50px;
+		padding-right: 50px;
+	}
+}
+
+@media ( min-width : 1500px) {
+	.container-fluid {
+		padding-left: 150px;
+		padding-right: 150px;
+	}
+}
+
+/******* table *******/
+.maintable {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-	font-size: 12px;
+	font-size: 10px;
 	text-align: left;
 	border-collapse: collapse;
 	border: 1px solid #6c9;
 	width: 100%;
 }
-.maintable th
-{
+
+.maintable th {
 	padding: 6px 4px 6px 4px;
 	font-weight: normal;
-	font-size: 14px;
+	font-size: 12px;
 	color: #093;
 	border-bottom: 1px dashed #6c9;
 }
-.maintable th.center
-{
-	text-align:center;
+
+@media ( min-width : 768px) {
+	.maintable {
+		font-size: 12px;
+	}
+	.maintable th {
+		font-size: 14px;
+	}
 }
 
-.maintable td
-{
+.maintable th.center {
+	text-align: center;
+}
+
+.maintable td {
 	padding: 4px 6px 4px 6px;
 	color: #696;
 }
 
-.maintable td.center
-{
-	text-align:center;
+.maintable td.center {
+	text-align: center;
 }
 
-.maintable tbody tr:hover td
-{
+.maintable tbody tr:hover td {
 	color: #393;
 	background: #b0fdb0;
 }
 
-.maintable tr:nth-child(even) {background: #e8ffe8}
-.maintable tr:nth-child(odd) {background: #FFF}
+.maintable tr:nth-child(even) {
+	background: #e8ffe8
+}
 
+.maintable tr:nth-child(odd) {
+	background: #FFF
+}
 
-
-#mapdiv
-{
+/******* map *******/
+#mapdiv {
 	height: 400px;
 }
 
+.markerContent {
+	font-size: 0.75em;
+}
 
+@media ( min-width : 768px) {
+	.markerContent {
+		font-size: 0.85em;
+	}
+}
+
+@media ( min-width : 992px) {
+	.markerContent {
+		font-size: 1em;
+	}
+}

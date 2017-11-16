@@ -161,7 +161,7 @@
 										.push({
 											latitude : latlong.latitude,
 											longitude : latlong.longitude,
-											description : '<b>'
+											description : '<div class="mappinpopup"><b>'
 													+ $scope.selectedActiveTrips[idx].routeShortName
 													+ '</b><br/>'
 													+ 'trip start at '
@@ -170,7 +170,8 @@
 													+ 'from ' + $scope.selectedActiveTrips[idx].originStopName
 													+ '<br/>'
 													+ 'to '
-													+ $scope.selectedActiveTrips[idx].destinationStopName,
+													+ $scope.selectedActiveTrips[idx].destinationStopName
+													+ "</div>",
 													
 											pngFile : 'img/bus.png'
 										});
@@ -228,9 +229,10 @@
 					$scope.mapData.pins = [ {
 						latitude : latlong.latitude,
 						longitude : latlong.longitude,
-						description : '<b>' + $scope.tripData.routeShortName
+						description : '<div class="mappinpopup"><b>' + $scope.tripData.routeShortName
 								+ '</b><br/>' + 'Destination: '
-								+ $scope.tripData.destinationStopName,
+								+ $scope.tripData.destinationStopName 
+								+ '</div>',
 						pngFile : 'img/bus.png'
 					} ];
 
