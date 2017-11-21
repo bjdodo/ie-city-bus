@@ -1,7 +1,6 @@
 package bjdodo.ie_city_bus.service;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import bjdodo.ie_city_bus.model.crud.Route;
@@ -33,9 +31,8 @@ public class DataSavingServiceImpl implements DataSavingService {
 
 	private static final Logger log = LoggerFactory.getLogger(DataSavingServiceImpl.class);
 
-	// This is injected from the config file
-	@Value("${ie_city_bus.monitoredroutes}")
-	String monitoredRoutes;
+	@Autowired
+	private ConfigurationService configurationService;
 
 	@Autowired
 	private DataDownloaderService dataDownloaderService;
@@ -63,7 +60,7 @@ public class DataSavingServiceImpl implements DataSavingService {
 
 		dataDownloaderService.startDownloadBatch();
 
-		List<String> monitoredRoutesLst = Arrays.asList(monitoredRoutes.split(","));
+		List<String> monitoredRoutesLst = configurationService.getMonitoredRoutes();
 
 		Map<String, Route> routesInDb = new HashMap<>();
 		routeRepository.findAll().stream().forEach(item -> routesInDb.put(item.getDuid(), item));

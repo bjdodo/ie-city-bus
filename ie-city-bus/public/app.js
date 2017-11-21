@@ -63,29 +63,24 @@
 		}
 	});
 
-	app.service('busroutes', function($http) {
+	app.service('guiconfiguration', function($http) {
 
 		// This is a singleton that loads once when initialized and never
 		// refreshes
 
-		var routes = null;
-		var getAll = function() {
-			if (routes == null) {
-				var promise = $http.get('api/route');
+		var config = null;
+		var getAll = function(callback) {
+			if (config == null) {
+				var promise = $http.get('api/guiconfiguration');
 				promise.then(function(response) {
-					routes = response.data;
-					routes.sort(function(a, b) {
-						return a.shortName > b.shortName;
-					});
+					config = response.data;
+					callback(config);
 				});
-				return [];
+			} else {
+				callback(config);
 			}
-
-			return routes;
 		};
 
-		// This is when the data gets initialized
-		getAll();
 		return {
 			get : getAll
 		};
@@ -94,7 +89,7 @@
 	app
 			.controller(
 					'TripsController',
-					function($scope, $http, $interval, $filter, busroutes) {
+					function($scope, $http, $interval, $filter, guiconfiguration) {
 						$scope.activeTrips = '';
 
 						$scope.mapData = {
@@ -103,14 +98,32 @@
 						};
 
 						$scope.updateData = function() {
-							// update active trips
-							var promise = $http.get('api/activetrip');
-							promise.then(function(response) {
-								$scope.activeTrips = response.data;
-								$scope.routes = busroutes.get();
-								$scope.calculateSelectedActiveTrips();
-								$scope.refreshMap();
+							
+							guiconfiguration.get(function(config) {
+								
+								// update active trips
+								var promise = $http.get('api/activetrip');
+								promise.then(function(response) {
+									$scope.activeTrips = response.data;
+									$scope.routes = config.monitoredRoutes;
+									if ($scope.mapData == null
+											|| $scope.mapData.view == null) {
+										$scope.mapData = {
+											view : {
+												latitude : config.guiOverviewMapLatitude,
+												longitude : config.guiOverviewMapLongitude,
+												zoom : config.guiOverviewMapZoom
+											}
+										};
+									}
+									
+									$scope.calculateSelectedActiveTrips();
+									$scope.refreshMap();
+								});
+								
 							});
+							
+							
 						}
 
 						$scope.calculateSelectedActiveTrips = function() {
@@ -141,16 +154,7 @@
 						}
 
 						$scope.refreshMap = function() {
-							if ($scope.mapData == null
-									|| $scope.mapData.view == null) {
-								$scope.mapData = {
-									view : {
-										latitude : 53.27452,
-										longitude : -9.04784,
-										zoom : 12
-									}
-								};
-							}
+							
 
 							var pinsArr = [];
 							for (idx = 0; idx < $scope.selectedActiveTrips.length; ++idx) {

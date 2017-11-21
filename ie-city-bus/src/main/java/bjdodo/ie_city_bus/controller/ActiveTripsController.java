@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import bjdodo.ie_city_bus.controller.data.TripPassageData;
 import bjdodo.ie_city_bus.model.ActiveTrip;
 import bjdodo.ie_city_bus.model.TripPassage;
 import bjdodo.ie_city_bus.model.crud.Vehicle;
@@ -65,31 +65,13 @@ public class ActiveTripsController {
 
 	}
 
-	static class TripPassageCtrlData extends TripPassage {
 
-		public TripPassageCtrlData() {
-		}
-
-		public TripPassageCtrlData(TripPassage tripPassage) {
-			BeanUtils.copyProperties(tripPassage, this);
-		}
-
-		private long metersFromVehicle;
-
-		public long getMetersFromVehicle() {
-			return metersFromVehicle;
-		}
-
-		public void setMetersFromVehicle(long metersFromVehicle) {
-			this.metersFromVehicle = metersFromVehicle;
-		}
-	}
 	@RequestMapping(value = "/{tripId}/passages", method = RequestMethod.GET)
-	public List<TripPassageCtrlData> getTripPassages(@PathVariable(required = true) Long tripId) {
+	public List<TripPassageData> getTripPassages(@PathVariable(required = true) Long tripId) {
 
 		log.info("ActiveTripsController.getTripPassages " + tripId);
 
-		List<TripPassageCtrlData> ret = new ArrayList<>();
+		List<TripPassageData> ret = new ArrayList<>();
 
 		List<TripPassage> passages = activeTripsRepository.getTripPassages(tripId);
 		List<Vehicle> vehicles = vehicleRepository.findByCurrentTripId(tripId);
@@ -105,7 +87,7 @@ public class ActiveTripsController {
 		}
 
 		for (TripPassage tripPassage : passages) {
-			TripPassageCtrlData tpc = new TripPassageCtrlData(tripPassage);
+			TripPassageData tpc = new TripPassageData(tripPassage);
 
 			if (vehicle != null) {
 				Tuple<Double, Double> vehicleLatLong = Utils.getPointFromDBPoint(vehicle.getLatLong());
