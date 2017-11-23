@@ -29,9 +29,6 @@ function OSMWrapper() {
 			})
 		};
 
-		function pinSelected() {
-			
-		}
 		function createPopup(feature) {
 			feature.popup = new OpenLayers.Popup.FramedCloud("pop",
 			// feature.popup = new OpenLayers.Popup("pop", 
@@ -41,12 +38,20 @@ function OSMWrapper() {
 					true, function() {
 						controls['selector'].unselectAll();
 					});
+			
+			if (feature.attributes.onSelectCB != null) {
+				feature.attributes.onSelectCB(feature.attributes.vehicleId, true);
+			}
 			// feature.popup.addCloseBox();
 			//feature.popup.closeOnMove = true;
 			map.addPopup(feature.popup);
 		}
 
 		function destroyPopup(feature) {
+			if (feature.attributes.onSelectCB != null) {
+				feature.attributes.onSelectCB(feature.attributes.vehicleId, false);
+			}
+			
 			feature.popup.destroy();
 			feature.popup = null;
 		}
@@ -60,11 +65,13 @@ function OSMWrapper() {
 		vectorLayer.removeAllFeatures();
 	}
 
-	var osm_addFeature = function(lat, lon, description, pngFile) {
+	var osm_addFeature = function(lat, lon, vehicleId, description, pngFile, onSelectCB) {
 		var feature = new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.Point(lon, lat).transform(epsg4326,
 						projectTo), {
-					description : description
+					description : description,
+					vehicleId : vehicleId,
+					onSelectCB : onSelectCB
 				}, {
 					externalGraphic : pngFile,
 					graphicHeight : 25,

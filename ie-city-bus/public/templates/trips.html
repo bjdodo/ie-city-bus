@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html ng-app="myApp">
 
+<head>
+<style>
+#mapdiv {
+	height: 50vh;
+}
+</style>
+</head>
+
 <body>
 	<div class="subpagediv container-fluid">
 
@@ -12,7 +20,7 @@
 
 		<div class="col-lg-12">
 			<open-street-map model="mapData" container-div-id='mapdiv'
-				ng-show='!!mapData && !!mapData.view' />
+				ng-show='!!mapData && !!mapData.view' on-pin-selected="mapPinSelected(vehicleId, selected)" />
 
 		</div>
 		
@@ -35,7 +43,7 @@
 
 				<!-- ng-show="selectedRoutes.length === 0 || selectedRoutes.indexOf(trip.routeShortName) >= 0" -->
 				<tbody>
-					<tr ng-repeat="trip in selectedActiveTrips">
+					<tr id="vehicles_row_{{trip.vehicleId}}"  ng-repeat="trip in selectedActiveTrips">
 						<td><a href="#/tripdetails/{{trip.tripId}}">{{trip.routeShortName}}</a></td>
 						<!-- <td class="d-none d-sm-block">{{trip.originStopName}}</td> -->
 						<td class="hidden-xs">{{trip.originStopName}}</td>

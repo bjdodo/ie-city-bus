@@ -80,6 +80,10 @@ body {
 	background: #b0fdb0;
 }
 
+.pinselected {
+	border: solid 2px red;
+}
+
 .maintable tr:nth-child(even) {
 	background: #e8ffe8
 }
@@ -89,9 +93,6 @@ body {
 }
 
 /******* map *******/
-#mapdiv {
-	height: 400px;
-}
 
 .markerContent {
 	font-size: 0.75em;
