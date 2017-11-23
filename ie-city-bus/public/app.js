@@ -240,6 +240,10 @@
 						pngFile : 'img/bus.png'
 					} ];
 
+					
+				}
+				if (($scope.tripData == null || $scope.tripData.routeShortName == null) && $scope.cancelUpdateData != null) {
+					$interval.cancel($scope.cancelUpdateData);
 				}
 			});
 
