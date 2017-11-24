@@ -12,4 +12,8 @@ public interface ConfigurationService {
 
 	List<String> getMonitoredRoutes();
 
+	Long getMaxTripAgeDays();
+
+	String getBuildVersion();
+
 }

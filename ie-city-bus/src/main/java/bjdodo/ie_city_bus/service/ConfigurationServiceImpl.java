@@ -25,6 +25,14 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		return Arrays.asList(monitoredRoutes.split(","));
 	}
 
+	public Long getMaxTripAgeDays() {
+		return Long.parseLong(maxTripAgeDays);
+	}
+
+	public String getBuildVersion() {
+		return buildVersion;
+	}
+
 	@Value("${ie_city_bus.gui.overviewmap.latitude}")
 	private String guiOverviewMapLatitude;
 
@@ -36,5 +44,11 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Value("${ie_city_bus.monitoredroutes}")
 	private String monitoredRoutes;
+
+	@Value("${ie_city_bus.maxtripagedays}")
+	private String maxTripAgeDays;
+
+	@Value("${build.version}")
+	private String buildVersion;
 
 }

@@ -38,6 +38,14 @@ public class GuiConfigurationData {
 		this.monitoredRoutes = monitoredRoutes;
 	}
 
+	public String getBuildVersion() {
+		return buildVersion;
+	}
+
+	public void setBuildVersion(String buildVersion) {
+		this.buildVersion = buildVersion;
+	}
+
 	private Double guiOverviewMapLatitude;
 
 	private Double guiOverviewMapLongitude;
@@ -45,4 +53,9 @@ public class GuiConfigurationData {
 	private Long guiOverviewMapZoom;
 
 	private List<Route> monitoredRoutes;
+
+	private String buildVersion;
+
+
+
 }

@@ -38,6 +38,7 @@ public class GuiConfigurationController {
 			}
 		}
 		ret.setMonitoredRoutes(configuredRoutes);
+		ret.setBuildVersion(configurationService.getBuildVersion());
 
 		return ret;
 	}

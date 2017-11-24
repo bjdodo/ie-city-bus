@@ -87,4 +87,14 @@ public class CustomDBStatementCalls {
 		q.setParameter("referenceTime", Instant.now().minusSeconds(1800));
 		return q.executeUpdate();
 	}
+
+	@Transactional
+	public int deleteOldTrips(long maxTripAgeSec) {
+
+		Query q = entityManager
+				.createQuery("delete from Trip t where t.finished=1 and t.scheduledStart<:referenceTime");
+		// Delete trips that are considered too old by configuration
+		q.setParameter("referenceTime", Instant.now().minusSeconds(maxTripAgeSec));
+		return q.executeUpdate();
+	}
 }

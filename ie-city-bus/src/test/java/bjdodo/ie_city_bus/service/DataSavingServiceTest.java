@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import bjdodo.ie_city_bus.repository.crud.RouteRepository;
 import bjdodo.ie_city_bus.repository.crud.StopPassageRepository;
@@ -24,6 +23,8 @@ public class DataSavingServiceTest {
 
 	@InjectMocks
 	private DataSavingServiceImpl dataSavingServiceImpl;
+	@Mock
+	private ConfigurationServiceImpl configurationServiceImpl;
 	@Mock
 	private DataDownloaderServiceImpl dataDownloaderServiceImpl;
 	@Mock
@@ -95,8 +96,8 @@ public class DataSavingServiceTest {
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		ReflectionTestUtils.setField(dataSavingServiceImpl, "monitoredRoutes",
-				"401,402,403,404,405,407,409");
+		// ReflectionTestUtils.setField(dataSavingServiceImpl, "monitoredRoutes",
+		// "401,402,403,404,405,407,409");
 	}
 
 	@Test

@@ -4,7 +4,7 @@
 
 	<groupId>bjdodo</groupId>
 	<artifactId>ie-city-bus</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>ie-city-bus</name>
@@ -81,7 +81,7 @@
 			<artifactId>json</artifactId>
 			<version>20170516</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
@@ -117,9 +117,15 @@
 		</dependency>
 
 	</dependencies>
-	
+
 	<!-- https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html -->
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -134,5 +140,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>

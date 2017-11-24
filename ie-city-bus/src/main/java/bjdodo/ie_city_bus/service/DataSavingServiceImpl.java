@@ -294,6 +294,7 @@ public class DataSavingServiceImpl implements DataSavingService {
 
 		customDBStatementCalls.setStaleVehiclesDeleted();
 		tripRepository.closeFinishedTrips();
+		customDBStatementCalls.deleteOldTrips(configurationService.getMaxTripAgeDays() * 24 * 60 * 60);
 
 		log.info("ScheduledTasks downloadData() saving data finished");
 	}
