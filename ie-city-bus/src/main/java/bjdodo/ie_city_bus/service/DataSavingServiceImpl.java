@@ -117,7 +117,6 @@ public class DataSavingServiceImpl implements DataSavingService {
 				continue;
 			}
 
-
 			Map<String, JSONObject> stopPassages = null;
 			try {
 				log.info("Downloading stop passages for trip " + vehicleInDb.getTripDuid());
@@ -219,21 +218,25 @@ public class DataSavingServiceImpl implements DataSavingService {
 				StopPoint stopPointInDb = null;
 				try {
 					stopPoint = stopPoints.get(StopPassage.getJSONStopPointDuid(stopPassage));
-					stopPointInDb = stopPointsInDb.get(StopPassage.getJSONStopPointDuid(stopPassage));
-					if (stopPointInDb == null) {
-						stopPointInDb = new StopPoint();
-					}
-					stopPointInDb.updateFromJson(stopPoint);
-					stopPointInDb = stopPointRepository.saveAndFlush(stopPointInDb);
-					stopPointsInDb.put(stopPointInDb.getDuid(), stopPointInDb);
+					if (stopPoint == null) {
+						log.warn("Invalid stop point duid of stop passage. JSON:\r\n" + stopPassage.toString());
+					} else {
+						stopPointInDb = stopPointsInDb.get(StopPassage.getJSONStopPointDuid(stopPassage));
+						if (stopPointInDb == null) {
+							stopPointInDb = new StopPoint();
+						}
+						stopPointInDb.updateFromJson(stopPoint);
+						stopPointInDb = stopPointRepository.saveAndFlush(stopPointInDb);
+						stopPointsInDb.put(stopPointInDb.getDuid(), stopPointInDb);
 
-					// get the nearest bus stop
-					Tuple<Double, Double> stopLocation = Utils.getPointFromDBPoint(stopPointInDb.getLatLong());
-					double stopDistance = Utils.distFrom(stopLocation.x, stopLocation.y, vehicleLocation.x,
-							vehicleLocation.y);
-					if (nearestStopPointDistance == null || nearestStopPointDistance > stopDistance) {
-						nearestStopPoint = stopPointInDb;
-						nearestStopPointDistance = stopDistance;
+						// get the nearest bus stop
+						Tuple<Double, Double> stopLocation = Utils.getPointFromDBPoint(stopPointInDb.getLatLong());
+						double stopDistance = Utils.distFrom(stopLocation.x, stopLocation.y, vehicleLocation.x,
+								vehicleLocation.y);
+						if (nearestStopPointDistance == null || nearestStopPointDistance > stopDistance) {
+							nearestStopPoint = stopPointInDb;
+							nearestStopPointDistance = stopDistance;
+						}
 					}
 
 				} catch (JSONException ex) {
@@ -249,7 +252,7 @@ public class DataSavingServiceImpl implements DataSavingService {
 					}
 					stopPassageInDb.updateFromJson(stopPassage);
 					stopPassageInDb.setTripId(tripInDb.getId());
-					stopPassageInDb.setStopPointId(stopPointInDb.getId());
+					stopPassageInDb.setStopPointId(stopPointInDb == null ? null : stopPointInDb.getId());
 
 					// // In theory these should match. In practice they do not.
 					// if (!vehicles.containsKey(stopPassageInDb.getVehicleDuid())) {

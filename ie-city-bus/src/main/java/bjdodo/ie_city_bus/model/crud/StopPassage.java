@@ -152,11 +152,11 @@ public class StopPassage {
 		this.tripId = tripId;
 	}
 
-	public long getStopPointId() {
+	public Long getStopPointId() {
 		return stopPointId;
 	}
 
-	public void setStopPointId(long stopPointId) {
+	public void setStopPointId(Long stopPointId) {
 		this.stopPointId = stopPointId;
 	}
 
@@ -182,7 +182,7 @@ public class StopPassage {
 	private Instant actualDeparture;
 
 	private long tripId;
-	private long stopPointId;
+	private Long stopPointId;
 	// private long vehicleId;
 
 	public static String getJSONDuid(JSONObject json) throws JSONException {
