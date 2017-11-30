@@ -211,24 +211,31 @@ public class DataSavingServiceImpl implements DataSavingService {
 			Tuple<Double, Double> vehicleLocation = Utils.getPointFromDBPoint(vehicleInDb.getLatLong());
 			StopPoint nearestStopPoint = null;
 			Double nearestStopPointDistance = null;
-			Map<Instant, List<StopPoint>> tripStopPoints = new HashMap<>();
+			// Map<Instant, List<StopPoint>> tripStopPoints = new HashMap<>();
 			for (JSONObject stopPassage : stopPassages.values()) {
 
 				JSONObject stopPoint = null;
 				StopPoint stopPointInDb = null;
 				try {
-					stopPoint = stopPoints.get(StopPassage.getJSONStopPointDuid(stopPassage));
-					if (stopPoint == null) {
-						log.warn("Invalid stop point duid of stop passage. JSON:\r\n" + stopPassage.toString());
+					String stopPointDuid = StopPassage.getJSONStopPointDuid(stopPassage);
+					stopPoint = stopPoints.get(stopPointDuid);
+					stopPointInDb = stopPointsInDb.get(stopPointDuid);
+
+					if (stopPoint == null && stopPointInDb == null) {
+						log.error("Stop point not known for stop passage " + stopPassage.toString());
 					} else {
-						stopPointInDb = stopPointsInDb.get(StopPassage.getJSONStopPointDuid(stopPassage));
-						if (stopPointInDb == null) {
+
+						if (stopPointInDb == null && stopPoint != null) {
 							stopPointInDb = new StopPoint();
 						}
-						stopPointInDb.updateFromJson(stopPoint);
-						stopPointInDb = stopPointRepository.saveAndFlush(stopPointInDb);
-						stopPointsInDb.put(stopPointInDb.getDuid(), stopPointInDb);
-
+						if (stopPoint != null) {
+							stopPointInDb.updateFromJson(stopPoint);
+							stopPointInDb = stopPointRepository.saveAndFlush(stopPointInDb);
+							stopPointsInDb.put(stopPointInDb.getDuid(), stopPointInDb);
+						}
+						else {
+							log.error("Stop point info not provided by buseireann for stop passage " + stopPassage.toString());
+						}
 						// get the nearest bus stop
 						Tuple<Double, Double> stopLocation = Utils.getPointFromDBPoint(stopPointInDb.getLatLong());
 						double stopDistance = Utils.distFrom(stopLocation.x, stopLocation.y, vehicleLocation.x,
@@ -265,14 +272,14 @@ public class DataSavingServiceImpl implements DataSavingService {
 					stopPassageInDb = stopPassageRepository.saveAndFlush(stopPassageInDb);
 					tripStopPassagesInDb.put(stopPassageInDb.getDuid(), stopPassageInDb);
 
-					if (stopPassageInDb.getScheduledDeparture() == null && stopPoint != null) {
+					if (stopPassageInDb.getScheduledDeparture() == null && stopPointInDb != null) {
 						tripInDb.setDestinationStopName(stopPointInDb.getName());
 					}
 					if (stopPassageInDb.getScheduledDeparture() == null) {
 						tripInDb.setActualFinish(stopPassageInDb.getActualArrival());
 						tripInDb.setScheduledFinish(stopPassageInDb.getScheduledArrival());
 					}
-					if (stopPassageInDb.getScheduledArrival() == null && stopPoint != null) {
+					if (stopPassageInDb.getScheduledArrival() == null && stopPointInDb != null) {
 						tripInDb.setOriginStopName(stopPointInDb.getName());
 					}
 					if (stopPassageInDb.getScheduledArrival() == null) {

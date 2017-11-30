@@ -98,5 +98,7 @@ public class StopPoint {
 	}
 }
 
+//insert into stop_point(duid, name, lat_long, number) values (6350786630982939305, 'Parkmore Rd (Roundabout)', 'POINT (53.299545 -8.987212)' , 635562);
+
 // "bus_stop_5159": {"duid": "6350786630982827515","name": "Tirellan Heights
 // (Ballinfoyle Rd)","lat": 53.29167,"lng": -9.046,"num": 523771}
