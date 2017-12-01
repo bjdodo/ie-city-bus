@@ -80,6 +80,12 @@ body {
 	background: #b0fdb0;
 }
 
+.maintable-pin-img {
+	width: 17px;
+	height: 17px;
+	cursor: pointer;
+}
+
 .pinselected {
 	border: solid 2px red;
 }
@@ -93,7 +99,6 @@ body {
 }
 
 /******* map *******/
-
 .markerContent {
 	font-size: 0.75em;
 }

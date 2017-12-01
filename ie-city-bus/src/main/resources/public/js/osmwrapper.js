@@ -14,9 +14,9 @@ function OSMWrapper() {
 		map.addLayer(new OpenLayers.Layer.OSM());
 
 		epsg4326 = new OpenLayers.Projection("EPSG:4326"); // WGS 1984
-															// projection
+		// projection
 		projectTo = map.getProjectionObject(); // The map projection (Spherical
-												// Mercator)
+		// Mercator)
 
 		vectorLayer = new OpenLayers.Layer.Vector("Overlay");
 		map.addLayer(vectorLayer);
@@ -31,27 +31,30 @@ function OSMWrapper() {
 
 		function createPopup(feature) {
 			feature.popup = new OpenLayers.Popup.FramedCloud("pop",
-			// feature.popup = new OpenLayers.Popup("pop", 
-					feature.geometry.getBounds().getCenterLonLat(), null,
+			// feature.popup = new OpenLayers.Popup("pop",
+			feature.geometry.getBounds().getCenterLonLat(), null,
 					'<div class="markerContent">'
 							+ feature.attributes.description + '</div>', null,
 					true, function() {
 						controls['selector'].unselectAll();
 					});
-			
+			feature.popup.autoSize = true;
+
 			if (feature.attributes.onSelectCB != null) {
-				feature.attributes.onSelectCB(feature.attributes.vehicleId, true);
+				feature.attributes.onSelectCB(feature.attributes.vehicleId,
+						true);
 			}
 			// feature.popup.addCloseBox();
-			//feature.popup.closeOnMove = true;
+			// feature.popup.closeOnMove = true;
 			map.addPopup(feature.popup);
 		}
 
 		function destroyPopup(feature) {
 			if (feature.attributes.onSelectCB != null) {
-				feature.attributes.onSelectCB(feature.attributes.vehicleId, false);
+				feature.attributes.onSelectCB(feature.attributes.vehicleId,
+						false);
 			}
-			
+
 			feature.popup.destroy();
 			feature.popup = null;
 		}
@@ -65,7 +68,8 @@ function OSMWrapper() {
 		vectorLayer.removeAllFeatures();
 	}
 
-	var osm_addFeature = function(lat, lon, vehicleId, description, pngFile, onSelectCB) {
+	var osm_addFeature = function(vehicleId, lat, lon, description, pngFile,
+			onSelectCB) {
 		var feature = new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.Point(lon, lat).transform(epsg4326,
 						projectTo), {
@@ -83,17 +87,42 @@ function OSMWrapper() {
 		vectorLayer.addFeatures(feature);
 	}
 
+	var osm_selectFeature = function(vehicleId) {
+
+		for (idx = 0; idx < vectorLayer.features.length; idx++) {
+			var feature = vectorLayer.features[idx];
+			if (feature.attributes.vehicleId === vehicleId) {
+				var currentlySelected = 
+					vectorLayer.selectedFeatures.length > 0 &&
+					vectorLayer.selectedFeatures[0].attributes.vehicleId === vehicleId;
+				controls.selector.unselectAll();
+				if (!currentlySelected) {
+					controls.selector.select(feature);
+					osm_setCenter(feature.attributes.latitude,
+							feature.attributes.longitude, null);
+				}
+				break;
+			}
+		}
+	}
+
 	var osm_setCenter = function(lat, lon, zoom) {
+
 		var lonLat = new OpenLayers.LonLat(lon, lat).transform(epsg4326,
 				projectTo);
 
-		map.setCenter(lonLat, zoom);
+		if (zoom != null) {
+			map.setCenter(lonLat, zoom);
+		} else {
+			map.setCenter(lonLat);
+		}
 	}
 
 	return {
 		'create' : osm_create,
-		'removeAllPins' : osm_removeAllFeatures,
 		'addPin' : osm_addFeature,
-		'setCenter' : osm_setCenter		
+		'selectPin' : osm_selectFeature,
+		'removeAllPins' : osm_removeAllFeatures,
+		'setCenter' : osm_setCenter
 	};
 }

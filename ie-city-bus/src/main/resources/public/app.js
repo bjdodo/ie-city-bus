@@ -32,7 +32,8 @@
 			scope : {
 				model : '=',
 				containerDivId : '@',
-				onPinSelected : '&'
+				emitOnPinSelected : '@',
+				listenOnPinSelected : '@' 
 			},
 			link : function(scope, element, attrs, controller) {
 
@@ -54,20 +55,27 @@
 					console.log("watch triggered for pins");
 					scope.osm.removeAllPins();
 					for (var idx = 0; idx < scope.model.pins.length; ++idx) {
-						scope.osm.addPin(scope.model.pins[idx].latitude,
+						scope.osm.addPin(scope.model.pins[idx].vehicleId,
+								scope.model.pins[idx].latitude,
 								scope.model.pins[idx].longitude,
-								scope.model.pins[idx].vehicleId,
 								scope.model.pins[idx].description,
-								scope.model.pins[idx].pngFile,
-								scope.onPinSelected == null ? null : function(
+								scope.model.pins[idx].pngFile, function(
 										vehicleId, selected) {
-									scope.onPinSelected({
-										vehicleId : vehicleId,
-										selected : selected
-									});
+									if (scope.emitOnPinSelected != null) {
+										scope.$emit(scope.emitOnPinSelected, {
+											vehicleId : vehicleId,
+											selected : selected
+										});
+									}
 								});
 					}
 				}, true);
+				
+				scope.$on(scope.listenOnPinSelected,
+						function(event, data) {
+					scope.osm.selectPin(data.vehicleId);
+				});
+
 			}
 		}
 	});
@@ -107,22 +115,30 @@
 							pins : []
 						};
 
-						$scope.mapPinSelected = function(vehicleId, selected) {
-							for (idx = 0; idx < $scope.selectedActiveTrips.length; ++idx) {
-								if ($scope.selectedActiveTrips[idx].vehicleId === vehicleId) {
-									tableRow = document
-											.getElementById('vehicles_row_'
-													+ vehicleId);
-									if (tableRow != null) {
-										if (selected) {
-											tableRow.className = 'pinselected';
-										} else {
-											tableRow.className = '';
-										}
-									}
-									break;
-								}
-							}
+						// $scope.mapPinSelected = function(vehicleId, selected)
+						// {
+						$scope
+								.$on(
+										'vehicle.mapPinSelected',
+										function(event, data) {
+											for (idx = 0; idx < $scope.selectedActiveTrips.length; ++idx) {
+												if ($scope.selectedActiveTrips[idx].vehicleId === data.vehicleId) {
+													tableRow = document
+															.getElementById('vehicles_row_'
+																	+ data.vehicleId);
+													if (tableRow != null) {
+														if (data.selected) {
+															tableRow.className = 'pinselected';
+														} else {
+															tableRow.className = '';
+														}
+													}
+													break;
+												}
+											}
+										});
+						$scope.tablePinSelected = function(vehicleId) {
+							$scope.$broadcast('vehicle.tablePinSelected', { vehicleId: vehicleId });
 						}
 						$scope.updateData = function() {
 
@@ -155,7 +171,7 @@
 
 									});
 
-						}
+						};
 
 						$scope.calculateSelectedActiveTrips = function() {
 							$scope.selectedRoutes = [];
