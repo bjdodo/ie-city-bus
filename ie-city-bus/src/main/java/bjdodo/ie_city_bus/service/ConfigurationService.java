@@ -9,6 +9,8 @@ public interface ConfigurationService {
 	Double getGuiOverviewMapLongitude();
 
 	Long getGuiOverviewMapZoom();
+	
+	Long getGuiSessionExpiryMins();
 
 	List<String> getMonitoredRoutes();
 

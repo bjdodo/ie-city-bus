@@ -5,12 +5,21 @@
 	app.config(function($routeProvider, $locationProvider) {
 		$locationProvider.hashPrefix('');
 		$routeProvider.when("/", {
+			controller : "WelcomeController",
+			templateUrl : "templates/welcome.html"
+		}).when("/trips/", {
 			controller : "TripsController",
 			templateUrl : "templates/trips.html"
 		}).when("/tripdetails/:tripId", {
 			controller : "TripDetailsController",
 			templateUrl : "templates/tripdetails.html"
-		})
+		}).when("/expired/", {
+			controller : "ExpiredController",
+			templateUrl : "templates/expired.html"
+		}).otherwise({
+			redirectTo : '/'
+		});
+
 	});
 	app.filter("pointToMapUrl", function() {
 		return function(pointdecl) {
@@ -33,7 +42,7 @@
 				model : '=',
 				containerDivId : '@',
 				emitOnPinSelected : '@',
-				listenOnPinSelected : '@' 
+				listenOnPinSelected : '@'
 			},
 			link : function(scope, element, attrs, controller) {
 
@@ -70,9 +79,8 @@
 								});
 					}
 				}, true);
-				
-				scope.$on(scope.listenOnPinSelected,
-						function(event, data) {
+
+				scope.$on(scope.listenOnPinSelected, function(event, data) {
 					scope.osm.selectPin(data.vehicleId);
 				});
 
@@ -80,7 +88,76 @@
 		}
 	});
 
-	app.service('guiconfiguration', function($http) {
+	app.directive('osmCopyRight', function() {
+		return {
+			restrict : "E",
+			templateUrl : 'templates/osmCopyRight.html'
+		}
+	});
+
+	app
+			.service(
+					'httpwrappersvc',
+					function($http, $window, guiconfigurationsvc) {
+
+						var createTime = Date.now();
+						var lastHref = '';
+						var configuredSessionExpiryMins = null;
+
+						var sessionExpired = function() {
+
+							guiconfigurationsvc
+									.get(function(config) {
+										configuredSessionExpiryMins = config.guiSessionExpiryMins;
+									});
+
+							if (configuredSessionExpiryMins == null) {
+								return Date.now() - createTime > 1000 * 60 * 30;
+							} else {
+								return Date.now() - createTime > 1000 * 60 * configuredSessionExpiryMins;
+							}
+						}
+
+						var get = function(url) {
+							if (sessionExpired()) {
+								if ($window.location.href
+										.indexOf('/#/expired/') === -1) {
+									lastHref = $window.location.href;
+									console
+											.log('httpwrappersvc: lastHref saved: '
+													+ lastHref);
+								}
+								$window.location.href = '/#/expired/';
+							}
+							return $http.get(url);
+						}
+
+						var resetSession = function(restoreHref) {
+							createTime = Date.now();
+							if (restoreHref) {
+								if (lastHref.length > 0) {
+									$window.location.href = lastHref;
+									console
+											.log('httpwrappersvc: lastHref restored: '
+													+ lastHref);
+								} else {
+									$window.location.href = '/#';
+								}
+							}
+						}
+
+						var getLatestHref = function() {
+							return lastHref;
+						}
+
+						return {
+							httpGet : get,
+							resetSession : resetSession,
+							getLatestHref : getLatestHref
+						};
+					});
+
+	app.service('guiconfigurationsvc', function($http) {
 
 		// This is a singleton that loads once when initialized and never
 		// refreshes
@@ -98,16 +175,39 @@
 			}
 		};
 
+		var getForced = function(callback) {
+			var promise = $http.get('api/guiconfiguration');
+			promise.then(function(response) {
+				callback(config, response.data);
+				config = response.data;
+			});
+		}
+
 		return {
-			get : getAll
+			get : getAll,
+			getForced : getForced
 		};
+	});
+
+	app.controller('IndexController', function($scope, guiconfigurationsvc) {
+		guiconfigurationsvc.get(function(config) {
+			$scope.appVersion = config.buildVersion;
+		});
+	});
+
+	app.controller('WelcomeController', function($scope, httpwrappersvc,
+			$interval, $filter, guiconfigurationsvc) {
+
 	});
 
 	app
 			.controller(
 					'TripsController',
-					function($scope, $http, $interval, $filter,
-							guiconfiguration) {
+					function($scope, httpwrappersvc, $interval, $filter,
+							guiconfigurationsvc) {
+
+						httpwrappersvc.resetSession(false);
+
 						$scope.activeTrips = '';
 
 						$scope.mapData = {
@@ -115,8 +215,6 @@
 							pins : []
 						};
 
-						// $scope.mapPinSelected = function(vehicleId, selected)
-						// {
 						$scope
 								.$on(
 										'vehicle.mapPinSelected',
@@ -138,16 +236,18 @@
 											}
 										});
 						$scope.tablePinSelected = function(vehicleId) {
-							$scope.$broadcast('vehicle.tablePinSelected', { vehicleId: vehicleId });
+							$scope.$broadcast('vehicle.tablePinSelected', {
+								vehicleId : vehicleId
+							});
 						}
 						$scope.updateData = function() {
 
-							guiconfiguration
+							guiconfigurationsvc
 									.get(function(config) {
 
 										// update active trips
-										var promise = $http
-												.get('api/activetrip');
+										var promise = httpwrappersvc
+												.httpGet('api/activetrip');
 										promise
 												.then(function(response) {
 													$scope.activeTrips = response.data;
@@ -252,7 +352,10 @@
 	app
 			.controller(
 					'TripDetailsController',
-					function($scope, $http, $interval, $routeParams) {
+					function($scope, httpwrappersvc, $interval, $routeParams) {
+
+						httpwrappersvc.resetSession(false);
+
 						$scope.tripId = $routeParams.tripId;
 						$scope.tripPassage = '';
 
@@ -262,8 +365,8 @@
 						};
 
 						$scope.updateData = function() {
-							var promiseTrip = $http.get('api/activetrip/'
-									+ $scope.tripId);
+							var promiseTrip = httpwrappersvc
+									.httpGet('api/activetrip/' + $scope.tripId);
 							promiseTrip
 									.then(function(response) {
 										$scope.tripData = response.data.length == 1 ? response.data[0]
@@ -301,8 +404,9 @@
 										}
 									});
 
-							var promisePassages = $http.get('api/activetrip/'
-									+ $scope.tripId + '/passages');
+							var promisePassages = httpwrappersvc
+									.httpGet('api/activetrip/' + $scope.tripId
+											+ '/passages');
 							promisePassages.then(function(response) {
 								$scope.tripPassages = response.data;
 							});
@@ -317,5 +421,24 @@
 						});
 
 					});
+
+	app.controller('ExpiredController', function($scope, httpwrappersvc,
+			guiconfigurationsvc) {
+
+		guiconfigurationsvc.getForced(function(oldconfig, newconfig) {
+			if (oldconfig != null && oldconfig.buildVersion != null
+					&& oldconfig.buildVersion !== newconfig.buildVersion) {
+				location.reload(true);
+			}
+		});
+
+		$scope.isLatestHrefKnown = function() {
+			httpwrappersvc.getLatestHref().length > 0;
+		}
+		$scope.resetSession = function() {
+			httpwrappersvc.resetSession(true);
+		}
+
+	});
 
 }());

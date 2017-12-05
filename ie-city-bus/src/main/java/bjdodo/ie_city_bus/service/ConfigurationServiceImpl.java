@@ -21,6 +21,10 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 		return Long.parseLong(guiOverviewMapZoom);
 	}
 
+	public Long getGuiSessionExpiryMins() {
+		return Long.parseLong(guiSessionExpiryMins);
+	}
+	
 	public List<String> getMonitoredRoutes() {
 		return Arrays.asList(monitoredRoutes.split(","));
 	}
@@ -28,19 +32,10 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 	public Long getMaxTripAgeDays() {
 		return Long.parseLong(maxTripAgeDays);
 	}
-
+	
 	public String getBuildVersion() {
 		return buildVersion;
 	}
-
-	@Value("${ie_city_bus.gui.overviewmap.latitude}")
-	private String guiOverviewMapLatitude;
-
-	@Value("${ie_city_bus.gui.overviewmap.longitude}")
-	private String guiOverviewMapLongitude;
-
-	@Value("${ie_city_bus.gui.overviewmap.zoom}")
-	private String guiOverviewMapZoom;
 
 	@Value("${ie_city_bus.monitoredroutes}")
 	private String monitoredRoutes;
@@ -50,5 +45,16 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Value("${build.version}")
 	private String buildVersion;
+	
+	@Value("${ie_city_bus.gui.overviewmap.latitude}")
+	private String guiOverviewMapLatitude;
 
+	@Value("${ie_city_bus.gui.overviewmap.longitude}")
+	private String guiOverviewMapLongitude;
+
+	@Value("${ie_city_bus.gui.overviewmap.zoom}")
+	private String guiOverviewMapZoom;
+
+	@Value("${ie_city_bus.gui.overviewmap.sessionexpirymins}")
+	private String guiSessionExpiryMins;
 }

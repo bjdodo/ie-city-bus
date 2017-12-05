@@ -41,7 +41,7 @@ body {
 	font-size: 10px;
 	text-align: left;
 	border-collapse: collapse;
-	border: 1px solid #6c9;
+	/*border: 1px solid #6c9;*/
 	width: 100%;
 }
 
@@ -49,8 +49,9 @@ body {
 	padding: 6px 4px 6px 4px;
 	font-weight: normal;
 	font-size: 12px;
-	color: #093;
-	border-bottom: 1px dashed #6c9;
+	color: #0C3;
+	background: #554;
+	/*border-bottom: 1px dashed #6c9;*/
 }
 
 @media ( min-width : 768px) {
@@ -75,11 +76,6 @@ body {
 	text-align: center;
 }
 
-.maintable tbody tr:hover td {
-	color: #393;
-	background: #b0fdb0;
-}
-
 .maintable-pin-img {
 	width: 17px;
 	height: 17px;
@@ -91,11 +87,16 @@ body {
 }
 
 .maintable tr:nth-child(even) {
-	background: #e8ffe8
+	background: #EEE;
 }
 
 .maintable tr:nth-child(odd) {
-	background: #FFF
+	background: #e8ffe8;
+}
+
+.maintable tbody tr:hover td {
+	color: #393;
+	background: #b0fdb0;
 }
 
 /******* map *******/

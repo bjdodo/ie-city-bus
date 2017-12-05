@@ -1,5 +1,13 @@
 package bjdodo.ie_city_bus.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,8 +30,8 @@ public class Utils {
 		double earthRadius = 6371000; // meters
 		double dLat = Math.toRadians(f - d);
 		double dLng = Math.toRadians(g - e);
-		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(d))
-				* Math.cos(Math.toRadians(f)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+				+ Math.cos(Math.toRadians(d)) * Math.cos(Math.toRadians(f)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		double dist = (earthRadius * c);
 
@@ -56,5 +64,24 @@ public class Utils {
 			throw new IllegalArgumentException("Wrong dbPoint " + dbPoint);
 		}
 		return new Tuple<Double, Double>(Double.parseDouble(points[0]), Double.parseDouble(points[1]));
+	}
+
+	public static <T> byte[] serializeToBytes(T o) throws IOException {
+
+		ObjectOutput out = null;
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+			out = new ObjectOutputStream(bos);
+			out.writeObject(o);
+			out.flush();
+			return bos.toByteArray();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T serializeFromBytes(byte[] arr) throws ClassNotFoundException, IOException {
+		ByteArrayInputStream bis = new ByteArrayInputStream(arr);
+		try (ObjectInput in = new ObjectInputStream(bis)) {
+			return (T) in.readObject();
+		}
 	}
 }

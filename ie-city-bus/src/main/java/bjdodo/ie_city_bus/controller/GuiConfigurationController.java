@@ -30,6 +30,7 @@ public class GuiConfigurationController {
 		ret.setGuiOverviewMapLatitude(configurationService.getGuiOverviewMapLatitude());
 		ret.setGuiOverviewMapLongitude(configurationService.getGuiOverviewMapLongitude());
 		ret.setGuiOverviewMapZoom(configurationService.getGuiOverviewMapZoom());
+		ret.setGuiSessionExpiryMins(configurationService.getGuiSessionExpiryMins());
 
 		List<Route> configuredRoutes = new ArrayList<>();
 		for (Route r : routeRepository.findAll()) {

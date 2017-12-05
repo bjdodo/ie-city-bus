@@ -31,13 +31,10 @@
 
 	<div ng-view></div>
 
-	<div class="footerdiv container-fluid" style="background-color: ccc;">
+	<div ng-app="myApp" ng-controller="IndexController">
 		<div style="text-align: center;">
-			<small>This website uses <a target="_blank"
-				href='http://www.openstreetmap.org'>OpenStreetMap</a> for displaying
-				maps. Please see their <a target="_blank"
-				href='http://www.openstreetmap.org/copyright'>copyright</a>
-				information.
+			<small>
+				<div>Version: {{appVersion}}</div>
 			</small>
 		</div>
 	</div>

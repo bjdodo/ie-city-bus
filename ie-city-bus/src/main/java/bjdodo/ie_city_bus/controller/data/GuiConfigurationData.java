@@ -46,6 +46,14 @@ public class GuiConfigurationData {
 		this.buildVersion = buildVersion;
 	}
 
+	public Long getGuiSessionExpiryMins() {
+		return guiSessionExpiryMins;
+	}
+
+	public void setGuiSessionExpiryMins(Long guiSessionExpiryMins) {
+		this.guiSessionExpiryMins = guiSessionExpiryMins;
+	}
+
 	private Double guiOverviewMapLatitude;
 
 	private Double guiOverviewMapLongitude;
@@ -56,6 +64,6 @@ public class GuiConfigurationData {
 
 	private String buildVersion;
 
-
+	private Long guiSessionExpiryMins;
 
 }
