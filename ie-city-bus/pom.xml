@@ -4,7 +4,7 @@
 
 	<groupId>bjdodo</groupId>
 	<artifactId>ie-city-bus</artifactId>
-	<version>1.0.4</version>
+	<version>1.0.6</version>
 	<packaging>jar</packaging>
 
 	<name>ie-city-bus</name>
@@ -120,12 +120,6 @@
 
 	<!-- https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html -->
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

@@ -21,6 +21,7 @@
 		});
 
 	});
+	
 	app.filter("pointToMapUrl", function() {
 		return function(pointdecl) {
 			if (pointdecl == null) {
@@ -195,250 +196,257 @@
 		});
 	});
 
-	app.controller('WelcomeController', function($scope, httpwrappersvc,
-			$interval, $filter, guiconfigurationsvc) {
+//	app.controller('WelcomeController', function($scope, httpwrappersvc,
+//			$interval, $filter, guiconfigurationsvc) {
+//
+//	});
+//	
+	
 
-	});
+//	app
+//			.controller(
+//					'TripsController',
+//					function($scope, httpwrappersvc, $interval, $filter,
+//							guiconfigurationsvc) {
+//
+//						httpwrappersvc.resetSession(false);
+//
+//						$scope.activeTrips = '';
+//
+//						$scope.mapData = {
+//							view : null,
+//							pins : []
+//						};
+//
+//						$scope
+//								.$on(
+//										'vehicle.mapPinSelected',
+//										function(event, data) {
+//											for (idx = 0; idx < $scope.selectedActiveTrips.length; ++idx) {
+//												if ($scope.selectedActiveTrips[idx].vehicleId === data.vehicleId) {
+//													tableRow = document
+//															.getElementById('vehicles_row_'
+//																	+ data.vehicleId);
+//													if (tableRow != null) {
+//														if (data.selected) {
+//															tableRow.className = 'pinselected';
+//														} else {
+//															tableRow.className = '';
+//														}
+//													}
+//													break;
+//												}
+//											}
+//										});
+//						$scope.tablePinSelected = function(vehicleId) {
+//							$scope.$broadcast('vehicle.tablePinSelected', {
+//								vehicleId : vehicleId
+//							});
+//						}
+//						$scope.updateData = function() {
+//
+//							guiconfigurationsvc
+//									.get(function(config) {
+//
+//										// update active trips
+//										var promise = httpwrappersvc
+//												.httpGet('api/activetrip');
+//										promise
+//												.then(function(response) {
+//													$scope.activeTrips = response.data;
+//													$scope.routes = config.monitoredRoutes;
+//													$scope.selectedPin = null;
+//													if ($scope.mapData == null
+//															|| $scope.mapData.view == null) {
+//														$scope.mapData = {
+//															view : {
+//																latitude : config.guiOverviewMapLatitude,
+//																longitude : config.guiOverviewMapLongitude,
+//																zoom : config.guiOverviewMapZoom
+//															}
+//														};
+//													}
+//
+//													$scope
+//															.calculateSelectedActiveTrips();
+//													$scope.refreshMap();
+//												});
+//
+//									});
+//
+//						};
+//
+//						$scope.calculateSelectedActiveTrips = function() {
+//							$scope.selectedRoutes = [];
+//							for (idx = 0; idx < $scope.routes.length; ++idx) {
+//								if ($scope.routes[idx].onmap) {
+//									$scope.selectedRoutes
+//											.push($scope.routes[idx].shortName);
+//								}
+//							}
+//							$scope.selectedActiveTrips = [];
+//
+//							for (idx = 0; idx < $scope.activeTrips.length; ++idx) {
+//
+//								if ($scope.selectedRoutes != null
+//										&& $scope.selectedRoutes.length !== 0
+//										&& $scope.selectedRoutes
+//												.indexOf($scope.activeTrips[idx].routeShortName) < 0) {
+//									continue;
+//								}
+//								$scope.selectedActiveTrips
+//										.push($scope.activeTrips[idx]);
+//							}
+//
+//						}
+//
+//						$scope.onRouteSelectionChanged = function() {
+//							$scope.calculateSelectedActiveTrips();
+//							$scope.refreshMap();
+//						}
+//
+//						$scope.refreshMap = function() {
+//
+//							var pinsArr = [];
+//							for (idx = 0; idx < $scope.selectedActiveTrips.length; ++idx) {
+//
+//								var latlong = utils
+//										.splitLatlong($scope.selectedActiveTrips[idx].vehicleLatLong);
+//								pinsArr
+//										.push({
+//											latitude : latlong.latitude,
+//											longitude : latlong.longitude,
+//											description : '<div class="mappinpopup"><b>'
+//													+ $scope.selectedActiveTrips[idx].routeShortName
+//													+ '</b><br/>'
+//													+ 'trip start at '
+//													+ $filter('date')
+//															(
+//																	new Date(
+//																			$scope.selectedActiveTrips[idx].scheduledStart * 1000),
+//																	'HH:mm')
+//													+ '<br/>'
+//													+ 'from '
+//													+ $scope.selectedActiveTrips[idx].originStopName
+//													+ '<br/>'
+//													+ 'to '
+//													+ $scope.selectedActiveTrips[idx].destinationStopName
+//													+ "</div>",
+//											vehicleId : $scope.selectedActiveTrips[idx].vehicleId,
+//											pngFile : 'img/bus.png'
+//										});
+//							}
+//
+//							$scope.mapData.pins = pinsArr;
+//						}
+//
+//						// This is where the polling is set up
+//						$scope.updateData();
+//						$scope.cancelUpdateData = $interval($scope.updateData,
+//								30 * 1000);
+//
+//						// When the user navigates away we'll cancel the polling
+//						$scope.$on('$destroy', function iVeBeenDismissed() {
+//							$interval.cancel($scope.cancelUpdateData);
+//						});
+//
+//					});
+	
+	
+	
 
-	app
-			.controller(
-					'TripsController',
-					function($scope, httpwrappersvc, $interval, $filter,
-							guiconfigurationsvc) {
-
-						httpwrappersvc.resetSession(false);
-
-						$scope.activeTrips = '';
-
-						$scope.mapData = {
-							view : null,
-							pins : []
-						};
-
-						$scope
-								.$on(
-										'vehicle.mapPinSelected',
-										function(event, data) {
-											for (idx = 0; idx < $scope.selectedActiveTrips.length; ++idx) {
-												if ($scope.selectedActiveTrips[idx].vehicleId === data.vehicleId) {
-													tableRow = document
-															.getElementById('vehicles_row_'
-																	+ data.vehicleId);
-													if (tableRow != null) {
-														if (data.selected) {
-															tableRow.className = 'pinselected';
-														} else {
-															tableRow.className = '';
-														}
-													}
-													break;
-												}
-											}
-										});
-						$scope.tablePinSelected = function(vehicleId) {
-							$scope.$broadcast('vehicle.tablePinSelected', {
-								vehicleId : vehicleId
-							});
-						}
-						$scope.updateData = function() {
-
-							guiconfigurationsvc
-									.get(function(config) {
-
-										// update active trips
-										var promise = httpwrappersvc
-												.httpGet('api/activetrip');
-										promise
-												.then(function(response) {
-													$scope.activeTrips = response.data;
-													$scope.routes = config.monitoredRoutes;
-													$scope.selectedPin = null;
-													if ($scope.mapData == null
-															|| $scope.mapData.view == null) {
-														$scope.mapData = {
-															view : {
-																latitude : config.guiOverviewMapLatitude,
-																longitude : config.guiOverviewMapLongitude,
-																zoom : config.guiOverviewMapZoom
-															}
-														};
-													}
-
-													$scope
-															.calculateSelectedActiveTrips();
-													$scope.refreshMap();
-												});
-
-									});
-
-						};
-
-						$scope.calculateSelectedActiveTrips = function() {
-							$scope.selectedRoutes = [];
-							for (idx = 0; idx < $scope.routes.length; ++idx) {
-								if ($scope.routes[idx].onmap) {
-									$scope.selectedRoutes
-											.push($scope.routes[idx].shortName);
-								}
-							}
-							$scope.selectedActiveTrips = [];
-
-							for (idx = 0; idx < $scope.activeTrips.length; ++idx) {
-
-								if ($scope.selectedRoutes != null
-										&& $scope.selectedRoutes.length !== 0
-										&& $scope.selectedRoutes
-												.indexOf($scope.activeTrips[idx].routeShortName) < 0) {
-									continue;
-								}
-								$scope.selectedActiveTrips
-										.push($scope.activeTrips[idx]);
-							}
-
-						}
-
-						$scope.onRouteSelectionChanged = function() {
-							$scope.calculateSelectedActiveTrips();
-							$scope.refreshMap();
-						}
-
-						$scope.refreshMap = function() {
-
-							var pinsArr = [];
-							for (idx = 0; idx < $scope.selectedActiveTrips.length; ++idx) {
-
-								var latlong = utils
-										.splitLatlong($scope.selectedActiveTrips[idx].vehicleLatLong);
-								pinsArr
-										.push({
-											latitude : latlong.latitude,
-											longitude : latlong.longitude,
-											description : '<div class="mappinpopup"><b>'
-													+ $scope.selectedActiveTrips[idx].routeShortName
-													+ '</b><br/>'
-													+ 'trip start at '
-													+ $filter('date')
-															(
-																	new Date(
-																			$scope.selectedActiveTrips[idx].scheduledStart * 1000),
-																	'HH:mm')
-													+ '<br/>'
-													+ 'from '
-													+ $scope.selectedActiveTrips[idx].originStopName
-													+ '<br/>'
-													+ 'to '
-													+ $scope.selectedActiveTrips[idx].destinationStopName
-													+ "</div>",
-											vehicleId : $scope.selectedActiveTrips[idx].vehicleId,
-											pngFile : 'img/bus.png'
-										});
-							}
-
-							$scope.mapData.pins = pinsArr;
-						}
-
-						// This is where the polling is set up
-						$scope.updateData();
-						$scope.cancelUpdateData = $interval($scope.updateData,
-								30 * 1000);
-
-						// When the user navigates away we'll cancel the polling
-						$scope.$on('$destroy', function iVeBeenDismissed() {
-							$interval.cancel($scope.cancelUpdateData);
-						});
-
-					});
-
-	app
-			.controller(
-					'TripDetailsController',
-					function($scope, httpwrappersvc, $interval, $routeParams) {
-
-						httpwrappersvc.resetSession(false);
-
-						$scope.tripId = $routeParams.tripId;
-						$scope.tripPassage = '';
-
-						$scope.mapData = {
-							view : null,
-							pins : []
-						};
-
-						$scope.updateData = function() {
-							var promiseTrip = httpwrappersvc
-									.httpGet('api/activetrip/' + $scope.tripId);
-							promiseTrip
-									.then(function(response) {
-										$scope.tripData = response.data.length == 1 ? response.data[0]
-												: null;
-										if ($scope.tripData != null) {
-											var latlong = utils
-													.splitLatlong($scope.tripData.vehicleLatLong);
-											if ($scope.mapData == null
-													|| $scope.mapData.view == null) {
-												$scope.mapData = {
-													view : {
-														latitude : latlong.latitude,
-														longitude : latlong.longitude,
-														zoom : 12
-													}
-												};
-											}
-											$scope.mapData.pins = [ {
-												latitude : latlong.latitude,
-												longitude : latlong.longitude,
-												description : '<div class="mappinpopup"><b>'
-														+ $scope.tripData.routeShortName
-														+ '</b><br/>'
-														+ 'Destination: '
-														+ $scope.tripData.destinationStopName
-														+ '</div>',
-												pngFile : 'img/bus.png'
-											} ];
-
-										}
-										if (($scope.tripData == null || $scope.tripData.routeShortName == null)
-												&& $scope.cancelUpdateData != null) {
-											$interval
-													.cancel($scope.cancelUpdateData);
-										}
-									});
-
-							var promisePassages = httpwrappersvc
-									.httpGet('api/activetrip/' + $scope.tripId
-											+ '/passages');
-							promisePassages.then(function(response) {
-								$scope.tripPassages = response.data;
-							});
-						}
-
-						$scope.updateData();
-						$scope.cancelUpdateData = $interval($scope.updateData,
-								30 * 1000);
-
-						$scope.$on('$destroy', function iVeBeenDismissed() {
-							$interval.cancel($scope.cancelUpdateData);
-						});
-
-					});
-
-	app.controller('ExpiredController', function($scope, httpwrappersvc,
-			guiconfigurationsvc) {
-
-		guiconfigurationsvc.getForced(function(oldconfig, newconfig) {
-			if (oldconfig != null && oldconfig.buildVersion != null
-					&& oldconfig.buildVersion !== newconfig.buildVersion) {
-				location.reload(true);
-			}
-		});
-
-		$scope.isLatestHrefKnown = function() {
-			httpwrappersvc.getLatestHref().length > 0;
-		}
-		$scope.resetSession = function() {
-			httpwrappersvc.resetSession(true);
-		}
-
-	});
+//	app
+//			.controller(
+//					'TripDetailsController',
+//					function($scope, httpwrappersvc, $interval, $routeParams) {
+//
+//						httpwrappersvc.resetSession(false);
+//
+//						$scope.tripId = $routeParams.tripId;
+//						$scope.tripPassage = '';
+//
+//						$scope.mapData = {
+//							view : null,
+//							pins : []
+//						};
+//
+//						$scope.updateData = function() {
+//							var promiseTrip = httpwrappersvc
+//									.httpGet('api/activetrip/' + $scope.tripId);
+//							promiseTrip
+//									.then(function(response) {
+//										$scope.tripData = response.data.length == 1 ? response.data[0]
+//												: null;
+//										if ($scope.tripData != null) {
+//											var latlong = utils
+//													.splitLatlong($scope.tripData.vehicleLatLong);
+//											if ($scope.mapData == null
+//													|| $scope.mapData.view == null) {
+//												$scope.mapData = {
+//													view : {
+//														latitude : latlong.latitude,
+//														longitude : latlong.longitude,
+//														zoom : 12
+//													}
+//												};
+//											}
+//											$scope.mapData.pins = [ {
+//												latitude : latlong.latitude,
+//												longitude : latlong.longitude,
+//												description : '<div class="mappinpopup"><b>'
+//														+ $scope.tripData.routeShortName
+//														+ '</b><br/>'
+//														+ 'Destination: '
+//														+ $scope.tripData.destinationStopName
+//														+ '</div>',
+//												pngFile : 'img/bus.png'
+//											} ];
+//
+//										}
+//										if (($scope.tripData == null || $scope.tripData.routeShortName == null)
+//												&& $scope.cancelUpdateData != null) {
+//											$interval
+//													.cancel($scope.cancelUpdateData);
+//										}
+//									});
+//
+//							var promisePassages = httpwrappersvc
+//									.httpGet('api/activetrip/' + $scope.tripId
+//											+ '/passages');
+//							promisePassages.then(function(response) {
+//								$scope.tripPassages = response.data;
+//							});
+//						}
+//
+//						$scope.updateData();
+//						$scope.cancelUpdateData = $interval($scope.updateData,
+//								30 * 1000);
+//
+//						$scope.$on('$destroy', function iVeBeenDismissed() {
+//							$interval.cancel($scope.cancelUpdateData);
+//						});
+//
+//					});
+	
+	
+//
+//	app.controller('ExpiredController', function($scope, httpwrappersvc,
+//			guiconfigurationsvc) {
+//
+//		guiconfigurationsvc.getForced(function(oldconfig, newconfig) {
+//			if (oldconfig != null && oldconfig.buildVersion != null
+//					&& oldconfig.buildVersion !== newconfig.buildVersion) {
+//				location.reload(true);
+//			}
+//		});
+//
+//		$scope.isLatestHrefKnown = function() {
+//			httpwrappersvc.getLatestHref().length > 0;
+//		}
+//		$scope.resetSession = function() {
+//			httpwrappersvc.resetSession(true);
+//		}
+//
+//	});
 
 }());
