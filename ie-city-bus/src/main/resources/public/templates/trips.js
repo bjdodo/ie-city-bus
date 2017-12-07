@@ -129,7 +129,7 @@ angular
 												+ $scope.selectedActiveTrips[idx].destinationStopName
 												+ "</div>",
 										vehicleId : $scope.selectedActiveTrips[idx].vehicleId,
-										pngFile : 'img/bus.png'
+										pngFile : $scope.selectedActiveTrips[idx].tripDirection === 1 ? 'img/bus.png' : 'img/bus2.png' 
 									});
 						}
 

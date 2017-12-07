@@ -55,7 +55,7 @@
 					<tr id="vehicles_row_{{trip.vehicleId}}"
 						ng-repeat="trip in selectedActiveTrips">
 						<td><img title="Select on map" class="maintable-pin-img"
-							src="img/bus.png" alt="Map"
+							src="{{trip.tripDirection === 1 ? 'img/bus.png' : 'img/bus2.png'}}" alt="Map"
 							ng-click="tablePinSelected(trip.vehicleId)" /></td>
 						<td><a title="Open details"
 							href="#/tripdetails/{{trip.tripId}}">{{trip.routeShortName}}</a></td>
