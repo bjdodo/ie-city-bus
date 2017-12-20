@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import bjdodo.ie_city_bus.model.TripDetailStopPassage;
 import bjdodo.ie_city_bus.model.crud.Trip;
 
 public interface TripRepository extends JpaRepository<Trip, Long> {
@@ -23,4 +24,10 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
 	int closeFinishedTrips();
 
 	public Trip findByDuid(String duid);
+
+	@Query("select td\r\n" +
+			"from TripDetailStopPassage td\r\n" +
+			"where td.tripId=?1\r\n" +
+			"order by td.scheduledArrival")
+	List<TripDetailStopPassage> getTripPassages(Long tripId);
 }

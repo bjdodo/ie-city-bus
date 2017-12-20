@@ -2,14 +2,14 @@ package bjdodo.ie_city_bus.controller.data;
 
 import org.springframework.beans.BeanUtils;
 
-import bjdodo.ie_city_bus.model.TripPassage;
+import bjdodo.ie_city_bus.model.TripDetailStopPassage;
 
-public class TripPassageData extends TripPassage {
+public class StopPassageDetail extends TripDetailStopPassage {
 
-	public TripPassageData() {
+	public StopPassageDetail() {
 	}
 
-	public TripPassageData(TripPassage tripPassage) {
+	public StopPassageDetail(TripDetailStopPassage tripPassage) {
 		BeanUtils.copyProperties(tripPassage, this);
 	}
 

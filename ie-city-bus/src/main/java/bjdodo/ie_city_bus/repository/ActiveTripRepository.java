@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import bjdodo.ie_city_bus.model.ActiveTrip;
-import bjdodo.ie_city_bus.model.TripPassage;
+import bjdodo.ie_city_bus.model.TripDetailStopPassage;
 
 
 @Repository
@@ -22,9 +22,5 @@ public interface ActiveTripRepository extends JpaRepository<ActiveTrip, Long> {
 	@Query("select atp FROM ActiveTrip atp where atp.tripId in (?1)")
 	List<ActiveTrip> getActiveTripsById(long[] tripIds);
 
-	@Query("select td\r\n" +
-			"from TripPassage td\r\n" +
-			"where td.tripId=?1\r\n" +
-			"order by td.scheduledArrival")
-	List<TripPassage> getTripPassages(Long tripId);
+
 }

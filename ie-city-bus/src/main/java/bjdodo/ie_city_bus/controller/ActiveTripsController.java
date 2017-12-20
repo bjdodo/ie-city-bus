@@ -12,13 +12,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import bjdodo.ie_city_bus.controller.data.TripPassageData;
+import bjdodo.ie_city_bus.controller.data.StopPassageDetail;
+import bjdodo.ie_city_bus.controller.data.StopPassageHistoryByStop;
 import bjdodo.ie_city_bus.model.ActiveTrip;
-import bjdodo.ie_city_bus.model.TripPassage;
+import bjdodo.ie_city_bus.model.TripDetailStopPassage;
 import bjdodo.ie_city_bus.model.crud.Vehicle;
 import bjdodo.ie_city_bus.repository.ActiveTripRepository;
+import bjdodo.ie_city_bus.repository.crud.TripRepository;
 import bjdodo.ie_city_bus.repository.crud.VehicleRepository;
-import bjdodo.ie_city_bus.utils.Tuple;
+import bjdodo.ie_city_bus.service.TrafficService;
+import bjdodo.ie_city_bus.utils.Pair;
 import bjdodo.ie_city_bus.utils.Utils;
 
 @RestController
@@ -29,9 +32,14 @@ public class ActiveTripsController {
 
 	@Autowired
 	ActiveTripRepository activeTripsRepository;
+	
+	@Autowired
+	TripRepository tripRepository;
 
 	@Autowired
 	VehicleRepository vehicleRepository;
+	
+	
 
 	// http://localhost:8090/activetrips?tripIds=2,3
 	@RequestMapping(value = "", method = RequestMethod.GET)
@@ -66,41 +74,8 @@ public class ActiveTripsController {
 	}
 
 
-	@RequestMapping(value = "/{tripId}/passages", method = RequestMethod.GET)
-	public List<TripPassageData> getTripPassages(@PathVariable(required = true) Long tripId) {
-
-		log.info("ActiveTripsController.getTripPassages " + tripId);
-
-		List<TripPassageData> ret = new ArrayList<>();
-
-		List<TripPassage> passages = activeTripsRepository.getTripPassages(tripId);
-		List<Vehicle> vehicles = vehicleRepository.findByCurrentTripId(tripId);
-		Vehicle vehicle = vehicles.size() == 1 ? vehicles.get(0) : null;
-		if (vehicle == null)
-		{
-			String vehicleIds = "";
-			for (Vehicle v : vehicles)
-			{
-				vehicleIds += v.getDuid() + ",";
-			}
-			log.warn(String.format("These vehicles have the tripid %s in question: %s", tripId, vehicleIds));
-		}
-
-		for (TripPassage tripPassage : passages) {
-			TripPassageData tpc = new TripPassageData(tripPassage);
-
-			if (vehicle != null) {
-				Tuple<Double, Double> vehicleLatLong = Utils.getPointFromDBPoint(vehicle.getLatLong());
-				Tuple<Double, Double> stopLatLong = Utils.getPointFromDBPoint(tpc.getStopLatLong());
-
-				tpc.setMetersFromVehicle((long) Utils.distFrom(
-						vehicleLatLong.x, vehicleLatLong.y, stopLatLong.x, stopLatLong.y));
-			}
-			ret.add(tpc);
-		}
-		return ret;
-
-	}
+	
+	
 
 
 	// select stop_point.name, stop_point.lat_long,

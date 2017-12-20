@@ -29,12 +29,15 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 	@Autowired
 	private HttpService httpService;
 
-	// This is injected from the config file
-	@Value("${ie_city_bus.latLongRectangle}")
-	String latLongRectangle;
+	@Autowired
+	private ConfigurationService configurationService;
 
-	@Value("${ie_city_bus.downloadedDataSaveDir}")
-	String downloadedDataSaveDir;
+	// // This is injected from the config file
+	// @Value("${ie_city_bus.latLongRectangle}")
+	// String latLongRectangle;
+	//
+	// @Value("${ie_city_bus.downloadedDataSaveDir}")
+	// String downloadedDataSaveDir;
 
 	private String logTimeStamp;
 
@@ -45,18 +48,19 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 		logTimeStamp = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of("Z"))
 				.format(Instant.now(Clock.systemUTC())).replaceAll("-", "").replaceAll(":", "");
 
-		if (downloadedDataSaveDir == null || downloadedDataSaveDir.isEmpty()) {
+		if (configurationService.getDownloadedDataSaveDir() == null
+				|| configurationService.getDownloadedDataSaveDir().isEmpty()) {
 			return;
 		}
 
-		File logDir = new File(downloadedDataSaveDir);
+		File logDir = new File(configurationService.getDownloadedDataSaveDir());
 		if (!logDir.exists() || !logDir.isDirectory()) {
 			log.debug(
 					"saveDataToLog() cannot do its job because downloadedDataSaveDir points to a non-existent directory");
 			return;
 		}
 
-		File dir = new File(downloadedDataSaveDir);
+		File dir = new File(configurationService.getDownloadedDataSaveDir());
 		File[] files = dir.listFiles();
 		Arrays.sort(files, Collections.reverseOrder());
 		for (int idx = 2000; idx < files.length; ++idx) {
@@ -66,17 +70,18 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 
 	private void saveDataToLog(String logName, String data) {
 
-		if (downloadedDataSaveDir == null || downloadedDataSaveDir.isEmpty()) {
+		if (configurationService.getDownloadedDataSaveDir() == null || configurationService.getDownloadedDataSaveDir().isEmpty()) {
 			return;
 		}
 
-		File logDir = new File(downloadedDataSaveDir);
+		File logDir = new File(configurationService.getDownloadedDataSaveDir());
 		if (!logDir.exists() || !logDir.isDirectory()) {
 			log.debug(
 					"saveDataToLog() cannot do its job because downloadedDataSaveDir points to a non-existent directory");
 			return;
 		}
 
+		String downloadedDataSaveDir = configurationService.getDownloadedDataSaveDir();
 		if (!downloadedDataSaveDir.endsWith(File.separator)) {
 			downloadedDataSaveDir += File.separator;
 		}
@@ -100,13 +105,12 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 	public Map<String, JSONObject> downloadVehicles() throws JSONException {
 
 		String resp = httpService.get(
-				"http://buseireann.ie/inc/proto/vehicleTdi.php?" + latLongRectangle);
+				"http://buseireann.ie/inc/proto/vehicleTdi.php?" + configurationService.getLatLongRectangle());
 		saveDataToLog("downloadVehicles", resp);
 		if (resp == null || resp.isEmpty()) {
 			log.info("http get request returned zero vehicles");
 			return new HashMap<String, JSONObject>();
 		}
-
 
 		log.trace("downloadVehicles " + resp);
 		JSONObject obj = new JSONObject(resp);
@@ -148,10 +152,10 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 		}
 		resp = resp.substring("var obj_routes = ".length());
 		resp = resp.substring(0, resp.length() - 1);
-		
+
 		// The field direction_extensions appears twice in every entry which is invalid.
 		// I need to get rid of it.
-		int cnt=0;
+		int cnt = 0;
 		resp = resp.replace("\"direction_extensions\": {\"direction\": 1",
 				"\"direction_extensions_1\": {\"direction\": 1");
 		resp = resp.replace("\"direction_extensions\": {\"direction\": 2",

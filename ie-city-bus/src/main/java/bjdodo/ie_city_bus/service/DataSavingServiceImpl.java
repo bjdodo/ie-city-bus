@@ -1,9 +1,11 @@
 package bjdodo.ie_city_bus.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +25,7 @@ import bjdodo.ie_city_bus.repository.crud.StopPassageRepository;
 import bjdodo.ie_city_bus.repository.crud.StopPointRepository;
 import bjdodo.ie_city_bus.repository.crud.TripRepository;
 import bjdodo.ie_city_bus.repository.crud.VehicleRepository;
-import bjdodo.ie_city_bus.utils.Tuple;
+import bjdodo.ie_city_bus.utils.Pair;
 import bjdodo.ie_city_bus.utils.Utils;
 
 @Service
@@ -54,6 +56,9 @@ public class DataSavingServiceImpl implements DataSavingService {
 
 	@Autowired
 	private CustomDBStatementCalls customDBStatementCalls;
+
+	@Autowired
+	private TrafficService trafficService;
 
 	public void downloadAndSaveAll() {
 		log.info("ScheduledTasks downloadData() starting...");
@@ -208,10 +213,18 @@ public class DataSavingServiceImpl implements DataSavingService {
 			stopPassageRepository.findByTripId(tripInDb.getId()).stream()
 					.forEach(item -> tripStopPassagesInDb.put(item.getDuid(), item));
 
-			Tuple<Double, Double> vehicleLocation = Utils.getPointFromDBPoint(vehicleInDb.getLatLong());
+			// Sometimes stop_passages simply disappear in the downloaded data
+			// I am assuming it means that those are deleted so we set those to deleted here
+			cleanupStopPassagesInDb(stopPassages, tripStopPassagesInDb);
+			
+
+			Pair<Double, Double> vehicleLocation = Utils.getPointFromDBPoint(vehicleInDb.getLatLong());
 			StopPoint nearestStopPoint = null;
 			Double nearestStopPointDistance = null;
-			// Map<Instant, List<StopPoint>> tripStopPoints = new HashMap<>();
+
+			// for diagnostics, trying to catch a bug
+			//List<Long> stopPassageIdUpdatedFromJson = new ArrayList<>();
+
 			for (JSONObject stopPassage : stopPassages.values()) {
 
 				JSONObject stopPoint = null;
@@ -232,12 +245,12 @@ public class DataSavingServiceImpl implements DataSavingService {
 							stopPointInDb.updateFromJson(stopPoint);
 							stopPointInDb = stopPointRepository.saveAndFlush(stopPointInDb);
 							stopPointsInDb.put(stopPointInDb.getDuid(), stopPointInDb);
-						}
-						else {
-							log.error("Stop point info not provided by buseireann for stop passage " + stopPassage.toString());
+						} else {
+							log.error("Stop point info not provided by buseireann for stop passage "
+									+ stopPassage.toString());
 						}
 						// get the nearest bus stop
-						Tuple<Double, Double> stopLocation = Utils.getPointFromDBPoint(stopPointInDb.getLatLong());
+						Pair<Double, Double> stopLocation = Utils.getPointFromDBPoint(stopPointInDb.getLatLong());
 						double stopDistance = Utils.distFrom(stopLocation.x, stopLocation.y, vehicleLocation.x,
 								vehicleLocation.y);
 						if (nearestStopPointDistance == null || nearestStopPointDistance > stopDistance) {
@@ -258,6 +271,8 @@ public class DataSavingServiceImpl implements DataSavingService {
 						stopPassageInDb = new StopPassage();
 					}
 					stopPassageInDb.updateFromJson(stopPassage);
+					//stopPassageIdUpdatedFromJson.add(stopPassageInDb.getId());
+
 					stopPassageInDb.setTripId(tripInDb.getId());
 					stopPassageInDb.setStopPointId(stopPointInDb == null ? null : stopPointInDb.getId());
 
@@ -269,8 +284,12 @@ public class DataSavingServiceImpl implements DataSavingService {
 					// continue;
 					// }
 
-					stopPassageInDb = stopPassageRepository.saveAndFlush(stopPassageInDb);
+					stopPassageInDb.setId(stopPassageRepository.saveAndFlush(stopPassageInDb).getId());
 					tripStopPassagesInDb.put(stopPassageInDb.getDuid(), stopPassageInDb);
+
+					if (tripStopPassagesInDb.get(stopPassageInDb.getDuid()).getStopPointDuid() == null) {
+						log.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+					}
 
 					if (stopPassageInDb.getScheduledDeparture() == null && stopPointInDb != null) {
 						tripInDb.setDestinationStopName(stopPointInDb.getName());
@@ -300,12 +319,108 @@ public class DataSavingServiceImpl implements DataSavingService {
 
 			tripInDb = tripRepository.saveAndFlush(tripInDb);
 			unfinishedTripsInDb.put(tripInDb.getDuid(), tripInDb);
+
+			trafficServiceRecordTripData(routeInDb, tripInDb, stopPointsInDb,
+					new ArrayList<StopPassage>(tripStopPassagesInDb.values()));
 		}
 
 		customDBStatementCalls.setStaleVehiclesDeleted();
 		tripRepository.closeFinishedTrips();
 		customDBStatementCalls.deleteOldTrips(configurationService.getMaxTripAgeDays() * 24 * 60 * 60);
+		trafficService.cleanupOld();
+		
 
 		log.info("ScheduledTasks downloadData() saving data finished");
+	}
+
+	private void cleanupStopPassagesInDb(Map<String, JSONObject> stopPassages,
+			Map<String, StopPassage> tripStopPassagesInDb) {
+
+		List<StopPassage> toRemove = new ArrayList<>();
+		for (StopPassage sp : tripStopPassagesInDb.values()) {
+			if (!stopPassages.containsKey(sp.getDuid())) {
+
+				toRemove.add(sp);
+			}
+		}
+
+		for (StopPassage sp : toRemove) {
+			sp.setDeleted(true);
+			stopPassageRepository.saveAndFlush(sp);
+			tripStopPassagesInDb.remove(sp.getDuid());
+		}
+	}
+
+	private void trafficServiceRecordTripData(Route route, Trip trip,
+			Map<String, StopPoint> stopPoints, List<StopPassage> stopPassages) {
+
+		if (route == null || trip == null || stopPoints == null || stopPassages == null) {
+			log.warn("predictionServiceRecordTripData() called with a null argument");
+			return;
+		}
+		if (stopPassages.isEmpty()) {
+			log.warn("predictionServiceRecordTripData() called with empty stopPassages");
+			return;
+		}
+
+		List<StopPassage> missedStopPointPassages = new ArrayList<>();
+		StopPoint stopPoint1 = null;
+		StopPoint stopPoint2 = stopPoints.get(stopPassages.get(0).getStopPointDuid());
+		for (int idx = 0; idx < stopPassages.size() - 2; idx++) {
+
+			stopPoint1 = stopPoint2;
+			stopPoint2 = stopPoints.get(stopPassages.get(idx + 1).getStopPointDuid());
+
+			if (stopPoint1 == null) {
+				StopPassage spg = stopPassages.get(idx);
+				missedStopPointPassages.add(spg);
+
+//				if (stopPassageIdUpdatedFromJson.contains(spg.getId())) {
+//					log.warn(String.format(
+//							"predictionServiceRecordTripData() missed stopPassage was part of the json"));
+//				}
+
+				continue;
+			}
+
+			if (stopPoint2 == null) {
+				missedStopPointPassages.add(stopPassages.get(idx));
+				continue;
+			}
+
+			Instant time1 = stopPassages.get(idx).getActualDeparture() == null
+					? stopPassages.get(idx).getActualArrival()
+					: stopPassages.get(idx).getActualDeparture();
+			Instant time2 = stopPassages.get(idx + 1).getActualDeparture() == null
+					? stopPassages.get(idx + 1).getActualArrival()
+					: stopPassages.get(idx + 1).getActualDeparture();
+
+			if (time1.isBefore(Instant.now().minusSeconds(2 * 60 * 60))
+					|| time1.isAfter(Instant.now()) ||
+					time2.isBefore(Instant.now().minusSeconds(2 * 60 * 60))
+					|| time2.isAfter(Instant.now())) {
+				continue;
+			}
+			trafficService.recordRecentSectionPassage(route.getShortName(), trip.getId(), trip.getScheduledStart(),
+					stopPoint1.getNumber(), time1, stopPoint2.getNumber(), time2);
+
+		}
+
+		if (!missedStopPointPassages.isEmpty()) {
+			log.warn(String.format(
+					"predictionServiceRecordTripData() missed %s points out of %s for trip [duid %s id %s] route [shortname %s]",
+					missedStopPointPassages.size(), stopPassages.size(),
+					trip.getDuid(), trip.getId(),
+					route.getShortName()));
+
+			for (StopPassage sp : missedStopPointPassages) {
+
+				log.warn(sp.getDuid() + " "
+						+ stopPoints.values().stream().filter(spnt -> spnt.getId() == sp.getStopPointId())
+								.collect(Collectors.toList()).get(0).getName());
+
+			}
+
+		}
 	}
 }

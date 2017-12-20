@@ -27,8 +27,8 @@ public class DataDownloaderServiceVehicleTest {
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
-		ReflectionTestUtils.setField(dataDownloaderService, "latLongRectangle",
-				"latitude_north=192043441&latitude_south=191572963&longitude_east=-32237122&longitude_west=-32939484");
+//		ReflectionTestUtils.setField(dataDownloaderService, "latLongRectangle",
+//				"latitude_north=192043441&latitude_south=191572963&longitude_east=-32237122&longitude_west=-32939484");
 	}
 
 	String vehicleUrl = "http://buseireann.ie/inc/proto/vehicleTdi.php?latitude_north=192043441&latitude_south=191572963&longitude_east=-32237122&longitude_west=-32939484";

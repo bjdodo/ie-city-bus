@@ -52,7 +52,7 @@ public class Utils {
 		return "POINT (" + lat + " " + lon + ")";
 	}
 
-	public static Tuple<Double, Double> getPointFromDBPoint(String dbPoint) {
+	public static Pair<Double, Double> getPointFromDBPoint(String dbPoint) {
 		if (!dbPoint.startsWith("POINT (") || !dbPoint.endsWith(")")) {
 			throw new IllegalArgumentException("Wrong dbPoint " + dbPoint);
 		}
@@ -63,7 +63,7 @@ public class Utils {
 		if (points.length != 2) {
 			throw new IllegalArgumentException("Wrong dbPoint " + dbPoint);
 		}
-		return new Tuple<Double, Double>(Double.parseDouble(points[0]), Double.parseDouble(points[1]));
+		return new Pair<Double, Double>(Double.parseDouble(points[0]), Double.parseDouble(points[1]));
 	}
 
 	public static <T> byte[] serializeToBytes(T o) throws IOException {

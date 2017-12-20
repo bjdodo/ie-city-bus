@@ -4,7 +4,7 @@
 
 	<groupId>bjdodo</groupId>
 	<artifactId>ie-city-bus</artifactId>
-	<version>1.0.7</version>
+	<version>1.0.8</version>
 	<packaging>jar</packaging>
 
 	<name>ie-city-bus</name>

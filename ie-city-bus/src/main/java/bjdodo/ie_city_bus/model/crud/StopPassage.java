@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -93,6 +94,9 @@ public class StopPassage {
 	}
 
 	public void setStopPointDuid(String stopPointDuid) {
+		if (this.stopPointDuid != null && stopPointDuid == null) {
+			System.out.println("BBBBBBBBBBBBBBB");
+		}
 		this.stopPointDuid = stopPointDuid;
 	}
 
@@ -185,6 +189,11 @@ public class StopPassage {
 	private Long stopPointId;
 	// private long vehicleId;
 
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
+	
 	public static String getJSONDuid(JSONObject json) throws JSONException {
 		return json.getString("duid");
 	}

@@ -9,12 +9,18 @@ public interface ConfigurationService {
 	Double getGuiOverviewMapLongitude();
 
 	Long getGuiOverviewMapZoom();
-	
+
 	Long getGuiSessionExpiryMins();
+
+	String getLatLongRectangle();
+
+	String getDownloadedDataSaveDir();
 
 	List<String> getMonitoredRoutes();
 
 	Long getMaxTripAgeDays();
+
+	Long getPredictionRecentMaxAgeMinutes();
 
 	String getBuildVersion();
 

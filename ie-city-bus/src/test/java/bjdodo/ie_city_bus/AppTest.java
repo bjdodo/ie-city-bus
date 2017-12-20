@@ -22,10 +22,7 @@ public class AppTest {
 					Object result = m.invoke(o);
 
 					sb.append("Assert.assertEquals(");
-					sb.append(varName);
-					sb.append(".");
-					sb.append(m.getName());
-					sb.append("(), ");
+					
 					if (m.getGenericReturnType() == String.class) {
 						sb.append("\"");
 						sb.append(result.toString());
@@ -43,6 +40,11 @@ public class AppTest {
 					} else {
 						sb.append(result.toString());
 					}
+					sb.append(", ");
+					sb.append(varName);
+					sb.append(".");
+					sb.append(m.getName());
+					sb.append("()");
 					sb.append(");\n");
 				}
 			}
