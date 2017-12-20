@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,13 +30,6 @@ public class DataDownloaderServiceImpl implements DataDownloaderService {
 
 	@Autowired
 	private ConfigurationService configurationService;
-
-	// // This is injected from the config file
-	// @Value("${ie_city_bus.latLongRectangle}")
-	// String latLongRectangle;
-	//
-	// @Value("${ie_city_bus.downloadedDataSaveDir}")
-	// String downloadedDataSaveDir;
 
 	private String logTimeStamp;
 

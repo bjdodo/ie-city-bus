@@ -61,6 +61,15 @@ public class TripSectionHistoryContainer {
 		}
 	}
 
+	public synchronized void dumpContents() {
+		log.debug("TripSectionHistoryContainer dumpContents start");
+		for (Map.Entry<String, Map<Long, TrafficService.TripSectionPassage>> section : sections.entrySet()) {
+			for (Map.Entry<Long, TrafficService.TripSectionPassage> trip : section.getValue().entrySet()) {
+				log.debug(trip.getValue().toString());
+			}
+		}
+		log.debug("TripSectionHistoryContainer dumpContents finish");
+	}
 	public synchronized void cleanup() {
 
 		for (Map.Entry<String, Map<Long, TrafficService.TripSectionPassage>> section : sections.entrySet()) {

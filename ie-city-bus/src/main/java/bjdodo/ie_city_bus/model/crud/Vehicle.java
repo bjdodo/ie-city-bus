@@ -24,7 +24,6 @@ public class Vehicle {
 		this.duid = obj.getString("duid");
 		this.lastModificationTimestamp = Instant.ofEpochMilli(obj.getLong("last_modification_timestamp"));
 		this.isDeleted = obj.getBoolean("is_deleted");
-		this.category = obj.getInt("category");
 		this.tripDuid = Utils.getDuid(obj, "trip_duid");
 		this.geoPositionStatus = obj.getInt("geo_position_status");
 		this.referenceTime = Instant.ofEpochSecond(obj.getLong("reference_time"));
@@ -89,13 +88,6 @@ public class Vehicle {
 		this.isDeleted = isDeleted;
 	}
 
-	public int getCategory() {
-		return category;
-	}
-
-	public void setCategory(int category) {
-		this.category = category;
-	}
 
 	public String getTripDuid() {
 		return tripDuid;
@@ -191,7 +183,6 @@ public class Vehicle {
 	private String duid;
 	private Instant lastModificationTimestamp;
 	private boolean isDeleted;
-	private int category;
 	private String tripDuid;
 	private Long currentTripId;
 	private int geoPositionStatus;

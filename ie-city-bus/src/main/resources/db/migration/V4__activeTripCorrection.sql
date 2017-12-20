@@ -24,3 +24,5 @@ stop_passage.scheduled_departure, stop_passage.actual_departure,
 stop_passage.scheduled_arrival, stop_passage.actual_arrival from stop_passage
 inner join stop_point on stop_point.id=stop_passage.stop_point_id
 where stop_passage.is_deleted=0;
+
+alter table Vehicle drop column category;

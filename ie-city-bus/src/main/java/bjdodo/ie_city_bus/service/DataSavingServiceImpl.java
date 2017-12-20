@@ -362,6 +362,11 @@ public class DataSavingServiceImpl implements DataSavingService {
 			log.warn("predictionServiceRecordTripData() called with empty stopPassages");
 			return;
 		}
+		
+		stopPassages.sort(
+				(o1, o2) -> (o1.getScheduledArrival() == null ? o1.getScheduledDeparture() : o1.getScheduledArrival())
+						.compareTo(o2.getScheduledArrival() == null ? o2.getScheduledDeparture()
+								: o2.getScheduledArrival()));
 
 		List<StopPassage> missedStopPointPassages = new ArrayList<>();
 		StopPoint stopPoint1 = null;
@@ -372,14 +377,7 @@ public class DataSavingServiceImpl implements DataSavingService {
 			stopPoint2 = stopPoints.get(stopPassages.get(idx + 1).getStopPointDuid());
 
 			if (stopPoint1 == null) {
-				StopPassage spg = stopPassages.get(idx);
-				missedStopPointPassages.add(spg);
-
-//				if (stopPassageIdUpdatedFromJson.contains(spg.getId())) {
-//					log.warn(String.format(
-//							"predictionServiceRecordTripData() missed stopPassage was part of the json"));
-//				}
-
+				missedStopPointPassages.add(stopPassages.get(idx));
 				continue;
 			}
 

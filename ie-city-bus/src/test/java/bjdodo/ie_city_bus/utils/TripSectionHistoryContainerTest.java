@@ -7,7 +7,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
-import bjdodo.ie_city_bus.AppTest;
 import bjdodo.ie_city_bus.service.TrafficService;
 import bjdodo.ie_city_bus.service.TrafficService.TripSectionPassage;
 
@@ -33,21 +32,21 @@ public class TripSectionHistoryContainerTest {
 		List<TripSectionPassage> sections = historyContainer.getSectionPassageHistory(Pair.of(1L, 2L));
 
 		Assert.assertEquals(2, sections.size());
-		Assert.assertEquals(Instant.ofEpochSecond(1501589100), sections.get(0).getTripScheduledStartTime());
-		Assert.assertEquals(Instant.ofEpochSecond(1501589520), sections.get(0).getStop1Time());
-		Assert.assertEquals(1L, sections.get(0).getTripId());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:00:00Z"), sections.get(0).getTripScheduledStartTime());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:02:00Z"), sections.get(0).getStop1Time());
+		Assert.assertEquals(2L, sections.get(0).getTripId());
 		Assert.assertEquals(1, sections.get(0).getStop1Number());
 		Assert.assertEquals(2, sections.get(0).getStop2Number());
-		Assert.assertEquals(Instant.ofEpochSecond(1501589580), sections.get(0).getStop2Time());
-		Assert.assertEquals("5", sections.get(0).getRouteShortName());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:03:00Z"), sections.get(0).getStop2Time());
+		Assert.assertEquals("3", sections.get(0).getRouteShortName());
 
-		Assert.assertEquals(Instant.ofEpochSecond(1501588800), sections.get(1).getTripScheduledStartTime());
-		Assert.assertEquals(Instant.ofEpochSecond(1501588920), sections.get(1).getStop1Time());
-		Assert.assertEquals(2L, sections.get(1).getTripId());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:05:00Z"), sections.get(1).getTripScheduledStartTime());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:12:00Z"), sections.get(1).getStop1Time());
+		Assert.assertEquals(1L, sections.get(1).getTripId());
 		Assert.assertEquals(1, sections.get(1).getStop1Number());
 		Assert.assertEquals(2, sections.get(1).getStop2Number());
-		Assert.assertEquals(Instant.ofEpochSecond(1501588980), sections.get(1).getStop2Time());
-		Assert.assertEquals("3", sections.get(1).getRouteShortName());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:13:00Z"), sections.get(1).getStop2Time());
+		Assert.assertEquals("5", sections.get(1).getRouteShortName());
 
 		sections = historyContainer.getSectionPassageHistory(Pair.of(2L, 3L));
 
@@ -82,9 +81,8 @@ public class TripSectionHistoryContainerTest {
 				1, now.minusSeconds(30 * 60).plusSeconds(60),
 				2, now.minusSeconds(30 * 60).plusSeconds(2 * 60));
 
-		historyContainer.recordSectionPassage("3", 3L, now,
-				1, now.plusSeconds(60),
-				2, now.plusSeconds(120));
+		historyContainer.recordSectionPassage("3", 3L, now.minusSeconds(5), 1, now.minusSeconds(4), 2,
+				now.minusSeconds(3));
 
 		List<TrafficService.TripSectionPassage> sections = historyContainer.getSectionPassageHistory(Pair.of(1L, 2L));
 
@@ -126,25 +124,28 @@ public class TripSectionHistoryContainerTest {
 		
 		List<TripSectionPassage> sections = historyContainer.getSectionPassageHistory(Pair.of(1L, 2L));
 		
-//		for (int idx=0; idx<sections.size(); ++idx) {
-//			System.out.println(AppTest.getAssertText(sections.get(idx), TripSectionPassage.class, "sections.get(" + idx + ")"));
-//		}
+		// for (int idx = 0; idx < sections.size(); ++idx) {
+		// System.out.println(
+		// AppTest.getAssertText(sections.get(idx), TripSectionPassage.class,
+		// "sections.get(" + idx + ")"));
+		// }
 //		
-		Assert.assertEquals(Instant.parse("2017-08-01T12:17:00Z"), sections.get(0).getStop1Time());
-		Assert.assertEquals(1L, sections.get(0).getTripId());
+
+		Assert.assertEquals(Instant.parse("2017-08-01T12:00:00Z"), sections.get(0).getTripScheduledStartTime());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:02:00Z"), sections.get(0).getStop1Time());
+		Assert.assertEquals(2L, sections.get(0).getTripId());
 		Assert.assertEquals(1L, sections.get(0).getStop1Number());
 		Assert.assertEquals(2L, sections.get(0).getStop2Number());
-		Assert.assertEquals(Instant.parse("2017-08-01T12:18:00Z"), sections.get(0).getStop2Time());
-		Assert.assertEquals("5", sections.get(0).getRouteShortName());
-		Assert.assertEquals(Instant.ofEpochSecond(1501589100), sections.get(0).getTripScheduledStartTime());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:03:00Z"), sections.get(0).getStop2Time());
+		Assert.assertEquals("3", sections.get(0).getRouteShortName());
 
-		Assert.assertEquals(Instant.parse("2017-08-01T12:02:00Z"), sections.get(1).getStop1Time());
-		Assert.assertEquals(2L, sections.get(1).getTripId());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:05:00Z"), sections.get(1).getTripScheduledStartTime());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:17:00Z"), sections.get(1).getStop1Time());
+		Assert.assertEquals(1L, sections.get(1).getTripId());
 		Assert.assertEquals(1L, sections.get(1).getStop1Number());
 		Assert.assertEquals(2L, sections.get(1).getStop2Number());
-		Assert.assertEquals(Instant.parse("2017-08-01T12:03:00Z"), sections.get(1).getStop2Time());
-		Assert.assertEquals("3", sections.get(1).getRouteShortName());
-		Assert.assertEquals(Instant.ofEpochSecond(1501588800), sections.get(1).getTripScheduledStartTime());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:18:00Z"), sections.get(1).getStop2Time());
+		Assert.assertEquals("5", sections.get(1).getRouteShortName());
 		
 				
 		sections = historyContainer.getSectionPassageHistory(Pair.of(2L, 3L));
@@ -154,7 +155,7 @@ public class TripSectionHistoryContainerTest {
 //		}
 //		
 		Assert.assertEquals("5", sections.get(0).getRouteShortName());
-		Assert.assertEquals(Instant.ofEpochSecond(1501589100), sections.get(0).getTripScheduledStartTime());
+		Assert.assertEquals(Instant.parse("2017-08-01T12:05:00Z"), sections.get(0).getTripScheduledStartTime());
 		Assert.assertEquals(Instant.parse("2017-08-01T12:18:00Z"), sections.get(0).getStop1Time());
 		Assert.assertEquals(1L, sections.get(0).getTripId());
 		Assert.assertEquals(2L, sections.get(0).getStop1Number());

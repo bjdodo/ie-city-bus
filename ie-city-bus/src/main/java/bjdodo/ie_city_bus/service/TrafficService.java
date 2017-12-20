@@ -2,10 +2,9 @@ package bjdodo.ie_city_bus.service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import bjdodo.ie_city_bus.controller.data.StopPassageHistoryByStop;
 import bjdodo.ie_city_bus.model.TripDetailStopPassage;
@@ -83,7 +82,7 @@ public interface TrafficService {
 
 		@Override
 		public String toString() {
-			return ToStringBuilder.reflectionToString(this);
+			return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
 
 		}
 	}

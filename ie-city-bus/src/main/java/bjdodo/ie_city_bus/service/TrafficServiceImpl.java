@@ -54,6 +54,8 @@ public class TrafficServiceImpl implements TrafficService {
 					nextPassage.getStopNumber(), nextPassage.getPassageTime());
 		}
 		
+		//recentHistory.dumpContents();
+
 		log.info(String.format("PredictionServiceImpl init() finished. Loaded %s passages from DB", passages.size()));
 		
 		// "select t.id, COALESCE(spa.actualDeparture, spa.actualArrival), spo.number, 
@@ -107,6 +109,7 @@ public class TrafficServiceImpl implements TrafficService {
 	@Override
 	public void cleanupOld() {
 		recentHistory.cleanup();
+		//recentHistory.dumpContents();
 	}
 
 	private TripSectionHistoryContainer recentHistory;

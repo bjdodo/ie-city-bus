@@ -36,7 +36,7 @@ public class VehicleTest {
 		Assert.assertEquals(19, v.getBearing());
 		Assert.assertEquals(false, v.isDeleted());
 		Assert.assertEquals("POINT (53.28352861111111 -9.047195)", v.getLatLong());
-		Assert.assertEquals(5, v.getCategory());
+		// Assert.assertEquals(5, v.getCategory());
 
 	}
 
