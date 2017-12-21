@@ -49,6 +49,17 @@ public class TrafficServiceImpl implements TrafficService {
 				continue;
 			}
 
+			if (nextPassage.getPassageTime().getEpochSecond() - passage.getPassageTime().getEpochSecond() < 3) {
+				// We ignore this. No bus can go from one stop to another in 3 seconds -
+				// on the other hand they seem to be patching up data from time to time
+				// with passages that are 0 or 1 second long. This does not give us proper
+				// info about traffic.
+				
+				log.info("ignoring passage " + nextPassage.getPassageTime().toString() + " " + passage.getPassageTime().toString() + "=" + (nextPassage.getPassageTime().getEpochSecond() - passage.getPassageTime().getEpochSecond()));
+				
+				continue;
+			}
+			
 			recentHistory.recordSectionPassage(passage.getRouteShortName(), passage.getTripId(),
 					passage.getTripStartTime(), passage.getStopNumber(), passage.getPassageTime(),
 					nextPassage.getStopNumber(), nextPassage.getPassageTime());
@@ -82,6 +93,14 @@ public class TrafficServiceImpl implements TrafficService {
 	public void recordRecentSectionPassage(String routeShortName, long tripId, Instant tripScheduledStartTime,
 			int stopPoint1Number, Instant stop1Time, int stopPoint2Number, Instant stop2Time) {
 
+		if (stop2Time.getEpochSecond() - stop1Time.getEpochSecond() < 3) {
+			// we ignore this. No bus can go from one stop to another in 3 seconds -
+			// on the other hand they seem to be patching up data from time to time
+			// with passages that are 0 or 1 second long
+			
+			log.info("ignoring passage " + stop2Time.toString() + " " + stop1Time.toString() + "=" + (stop2Time.getEpochSecond() - stop1Time.getEpochSecond()));
+			return;
+		}
 		recentHistory.recordSectionPassage(routeShortName, tripId, tripScheduledStartTime,
 				stopPoint1Number, stop1Time,
 				stopPoint2Number, stop2Time);

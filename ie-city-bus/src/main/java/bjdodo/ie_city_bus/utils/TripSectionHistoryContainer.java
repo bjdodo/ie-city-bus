@@ -27,14 +27,14 @@ public class TripSectionHistoryContainer {
 
 		String fragmentsKey = stopPoint1Number + "_" + stopPoint2Number;
 
-		if (stop1Time.isAfter(Instant.now()) || stop2Time.isAfter(Instant.now())) {
-
-			log.debug("TripSectionHistoryContainer (after now so) NOT adding " + tripId + " to " + fragmentsKey
-					+ " " + stopPoint1Number + "@" + stop1Time.toString()
-					+ " " + stopPoint2Number + "@" + stop2Time.toString());
-
-			return;
-		}
+//		if (stop1Time.isAfter(Instant.now()) || stop2Time.isAfter(Instant.now())) {
+//
+//			log.debug("TripSectionHistoryContainer (after now so) NOT adding " + tripId + " to " + fragmentsKey
+//					+ " " + stopPoint1Number + "@" + stop1Time.toString()
+//					+ " " + stopPoint2Number + "@" + stop2Time.toString());
+//
+//			return;
+//		}
 
 		Map<Long, TrafficService.TripSectionPassage> stopPointsSections = sections.get(fragmentsKey);
 		if (stopPointsSections == null) {
