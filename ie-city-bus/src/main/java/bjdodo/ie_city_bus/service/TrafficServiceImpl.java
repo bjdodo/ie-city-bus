@@ -32,7 +32,7 @@ public class TrafficServiceImpl implements TrafficService {
 	@PostConstruct
 	public void init() {
 		log.info("PredictionServiceImpl init() starting");
-		
+
 		recentHistory = new TripSectionHistoryContainer(
 				p -> p.getStop2Time().isBefore(
 						Instant.now().minusSeconds(60 * configurationService.getPredictionRecentMaxAgeMinutes())));
@@ -40,24 +40,24 @@ public class TrafficServiceImpl implements TrafficService {
 		List<TrafficServiceStopPassage> passages = stopPassageRepository.findRecentStopPassagesForPredictionService(
 				Instant.now().minusSeconds(60 * configurationService.getPredictionRecentMaxAgeMinutes()));
 
-		for (int idx=0; idx<passages.size()-1; idx++) {
-			
+		for (int idx = 0; idx < passages.size() - 1; idx++) {
+
 			TrafficServiceStopPassage passage = passages.get(idx);
-			TrafficServiceStopPassage nextPassage = passages.get(idx+1);
-			
+			TrafficServiceStopPassage nextPassage = passages.get(idx + 1);
+
 			if (passage.getTripId() != nextPassage.getTripId()) {
 				continue;
 			}
-			
+
 			recentHistory.recordSectionPassage(passage.getRouteShortName(), passage.getTripId(),
 					passage.getTripStartTime(), passage.getStopNumber(), passage.getPassageTime(),
 					nextPassage.getStopNumber(), nextPassage.getPassageTime());
 		}
-		
-		//recentHistory.dumpContents();
+
+		// recentHistory.dumpContents();
 
 		log.info(String.format("PredictionServiceImpl init() finished. Loaded %s passages from DB", passages.size()));
-		
+
 		// "select t.id, COALESCE(spa.actualDeparture, spa.actualArrival), spo.number, 
 		// r.shortName\r\n" +
 		// "from StopPassage spa, StopPoint spo, Trip t, Route r\r\n" +
@@ -81,7 +81,7 @@ public class TrafficServiceImpl implements TrafficService {
 	@Override
 	public void recordRecentSectionPassage(String routeShortName, long tripId, Instant tripScheduledStartTime,
 			int stopPoint1Number, Instant stop1Time, int stopPoint2Number, Instant stop2Time) {
-		
+
 		recentHistory.recordSectionPassage(routeShortName, tripId, tripScheduledStartTime,
 				stopPoint1Number, stop1Time,
 				stopPoint2Number, stop2Time);
@@ -109,11 +109,9 @@ public class TrafficServiceImpl implements TrafficService {
 	@Override
 	public void cleanupOld() {
 		recentHistory.cleanup();
-		//recentHistory.dumpContents();
+		// recentHistory.dumpContents();
 	}
 
 	private TripSectionHistoryContainer recentHistory;
-	
-	
 
 }

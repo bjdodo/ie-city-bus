@@ -148,6 +148,14 @@ public class StopPassage {
 		this.actualDeparture = actualDeparture;
 	}
 
+	public boolean isActualEstimated() {
+		return actualEstimated;
+	}
+
+	public void setActualEstimated(boolean actualEstimated) {
+		this.actualEstimated = actualEstimated;
+	}
+
 	public long getTripId() {
 		return tripId;
 	}
@@ -185,6 +193,8 @@ public class StopPassage {
 	private Instant actualArrival;
 	private Instant actualDeparture;
 
+	private boolean actualEstimated;
+
 	private long tripId;
 	private Long stopPointId;
 	// private long vehicleId;
@@ -193,7 +203,7 @@ public class StopPassage {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
-	
+
 	public static String getJSONDuid(JSONObject json) throws JSONException {
 		return json.getString("duid");
 	}

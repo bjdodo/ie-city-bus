@@ -9,7 +9,7 @@ import org.hibernate.annotations.Immutable;
 
 @Entity
 @Immutable
-//refactor: to directly saving into object from JPA query
+// refactor: to directly saving into object from JPA query
 public class TripDetailStopPassage {
 
 	public long getStopPassageId() {
@@ -76,6 +76,14 @@ public class TripDetailStopPassage {
 		this.actualArrival = actualArrival;
 	}
 
+	public boolean isActualEstimated() {
+		return actualEstimated;
+	}
+
+	public void setActualEstimated(boolean actualEstimated) {
+		this.actualEstimated = actualEstimated;
+	}
+
 	public long getStopNumber() {
 		return stopNumber;
 	}
@@ -93,5 +101,7 @@ public class TripDetailStopPassage {
 	private Instant actualDeparture;
 	private Instant scheduledArrival;
 	private Instant actualArrival;
+
+	private boolean actualEstimated;
 	private long stopNumber;
 }

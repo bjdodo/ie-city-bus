@@ -216,14 +216,13 @@ public class DataSavingServiceImpl implements DataSavingService {
 			// Sometimes stop_passages simply disappear in the downloaded data
 			// I am assuming it means that those are deleted so we set those to deleted here
 			cleanupStopPassagesInDb(stopPassages, tripStopPassagesInDb);
-			
 
 			Pair<Double, Double> vehicleLocation = Utils.getPointFromDBPoint(vehicleInDb.getLatLong());
 			StopPoint nearestStopPoint = null;
 			Double nearestStopPointDistance = null;
 
 			// for diagnostics, trying to catch a bug
-			//List<Long> stopPassageIdUpdatedFromJson = new ArrayList<>();
+			// List<Long> stopPassageIdUpdatedFromJson = new ArrayList<>();
 
 			for (JSONObject stopPassage : stopPassages.values()) {
 
@@ -271,7 +270,9 @@ public class DataSavingServiceImpl implements DataSavingService {
 						stopPassageInDb = new StopPassage();
 					}
 					stopPassageInDb.updateFromJson(stopPassage);
-					//stopPassageIdUpdatedFromJson.add(stopPassageInDb.getId());
+					stopPassageInDb.setActualEstimated(
+							(stopPassageInDb.getActualDeparture() == null ? stopPassageInDb.getActualArrival()
+									: stopPassageInDb.getActualDeparture()).isAfter(Instant.now()));
 
 					stopPassageInDb.setTripId(tripInDb.getId());
 					stopPassageInDb.setStopPointId(stopPointInDb == null ? null : stopPointInDb.getId());
@@ -326,9 +327,9 @@ public class DataSavingServiceImpl implements DataSavingService {
 
 		customDBStatementCalls.setStaleVehiclesDeleted();
 		tripRepository.closeFinishedTrips();
+		stopPassageRepository.closeStopPassagesOfFinishedTrips();
 		customDBStatementCalls.deleteOldTrips(configurationService.getMaxTripAgeDays() * 24 * 60 * 60);
 		trafficService.cleanupOld();
-		
 
 		log.info("ScheduledTasks downloadData() saving data finished");
 	}
@@ -362,7 +363,7 @@ public class DataSavingServiceImpl implements DataSavingService {
 			log.warn("predictionServiceRecordTripData() called with empty stopPassages");
 			return;
 		}
-		
+
 		stopPassages.sort(
 				(o1, o2) -> (o1.getScheduledArrival() == null ? o1.getScheduledDeparture() : o1.getScheduledArrival())
 						.compareTo(o2.getScheduledArrival() == null ? o2.getScheduledDeparture()
@@ -371,7 +372,7 @@ public class DataSavingServiceImpl implements DataSavingService {
 		List<StopPassage> missedStopPointPassages = new ArrayList<>();
 		StopPoint stopPoint1 = null;
 		StopPoint stopPoint2 = stopPoints.get(stopPassages.get(0).getStopPointDuid());
-		for (int idx = 0; idx < stopPassages.size() - 2; idx++) {
+		for (int idx = 0; idx < stopPassages.size() - 1; idx++) {
 
 			stopPoint1 = stopPoint2;
 			stopPoint2 = stopPoints.get(stopPassages.get(idx + 1).getStopPointDuid());
@@ -386,6 +387,9 @@ public class DataSavingServiceImpl implements DataSavingService {
 				continue;
 			}
 
+			if (stopPassages.get(idx).isActualEstimated() || stopPassages.get(idx+1).isActualEstimated()) {
+				continue;
+			}
 			Instant time1 = stopPassages.get(idx).getActualDeparture() == null
 					? stopPassages.get(idx).getActualArrival()
 					: stopPassages.get(idx).getActualDeparture();
