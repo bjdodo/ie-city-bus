@@ -352,8 +352,8 @@ public class DataSavingServiceImpl implements DataSavingService {
 		}
 	}
 
-	private void trafficServiceRecordTripData(Route route, Trip trip,
-			Map<String, StopPoint> stopPoints, List<StopPassage> stopPassages) {
+	private void trafficServiceRecordTripData(Route route, Trip trip, Map<String, StopPoint> stopPoints,
+			List<StopPassage> stopPassages) {
 
 		if (route == null || trip == null || stopPoints == null || stopPassages == null) {
 			log.warn("predictionServiceRecordTripData() called with a null argument");
@@ -387,7 +387,7 @@ public class DataSavingServiceImpl implements DataSavingService {
 				continue;
 			}
 
-			if (stopPassages.get(idx).isActualEstimated() || stopPassages.get(idx+1).isActualEstimated()) {
+			if (stopPassages.get(idx).isActualEstimated() || stopPassages.get(idx + 1).isActualEstimated()) {
 				continue;
 			}
 			Instant time1 = stopPassages.get(idx).getActualDeparture() == null
@@ -397,10 +397,8 @@ public class DataSavingServiceImpl implements DataSavingService {
 					? stopPassages.get(idx + 1).getActualArrival()
 					: stopPassages.get(idx + 1).getActualDeparture();
 
-			if (time1.isBefore(Instant.now().minusSeconds(2 * 60 * 60))
-					|| time1.isAfter(Instant.now()) ||
-					time2.isBefore(Instant.now().minusSeconds(2 * 60 * 60))
-					|| time2.isAfter(Instant.now())) {
+			if (time1.isBefore(Instant.now().minusSeconds(2 * 60 * 60)) || time1.isAfter(Instant.now())
+					|| time2.isBefore(Instant.now().minusSeconds(2 * 60 * 60)) || time2.isAfter(Instant.now())) {
 				continue;
 			}
 			trafficService.recordRecentSectionPassage(route.getShortName(), trip.getId(), trip.getScheduledStart(),
@@ -411,15 +409,18 @@ public class DataSavingServiceImpl implements DataSavingService {
 		if (!missedStopPointPassages.isEmpty()) {
 			log.warn(String.format(
 					"predictionServiceRecordTripData() missed %s points out of %s for trip [duid %s id %s] route [shortname %s]",
-					missedStopPointPassages.size(), stopPassages.size(),
-					trip.getDuid(), trip.getId(),
+					missedStopPointPassages.size(), stopPassages.size(), trip.getDuid(), trip.getId(),
 					route.getShortName()));
 
 			for (StopPassage sp : missedStopPointPassages) {
 
-				log.warn(sp.getDuid() + " "
-						+ stopPoints.values().stream().filter(spnt -> spnt.getId() == sp.getStopPointId())
-								.collect(Collectors.toList()).get(0).getName());
+				if (stopPoints.values() == null) {
+					log.warn(sp.getDuid() + " stopPoints.values() is null");
+				} else {
+					log.warn(sp.getDuid() + " "
+							+ stopPoints.values().stream().filter(spnt -> spnt.getId() == sp.getStopPointId())
+									.collect(Collectors.toList()).get(0).getName());
+				}
 
 			}
 
