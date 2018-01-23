@@ -292,17 +292,29 @@ public class DataSavingServiceImpl implements DataSavingService {
 						log.error("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 					}
 
-					if (stopPassageInDb.getScheduledDeparture() == null && stopPointInDb != null) {
-						tripInDb.setDestinationStopName(stopPointInDb.getName());
-					}
 					if (stopPassageInDb.getScheduledDeparture() == null) {
+						if (stopPointInDb != null) {
+							tripInDb.setDestinationStopName(stopPointInDb.getName());
+						} else {
+							// Yes this appears to be vice-versa. After some tests this seems (almost)
+							// correct.
+							tripInDb.setOriginStopName(
+									StopPassage.getArrivalMultiLingualDirectionText(stopPassage));
+						}
+
 						tripInDb.setActualFinish(stopPassageInDb.getActualArrival());
 						tripInDb.setScheduledFinish(stopPassageInDb.getScheduledArrival());
 					}
-					if (stopPassageInDb.getScheduledArrival() == null && stopPointInDb != null) {
-						tripInDb.setOriginStopName(stopPointInDb.getName());
-					}
 					if (stopPassageInDb.getScheduledArrival() == null) {
+						if (stopPointInDb != null) {
+							tripInDb.setOriginStopName(stopPointInDb.getName());
+						} else {
+							// Yes this appears to be vice-versa. After some tests this seems (almost)
+							// correct.
+							tripInDb.setDestinationStopName(
+									StopPassage.getDepartureMultiLingualDirectionText(stopPassage));
+						}
+
 						tripInDb.setActualStart(stopPassageInDb.getActualDeparture());
 						tripInDb.setScheduledStart(stopPassageInDb.getScheduledDeparture());
 					}
@@ -416,6 +428,8 @@ public class DataSavingServiceImpl implements DataSavingService {
 
 				if (stopPoints.values() == null) {
 					log.warn(sp.getDuid() + " stopPoints.values() is null");
+				} else if (sp.getStopPointId() == null) {
+					log.warn(sp.getDuid() + " sp.getStopPointId() is null");
 				} else {
 					log.warn(sp.getDuid() + " "
 							+ stopPoints.values().stream().filter(spnt -> spnt.getId() == sp.getStopPointId())

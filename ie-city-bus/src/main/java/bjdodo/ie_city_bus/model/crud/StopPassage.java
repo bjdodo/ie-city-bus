@@ -219,6 +219,32 @@ public class StopPassage {
 	public static int getJSONDirection(JSONObject json) throws JSONException {
 		return json.getInt("direction");
 	}
+
+	public static String getArrivalMultiLingualDirectionText(JSONObject json) {
+
+		JSONObject arrivalData = json.optJSONObject("arrival_data");
+		if (arrivalData == null) {
+			return null;
+		}
+		JSONObject directionText = arrivalData.optJSONObject("multilingual_direction_text");
+		if (directionText == null) {
+			return null;
+		}
+		return directionText.optString("defaultValue");
+	}
+
+	public static String getDepartureMultiLingualDirectionText(JSONObject json) {
+
+		JSONObject departureData = json.optJSONObject("departure_data");
+		if (departureData == null) {
+			return null;
+		}
+		JSONObject directionText = departureData.optJSONObject("multilingual_direction_text");
+		if (directionText == null) {
+			return null;
+		}
+		return directionText.optString("defaultValue");
+	}
 }
 
 // {

@@ -14,6 +14,6 @@ public interface RouteRepository extends JpaRepository<Route, Long> {
 
 	public List<Route> findByShortName(String shortName);
 
-	@Query("select r FROM Route r order by r.shortName")
+	@Query("select r FROM Route r where r.isDeleted=0 order by r.shortName")
 	public List<Route> findAll();
 }
