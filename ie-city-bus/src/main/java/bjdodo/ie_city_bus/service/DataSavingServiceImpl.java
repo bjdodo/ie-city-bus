@@ -224,6 +224,9 @@ public class DataSavingServiceImpl implements DataSavingService {
 			// for diagnostics, trying to catch a bug
 			// List<Long> stopPassageIdUpdatedFromJson = new ArrayList<>();
 
+			JSONObject firstStopPassage = null;
+			JSONObject lastStopPassage = null;
+
 			for (JSONObject stopPassage : stopPassages.values()) {
 
 				JSONObject stopPoint = null;
@@ -293,26 +296,21 @@ public class DataSavingServiceImpl implements DataSavingService {
 					}
 
 					if (stopPassageInDb.getScheduledDeparture() == null) {
+						lastStopPassage = stopPassage;
+
 						if (stopPointInDb != null) {
 							tripInDb.setDestinationStopName(stopPointInDb.getName());
-						} else {
-							// Yes this appears to be vice-versa. After some tests this seems (almost)
-							// correct.
-							tripInDb.setOriginStopName(
-									StopPassage.getArrivalMultiLingualDirectionText(stopPassage));
-						}
+						} 
 
 						tripInDb.setActualFinish(stopPassageInDb.getActualArrival());
 						tripInDb.setScheduledFinish(stopPassageInDb.getScheduledArrival());
 					}
 					if (stopPassageInDb.getScheduledArrival() == null) {
+
+						firstStopPassage = stopPassage;
+
 						if (stopPointInDb != null) {
 							tripInDb.setOriginStopName(stopPointInDb.getName());
-						} else {
-							// Yes this appears to be vice-versa. After some tests this seems (almost)
-							// correct.
-							tripInDb.setDestinationStopName(
-									StopPassage.getDepartureMultiLingualDirectionText(stopPassage));
 						}
 
 						tripInDb.setActualStart(stopPassageInDb.getActualDeparture());
@@ -323,6 +321,14 @@ public class DataSavingServiceImpl implements DataSavingService {
 					log.error("Saving stopPassage into DB failed. JSON:\r\n" + stopPassage.toString(), ex);
 					continue;
 				}
+			}
+
+			if (tripInDb.getDestinationStopName() == null && firstStopPassage != null) {
+				tripInDb.setDestinationStopName(StopPassage.getDepartureMultiLingualDirectionText(firstStopPassage));
+			}
+
+			if (tripInDb.getOriginStopName() == null && lastStopPassage != null) {
+				tripInDb.setOriginStopName(StopPassage.getArrivalMultiLingualDirectionText(lastStopPassage));
 			}
 
 			if (nearestStopPointDistance != null) {

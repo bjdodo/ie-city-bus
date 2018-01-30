@@ -24,7 +24,7 @@
 		});
 
 	});
-	
+
 	app.filter("pointToMapUrl", function() {
 		return function(pointdecl) {
 			if (pointdecl == null) {
@@ -60,11 +60,15 @@
 
 				scope.$watch("model.view", function() {
 					console.log("watch triggered for view");
-					scope.osm.setCenter(scope.model.view.latitude,
-							scope.model.view.longitude, scope.model.view.zoom);
+					if (scope.model.view != null) {
+						scope.osm.setCenter(scope.model.view.latitude,
+								scope.model.view.longitude,
+								scope.model.view.zoom);
+					}
 				}, true);
 
-				scope.$watch("model.pins", function() {
+				// scope.$watch("model.pins", function() {
+				scope.$watchCollection("model.pins", function() {
 					console.log("watch triggered for pins");
 					scope.osm.removeAllPins();
 					for (var idx = 0; idx < scope.model.pins.length; ++idx) {
@@ -81,8 +85,9 @@
 										});
 									}
 								});
+						console.log("pin added for " + scope.model.pins[idx].pngFile);
 					}
-				}, true);
+				});
 
 				scope.$on(scope.listenOnPinSelected, function(event, data) {
 					scope.osm.selectPin(data.vehicleId);
