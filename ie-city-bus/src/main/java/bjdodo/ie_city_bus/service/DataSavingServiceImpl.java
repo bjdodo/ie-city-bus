@@ -61,6 +61,15 @@ public class DataSavingServiceImpl implements DataSavingService {
 	private TrafficService trafficService;
 
 	public void downloadAndSaveAll() {
+
+		// boolean bSkipAll = true;
+		//
+		// if (bSkipAll) {
+		// customDBStatementCalls.deleteOldTrips(configurationService.getMaxTripAgeDays()
+		// * 24 * 60 * 60);
+		// return;
+		// }
+
 		log.info("ScheduledTasks downloadData() starting...");
 
 		dataDownloaderService.startDownloadBatch();

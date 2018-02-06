@@ -40,20 +40,21 @@ public class CustomDBStatementCalls {
 		return q.getResultList();
 	}
 
-//	public List<RecentStopPassage> getRecentStopPassages(Instant after) {
-//		Query q = entityManager.createQuery(
-//				"select t.id, COALESCE(spa.actualDeparture, spa.actualArrival), spo.number,  r.shortName\r\n" +
-//						"from StopPassage spa, StopPoint spo, Trip t, Route r\r\n" +
-//						"where spa.stopPointId=spo.id and\r\n" +
-//						"spa.tripId=t.id and\r\n" +
-//						"t.routeId=r.id and\r\n" +
-//						"COALESCE(spa.actualDeparture, spa.actualArrival) > :after\r\n" +
-//						"order by t.id,  COALESCE(spa.actualDeparture, spa.actualArrival)");
-//		q.setParameter("after", after);
-//		List<Object[]> result = q.getResultList();
-//		
-//		
-//	}
+	// public List<RecentStopPassage> getRecentStopPassages(Instant after) {
+	// Query q = entityManager.createQuery(
+	// "select t.id, COALESCE(spa.actualDeparture, spa.actualArrival), spo.number, 
+	// r.shortName\r\n" +
+	// "from StopPassage spa, StopPoint spo, Trip t, Route r\r\n" +
+	// "where spa.stopPointId=spo.id and\r\n" +
+	// "spa.tripId=t.id and\r\n" +
+	// "t.routeId=r.id and\r\n" +
+	// "COALESCE(spa.actualDeparture, spa.actualArrival) > :after\r\n" +
+	// "order by t.id,  COALESCE(spa.actualDeparture, spa.actualArrival)");
+	// q.setParameter("after", after);
+	// List<Object[]> result = q.getResultList();
+	//
+	//
+	// }
 
 	@Transactional
 	public int setStaleVehiclesDeleted() {

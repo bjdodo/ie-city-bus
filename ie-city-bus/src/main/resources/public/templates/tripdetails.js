@@ -13,26 +13,56 @@ angular
 						view : null,
 						pins : []
 					};
+					
+					$scope.showMyMobile = false;
 
-					$scope.updateMobilePosition = function() {
-						if ("geolocation" in navigator) {
-							navigator.geolocation
-									.getCurrentPosition(
-											function(position) {
-												$scope
-														.setSinglePointOnMap({
-															latitude : position.coords.latitude,
-															longitude : position.coords.longitude,
-															description : '<div class="mappinpopup"><b>your device</b></div>',
-															pngFile : 'img/smartphone.png'
-														});
-												
-												$scope.$apply();
-											});
+					$scope.showMyMobileChanged = function() {
+						$scope.showMyMobile = ! $scope.showMyMobile;
+						if ($scope.showMyMobile) {
+							$scope.updateMobilePosition();
 						} else {
-							console.log("geolocation IS NOT available");
+							$scope.removePointOnMap('img/smartphone.png');
+						}
+						
+					}
+					$scope.updateMobilePosition = function() {
+						
+						if ($scope.showMyMobile) {
+							if ("geolocation" in navigator) {
+								navigator.geolocation
+										.getCurrentPosition(
+												function(position) {
+													$scope
+															.setSinglePointOnMap({
+																latitude : position.coords.latitude,
+																longitude : position.coords.longitude,
+																description : '<div class="mappinpopup"><b>your device</b></div>',
+																pngFile : 'img/smartphone.png'
+															});
+													
+													$scope.$apply();
+												},
+											    function(error){
+											         Console.log(error.message);
+											    }, {
+											         enableHighAccuracy: true
+											              ,timeout : 5000
+											    });
+							} else {
+								console.log("geolocation IS NOT available");
+							}
 						}
 					}
+					
+					$scope.removePointOnMap = function(pngFileName) {
+						for (idx = 0; idx < $scope.mapData.pins.length; ++idx) {
+							if ($scope.mapData.pins[idx].pngFile === pngFileName) {
+								$scope.mapData.pins.splice(idx, 1);
+								break;
+							}
+						}
+					}
+					
 					$scope.setSinglePointOnMap = function(singlePoint) {
 
 						if ($scope.mapData.pins == null) {

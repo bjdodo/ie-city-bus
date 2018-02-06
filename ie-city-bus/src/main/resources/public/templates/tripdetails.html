@@ -13,7 +13,14 @@
 <body>
 	<div class="subpagediv container-fluid">
 
-		<a href="#/trips/">&lt; Trips</a>
+		<div class="col-lg-12">
+
+			<a href="#/trips/">&lt; Trips</a>
+
+			<div class="pull-right">
+				<input type="checkbox" ng-click="showMyMobileChanged()" >Show my mobile</input>
+			</div>
+		</div>
 
 		<div class="col-lg-12"
 			ng-show="!!tripData && tripData.routeShortName != null">
@@ -29,6 +36,8 @@
 		<div class="col-lg-12"
 			ng-show="!!tripPassages && tripPassages.length > 0 && tripData == null">Trip
 			has finished</div>
+
+
 
 		<div class="col-lg-12">
 			<open-street-map model="mapData" container-div-id='mapdiv'
