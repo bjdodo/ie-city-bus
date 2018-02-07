@@ -8,6 +8,7 @@ angular
 
 					$scope.tripId = $routeParams.tripId;
 					$scope.tripPassage = '';
+					$scope.stopsAddedOnMap = false;
 
 					$scope.mapData = {
 						view : null,
@@ -43,7 +44,7 @@ angular
 													$scope.$apply();
 												},
 											    function(error){
-											         Console.log(error.message);
+													console.log(error.message);
 											    }, {
 											         enableHighAccuracy: true
 											              ,timeout : 5000
@@ -51,6 +52,26 @@ angular
 							} else {
 								console.log("geolocation IS NOT available");
 							}
+						}
+					}
+					
+					$scope.updateBusPosition = function() {
+						if ($scope.tripData == null) {
+							$scope.removePointOnMap('img/bus.png');
+						}
+						else {
+							var latlong = utils.splitLatlong($scope.tripData.vehicleLatLong);
+							$scope.setSinglePointOnMap({
+								latitude : latlong.latitude,
+								longitude : latlong.longitude,
+								description : '<div class="mappinpopup"><b>'
+										+ $scope.tripData.routeShortName
+										+ '</b><br/>'
+										+ 'Destination: '
+										+ $scope.tripData.destinationStopName
+										+ '</div>',
+								pngFile : 'img/bus.png'
+							});
 						}
 					}
 					
@@ -62,7 +83,7 @@ angular
 							}
 						}
 					}
-					
+
 					$scope.setSinglePointOnMap = function(singlePoint) {
 
 						if ($scope.mapData.pins == null) {
@@ -88,10 +109,9 @@ angular
 									$scope.tripData = response.data.length == 1 ? response.data[0]
 											: null;
 									if ($scope.tripData != null) {
-										var latlong = utils
-												.splitLatlong($scope.tripData.vehicleLatLong);
 										if ($scope.mapData == null
 												|| $scope.mapData.view == null) {
+											var latlong = utils.splitLatlong($scope.tripData.vehicleLatLong);
 											$scope.mapData = {
 												view : {
 													latitude : latlong.latitude,
@@ -100,18 +120,19 @@ angular
 												}
 											};
 										}
-
-										$scope.setSinglePointOnMap({
-											latitude : latlong.latitude,
-											longitude : latlong.longitude,
-											description : '<div class="mappinpopup"><b>'
-													+ $scope.tripData.routeShortName
-													+ '</b><br/>'
-													+ 'Destination: '
-													+ $scope.tripData.destinationStopName
-													+ '</div>',
-											pngFile : 'img/bus.png'
-										});
+//										var latlong = utils.splitLatlong($scope.tripData.vehicleLatLong);
+//										$scope.setSinglePointOnMap({
+//											latitude : latlong.latitude,
+//											longitude : latlong.longitude,
+//											description : '<div class="mappinpopup"><b>'
+//													+ $scope.tripData.routeShortName
+//													+ '</b><br/>'
+//													+ 'Destination: '
+//													+ $scope.tripData.destinationStopName
+//													+ '</div>',
+//											pngFile : 'img/bus.png'
+//										});
+										$scope.updateBusPosition();
 									}
 									if (($scope.tripData == null || $scope.tripData.routeShortName == null)
 											&& $scope.cancelUpdateData != null) {
@@ -125,6 +146,29 @@ angular
 										+ '/passages');
 						promisePassages.then(function(response) {
 							$scope.tripPassages = response.data;
+							
+							if ($scope.stopsAddedOnMap == false) {
+								
+								$scope.stopsAddedOnMap = true;
+								
+								for (idx = 0; idx < $scope.tripPassages.length; ++idx) {
+								
+									var latlong = utils.splitLatlong($scope.tripPassages[idx].stopLatLong);
+									
+									$scope.mapData.pins.push({
+										latitude : latlong.latitude,
+										longitude : latlong.longitude,
+										description : '<div class="mappinpopup"><b>'
+												+ $scope.tripPassages[idx].stopName
+												+ '</b><br/>'
+												+ $scope.tripPassages[idx].stopNumber
+												+ '</div>',
+										pngFile : 'img/bus_stop.png'
+									});
+								}
+								
+								$scope.updateBusPosition();
+							}
 						});
 					}
 

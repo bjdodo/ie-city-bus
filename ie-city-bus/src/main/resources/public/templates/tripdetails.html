@@ -18,19 +18,19 @@
 			<a href="#/trips/">&lt; Trips</a>
 
 			<div class="pull-right">
-				<input type="checkbox" ng-click="showMyMobileChanged()" >Show my mobile</input>
+				<a href="/#/triptraffic/{{tripId}}">Traffic info</a>
 			</div>
+			
 		</div>
 
 		<div class="col-lg-12"
 			ng-show="!!tripData && tripData.routeShortName != null">
 
-			<table style="width: 100%">
-				<tr>
-					<td>Route: {{tripData.routeShortName}}</td>
-					<td style="text-align: right"><a
-						href="/#/triptraffic/{{tripId}}">Traffic info</a></td>
-			</table>
+			Route: {{tripData.routeShortName}}
+			
+			<div class="pull-right">
+				<input type="checkbox" ng-click="showMyMobileChanged()" >Show my mobile</input>
+			</div>
 		</div>
 
 		<div class="col-lg-12"
