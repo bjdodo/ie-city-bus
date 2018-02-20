@@ -1,6 +1,11 @@
 var utils = {
 		
 	splitLatlong : function(latlong) {
+		
+		if (latlong == null) {
+			return null;
+		}
+		
 		if (!latlong.startsWith("POINT (") || !latlong.endsWith(")")) {
 			throw "Wrong latlong " + latlong;
 		}
