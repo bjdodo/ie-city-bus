@@ -27,6 +27,14 @@ angular
 					}
 					$scope.updateMobilePosition = function() {
 
+						// geolocation browser test: https://html5demos.com/geo/
+						//
+						// To set up firefox for geolocation testing
+						// https://stackoverflow.com/a/40377823
+						//
+						// "For example, if you set the preference geo.wifi.uri (at about:config) with value:
+						// data:,{"location":{"lat":1.2,"lng":3.4},"accuracy":4000}"
+						//
 						if ($scope.showMyMobile) {
 							if ("geolocation" in navigator) {
 								navigator.geolocation

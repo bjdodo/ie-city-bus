@@ -11,7 +11,19 @@ function OSMWrapper() {
 		map = new OpenLayers.Map({
 			div : div_or_id
 		});
-		map.addLayer(new OpenLayers.Layer.OSM());
+		
+		//map.addLayer(new OpenLayers.Layer.OSM());
+		// For https we need to specify the tiles url
+		// https://gis.stackexchange.com/a/90308
+		map.addLayer(new OpenLayers.Layer.OSM(
+		    "OpenStreetMap", 
+		    // Official OSM tileset as protocol-independent URLs
+		    [
+		        '//a.tile.openstreetmap.org/${z}/${x}/${y}.png',
+		        '//b.tile.openstreetmap.org/${z}/${x}/${y}.png',
+		        '//c.tile.openstreetmap.org/${z}/${x}/${y}.png'
+		    ], 
+		    null));
 
 		epsg4326 = new OpenLayers.Projection("EPSG:4326"); // WGS 1984
 		// projection
