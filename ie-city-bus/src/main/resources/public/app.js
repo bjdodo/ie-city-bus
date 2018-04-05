@@ -85,7 +85,8 @@
 										});
 									}
 								});
-						console.log("pin added for " + scope.model.pins[idx].pngFile);
+						console.log("pin added for "
+								+ scope.model.pins[idx].pngFile);
 					}
 				});
 
