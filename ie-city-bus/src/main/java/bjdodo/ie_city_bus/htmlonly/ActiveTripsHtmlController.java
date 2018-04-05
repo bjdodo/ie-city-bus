@@ -55,7 +55,7 @@ public class ActiveTripsHtmlController {
 		StringBuilder sb = new StringBuilder();
 		activeTrips.forEach(trip -> {
 				
-			sb.append("<a href=\"/htmlonly/trip/" + trip.getTripId() + "\">" + trip.getRouteShortName() + "</a> ");
+			sb.append("<a href=\"htmlonly/trip/" + trip.getTripId() + "\">" + trip.getRouteShortName() + "</a> ");
 			sb.append("<b>" + dtFormatterShort.format(trip.getScheduledStart()) + "</b><br>");
 			sb.append("From: " + trip.getOriginStopName() + " @ " + dtFormatter.format(trip.getActualStart()) +  "<br>");
 			sb.append("To: " + trip.getDestinationStopName() + ", expected: @ " + dtFormatter.format(trip.getActualFinish()) + "<br>");
