@@ -1,1 +1,15 @@
 /.metadata/
+/.recommenders/
+Servers/
+RemoteSystemsTempFiles/
+db.h2.mv.db
+ie-city-bus/.classpath
+ie-city-bus/.metadata/
+ie-city-bus/.settings/
+ie-city-bus/RemoteSystemsTempFiles/
+ie-city-bus/Servers/
+ie-city-bus/src/.classpath
+ie-city-bus/src/.project
+ie-city-bus/src/sandbox/
+logs/
+
