@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import bjdodo.ie_city_bus.model.ActiveTrip;
 import bjdodo.ie_city_bus.repository.ActiveTripRepository;
+import bjdodo.ie_city_bus.utils.HtmlUtils;
 
 @RestController
-@RequestMapping("/htmlonly")
+@RequestMapping("/htmlonly/")
 public class ActiveTripsHtmlController {
 
 	private static final Logger log = LoggerFactory.getLogger(ActiveTripsHtmlController.class);
@@ -31,20 +32,27 @@ public class ActiveTripsHtmlController {
 		log.info("ActiveTripsHtmlController.get all");
 		
 		List<ActiveTrip> activeTrips = activeTripsRepository.getActiveTrips();
-		return getFormattedHtml(activeTrips);
+		//return getFormattedHtml(activeTrips);
+		return getFormattedHtml2(activeTrips);
 	}
 
-	// http://localhost:8090/htmlonly?route=405 - with request param
 	// http://localhost:8090/htmlonly/405
-	@RequestMapping(value = "/{route}", method = RequestMethod.GET)
+	@RequestMapping(value = "{route}", method = RequestMethod.GET)
 	public String get(@PathVariable String route) {
 		
 		log.info("ActiveTripsHtmlController.get " + route);
 		
 		List<ActiveTrip> activeTrips = activeTripsRepository.getRouteActiveTrips(route);
-		return getFormattedHtml(activeTrips);
+		//return getFormattedHtml(activeTrips);
+		return getFormattedHtml2(activeTrips);
 	}
 
+	
+	private String getFormattedHtml2(List<ActiveTrip> activeTrips) {
+		
+		return HtmlUtils.getActiveTripsHtml(activeTrips);
+	}
+	
 	private String getFormattedHtml(List<ActiveTrip> activeTrips) {
 		
 		DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
