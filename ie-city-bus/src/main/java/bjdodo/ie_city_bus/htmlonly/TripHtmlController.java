@@ -19,6 +19,7 @@ import bjdodo.ie_city_bus.model.TripDetailStopPassage;
 import bjdodo.ie_city_bus.model.crud.Vehicle;
 import bjdodo.ie_city_bus.repository.crud.TripRepository;
 import bjdodo.ie_city_bus.repository.crud.VehicleRepository;
+import bjdodo.ie_city_bus.utils.HtmlUtils;
 import bjdodo.ie_city_bus.utils.Pair;
 import bjdodo.ie_city_bus.utils.Utils;
 
@@ -67,7 +68,13 @@ public class TripHtmlController {
 			stopPassageDetails.add(tpc);
 		}
 		
-		return getFormattedHtml(stopPassageDetails);
+		//return getFormattedHtml(stopPassageDetails);
+		return getFormattedHtml2(stopPassageDetails);
+	}
+	
+	private String getFormattedHtml2(List<StopPassageDetail> stopPassageDetails) {
+		
+		return HtmlUtils.getStopPassageDetailsHtml(stopPassageDetails);
 	}
 	
 	private String getFormattedHtml(List<StopPassageDetail> stopPassageDetails) {
