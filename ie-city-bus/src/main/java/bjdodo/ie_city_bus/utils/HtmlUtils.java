@@ -71,7 +71,7 @@ public class HtmlUtils {
 			rootElement.appendChild(body);
 			
 			Element linkAll = doc.createElement("a");
-			linkAll.setAttribute("href", "/htmlonly/");
+			linkAll.setAttribute("href", "htmlonly/");
 			linkAll.setTextContent("all trips");
 			
 			Element span = doc.createElement("span");
@@ -201,11 +201,11 @@ public class HtmlUtils {
 			rootElement.appendChild(body);
 
 			Element link = doc.createElement("a");
-			link.setAttribute("href", "/htmlonly/" + routeShortName);
+			link.setAttribute("href", "htmlonly/" + routeShortName);
 			link.setTextContent(StringUtils.isEmpty(routeShortName) ? "all" : routeShortName);
 			
 			Element linkAll = doc.createElement("a");
-			linkAll.setAttribute("href", "/htmlonly/");
+			linkAll.setAttribute("href", "htmlonly/");
 			linkAll.setTextContent("all trips");
 			
 			Element span = doc.createElement("span");
