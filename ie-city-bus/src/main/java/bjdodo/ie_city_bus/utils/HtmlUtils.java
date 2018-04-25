@@ -3,7 +3,6 @@ package bjdodo.ie_city_bus.utils;
 import java.io.StringWriter;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -29,6 +28,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 public class HtmlUtils {
+	
+	public static ZoneId ZONE_ID = ZoneId.of("Europe/Dublin");
+	public static DateTimeFormatter DT_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZONE_ID);
+	public static DateTimeFormatter DT_FORMAT_SHORT = DateTimeFormatter.ofPattern("HH:mm").withZone(ZONE_ID);
 	
 	private static final Logger log = LoggerFactory.getLogger(HtmlUtils.class);
 	
@@ -70,11 +73,6 @@ public class HtmlUtils {
 			rootElement.appendChild(body);
 			
 			// trip content
-			DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-		            .withZone(ZoneId.systemDefault());
-			DateTimeFormatter dtFormatterShort = DateTimeFormatter.ofPattern("HH:mm")
-		            .withZone(ZoneId.systemDefault());
-			
 			activeTrips.forEach(trip -> {
 				
 				Element link = doc.createElement("a");
@@ -86,7 +84,7 @@ public class HtmlUtils {
 				
 				if (trip.getScheduledStart() != null) {
 					
-					bold.setTextContent(" " + dtFormatterShort.format(trip.getScheduledStart()));
+					bold.setTextContent(" " + DT_FORMAT_SHORT.format(trip.getScheduledStart()));
 					
 				} else {
 					log.error("Unexpected: Scheduled Start is null");
@@ -98,7 +96,7 @@ public class HtmlUtils {
 				Element pFrom = doc.createElement("p");
 				
 				if (trip.getActualStart() != null) {
-					pFrom.setTextContent("From: " + trip.getOriginStopName() + " @ " + dtFormatter.format(trip.getActualStart()));
+					pFrom.setTextContent("From: " + trip.getOriginStopName() + " @ " + DT_FORMAT.format(trip.getActualStart()));
 				} else {
 					log.error("Unexpected: Actual Start is null");
 					pFrom.setTextContent("From: " + trip.getOriginStopName() + " @ " + "NULL Actual Start");
@@ -108,7 +106,7 @@ public class HtmlUtils {
 				Element pTo = doc.createElement("p");
 				
 				if (trip.getActualFinish() != null) {
-					pTo.setTextContent("To: " + trip.getDestinationStopName() + ", expected: @ " + dtFormatter.format(trip.getActualFinish()));
+					pTo.setTextContent("To: " + trip.getDestinationStopName() + ", expected: @ " + DT_FORMAT.format(trip.getActualFinish()));
 				} else {
 					log.error("Unexpected: Actual Finish is null");
 					pTo.setTextContent("To: " + trip.getDestinationStopName() + ", expected: @ " + "NULL Actual Finish");
@@ -277,15 +275,13 @@ public class HtmlUtils {
 
 	}
 	
-	private static String formatTime(Instant instant1, Instant instant2, boolean withSeconds) {
+	public static String formatTime(Instant instant1, Instant instant2, boolean withSeconds) {
 		
 		DateTimeFormatter dtFormatter;
 		if (withSeconds) {
-			dtFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-	            .withZone(ZoneId.systemDefault());
+			dtFormatter = DT_FORMAT;
 		} else {
-			dtFormatter = DateTimeFormatter.ofPattern("HH:mm")
-		            .withZone(ZoneId.systemDefault());
+			dtFormatter = DT_FORMAT_SHORT;
 		}
 
 		if (instant1 == null) {

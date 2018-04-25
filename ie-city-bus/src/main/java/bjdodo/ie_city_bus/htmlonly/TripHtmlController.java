@@ -1,8 +1,5 @@
 package bjdodo.ie_city_bus.htmlonly;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,66 +65,11 @@ public class TripHtmlController {
 			stopPassageDetails.add(tpc);
 		}
 		
-		//return getFormattedHtml(stopPassageDetails);
-		return getFormattedHtml2(stopPassageDetails);
-	}
-	
-	private String getFormattedHtml2(List<StopPassageDetail> stopPassageDetails) {
-		
-		return HtmlUtils.getStopPassageDetailsHtml(stopPassageDetails);
+		return getFormattedHtml(stopPassageDetails);
 	}
 	
 	private String getFormattedHtml(List<StopPassageDetail> stopPassageDetails) {
 		
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("<tr>");
-		sb.append("<th align=\"left\">" + "Stop" + "</th>");
-		sb.append("<th>" + "Sch." + "</th>");
-		sb.append("<th>" + "Act." + "</th>");
-		sb.append("<th>" + "Dist." + "</th>");
-		sb.append("</tr>");
-		
-		stopPassageDetails.forEach(spd -> {
-			sb.append("<tr>");
-			
-			sb.append("<td>" + spd.getStopNumber() + " " + spd.getStopName()+  "</td>");
-			sb.append("<td>" + formatTime(spd.getScheduledDeparture(), spd.getScheduledArrival(), false) + "</td>");
-			
-			if (spd.isActualEstimated()) {
-				sb.append("<td>Est: " + formatTime(spd.getActualDeparture(), spd.getActualArrival(), false) + "</td>");
-			} else {
-				sb.append("<td>" + formatTime(spd.getActualDeparture(), spd.getActualArrival(), true) + "</td>");
-			}
-			
-			sb.append("<td align=\"right\">" + spd.getMetersFromVehicle() + " m </td>");
-			
-			sb.append("</tr>");
-		});
-		
-		return "<html><table border=\"1\" style=\"border-collapse: collapse\">" + sb.toString() + "</table></html>";
-	}
-	
-	private String formatTime(Instant instant1, Instant instant2, boolean withSeconds) {
-		
-		DateTimeFormatter dtFormatter;
-		if (withSeconds) {
-			dtFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-	            .withZone(ZoneId.systemDefault());
-		} else {
-			dtFormatter = DateTimeFormatter.ofPattern("HH:mm")
-		            .withZone(ZoneId.systemDefault());
-		}
-
-		if (instant1 == null) {
-			
-			if (instant2 == null) {
-				return "N/A";
-			} 
-				
-			return dtFormatter.format(instant2);
-		}
-		
-		return dtFormatter.format(instant1);
+		return HtmlUtils.getStopPassageDetailsHtml(stopPassageDetails);
 	}
 }
