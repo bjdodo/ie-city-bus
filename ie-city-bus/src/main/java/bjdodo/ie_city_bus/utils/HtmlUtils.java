@@ -3,7 +3,6 @@ package bjdodo.ie_city_bus.utils;
 import java.io.StringWriter;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -11,6 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMImplementation;
@@ -29,6 +29,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 public class HtmlUtils {
+	
+	public static ZoneId ZONE_ID = ZoneId.of("Europe/Dublin");
+	public static DateTimeFormatter DT_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss").withZone(ZONE_ID);
+	public static DateTimeFormatter DT_FORMAT_SHORT = DateTimeFormatter.ofPattern("HH:mm").withZone(ZONE_ID);
 	
 	private static final Logger log = LoggerFactory.getLogger(HtmlUtils.class);
 	
@@ -70,11 +74,6 @@ public class HtmlUtils {
 			rootElement.appendChild(body);
 			
 			// trip content
-			DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-		            .withZone(ZoneId.systemDefault());
-			DateTimeFormatter dtFormatterShort = DateTimeFormatter.ofPattern("HH:mm")
-		            .withZone(ZoneId.systemDefault());
-			
 			activeTrips.forEach(trip -> {
 				
 				Element link = doc.createElement("a");
@@ -86,7 +85,7 @@ public class HtmlUtils {
 				
 				if (trip.getScheduledStart() != null) {
 					
-					bold.setTextContent(" " + dtFormatterShort.format(trip.getScheduledStart()));
+					bold.setTextContent(" " + DT_FORMAT_SHORT.format(trip.getScheduledStart()));
 					
 				} else {
 					log.error("Unexpected: Scheduled Start is null");
@@ -98,7 +97,7 @@ public class HtmlUtils {
 				Element pFrom = doc.createElement("p");
 				
 				if (trip.getActualStart() != null) {
-					pFrom.setTextContent("From: " + trip.getOriginStopName() + " @ " + dtFormatter.format(trip.getActualStart()));
+					pFrom.setTextContent("From: " + trip.getOriginStopName() + " @ " + DT_FORMAT.format(trip.getActualStart()));
 				} else {
 					log.error("Unexpected: Actual Start is null");
 					pFrom.setTextContent("From: " + trip.getOriginStopName() + " @ " + "NULL Actual Start");
@@ -108,7 +107,7 @@ public class HtmlUtils {
 				Element pTo = doc.createElement("p");
 				
 				if (trip.getActualFinish() != null) {
-					pTo.setTextContent("To: " + trip.getDestinationStopName() + ", expected: @ " + dtFormatter.format(trip.getActualFinish()));
+					pTo.setTextContent("To: " + trip.getDestinationStopName() + ", expected: @ " + DT_FORMAT.format(trip.getActualFinish()));
 				} else {
 					log.error("Unexpected: Actual Finish is null");
 					pTo.setTextContent("To: " + trip.getDestinationStopName() + ", expected: @ " + "NULL Actual Finish");
@@ -166,7 +165,7 @@ public class HtmlUtils {
 		return "Failed to generate html for Active Trips";
 	}
 	
-	public static String getStopPassageDetailsHtml(List<StopPassageDetail> stopPassageDetails) {
+	public static String getStopPassageDetailsHtml(List<StopPassageDetail> stopPassageDetails, String routeShortName) {
 		
 		String titleText = "Stop Passage Details";
 		
@@ -184,18 +183,22 @@ public class HtmlUtils {
 			Element head = doc.createElement("head");
 			rootElement.appendChild(head);
 			
-//			Element meta = doc.createElement("meta");
-//			head.appendChild(meta);
-			
 			Element title = doc.createElement("title");
 			title.setTextContent(titleText);
 			head.appendChild(title);
 			
 			Element body = doc.createElement("body");
 			rootElement.appendChild(body);
+
+			Element link = doc.createElement("a");
+			link.setAttribute("href", "/htmlonly/" + routeShortName);
+			link.setTextContent(StringUtils.isEmpty(routeShortName) ? "all" : routeShortName);
+			body.appendChild(link);
 			
-			//Element p = doc.createElement("p");
-			//body.appendChild(p);
+			Element p = doc.createElement("p");
+			p.setTextContent("Route ");
+			p.appendChild(link);
+			body.appendChild(p);
 			
 			Element table = doc.createElement("table");
 			table.setAttribute("border", "1");
@@ -261,7 +264,7 @@ public class HtmlUtils {
 			transformer.transform(new DOMSource(doc), new StreamResult(writer));
 			String output = writer.getBuffer().toString(); //.replaceAll("\n|\r", "");
 
-			System.err.println("xml result: \n" + output);
+			// System.err.println("xml result: \n" + output);
 			
 			return output;
 		
@@ -277,15 +280,13 @@ public class HtmlUtils {
 
 	}
 	
-	private static String formatTime(Instant instant1, Instant instant2, boolean withSeconds) {
+	public static String formatTime(Instant instant1, Instant instant2, boolean withSeconds) {
 		
 		DateTimeFormatter dtFormatter;
 		if (withSeconds) {
-			dtFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-	            .withZone(ZoneId.systemDefault());
+			dtFormatter = DT_FORMAT;
 		} else {
-			dtFormatter = DateTimeFormatter.ofPattern("HH:mm")
-		            .withZone(ZoneId.systemDefault());
+			dtFormatter = DT_FORMAT_SHORT;
 		}
 
 		if (instant1 == null) {
