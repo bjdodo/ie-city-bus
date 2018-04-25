@@ -63,9 +63,6 @@ public class HtmlUtils {
 			
 			rootElement.appendChild(head);
 			
-//			Element meta = doc.createElement("meta");
-//			head.appendChild(meta);
-			
 			Element title = doc.createElement("title");
 			title.setTextContent(titleText);
 			head.appendChild(title);
@@ -73,8 +70,23 @@ public class HtmlUtils {
 			Element body = doc.createElement("body");
 			rootElement.appendChild(body);
 			
+			Element linkAll = doc.createElement("a");
+			linkAll.setAttribute("href", "/htmlonly/");
+			linkAll.setTextContent("all trips");
+			
+			Element span = doc.createElement("span");
+			span.setTextContent("View ");
+			
+			Element p = doc.createElement("p");
+			p.appendChild(span);
+			p.appendChild(linkAll);
+			body.appendChild(p);
+			
 			// trip content
 			activeTrips.forEach(trip -> {
+			
+				Element br = doc.createElement("br");
+				body.appendChild(br);
 				
 				Element link = doc.createElement("a");
 				link.setAttribute("href", "trip/" + trip.getTripId());
@@ -125,8 +137,6 @@ public class HtmlUtils {
 				pDelay.setTextContent("Delay: " + delayMin + " min");
 				body.appendChild(pDelay);
 				
-				Element br = doc.createElement("br");
-				body.appendChild(br);
 			});
 			
 			TransformerFactory tf = TransformerFactory.newInstance();
@@ -193,11 +203,19 @@ public class HtmlUtils {
 			Element link = doc.createElement("a");
 			link.setAttribute("href", "/htmlonly/" + routeShortName);
 			link.setTextContent(StringUtils.isEmpty(routeShortName) ? "all" : routeShortName);
-			body.appendChild(link);
+			
+			Element linkAll = doc.createElement("a");
+			linkAll.setAttribute("href", "/htmlonly/");
+			linkAll.setTextContent("all trips");
+			
+			Element span = doc.createElement("span");
+			span.setTextContent(" or view ");
 			
 			Element p = doc.createElement("p");
 			p.setTextContent("Route ");
 			p.appendChild(link);
+			p.appendChild(span);
+			p.appendChild(linkAll);
 			body.appendChild(p);
 			
 			Element table = doc.createElement("table");
