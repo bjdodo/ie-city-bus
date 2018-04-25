@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMImplementation;
@@ -164,7 +165,7 @@ public class HtmlUtils {
 		return "Failed to generate html for Active Trips";
 	}
 	
-	public static String getStopPassageDetailsHtml(List<StopPassageDetail> stopPassageDetails) {
+	public static String getStopPassageDetailsHtml(List<StopPassageDetail> stopPassageDetails, String routeShortName) {
 		
 		String titleText = "Stop Passage Details";
 		
@@ -182,18 +183,22 @@ public class HtmlUtils {
 			Element head = doc.createElement("head");
 			rootElement.appendChild(head);
 			
-//			Element meta = doc.createElement("meta");
-//			head.appendChild(meta);
-			
 			Element title = doc.createElement("title");
 			title.setTextContent(titleText);
 			head.appendChild(title);
 			
 			Element body = doc.createElement("body");
 			rootElement.appendChild(body);
+
+			Element link = doc.createElement("a");
+			link.setAttribute("href", "/htmlonly/" + routeShortName);
+			link.setTextContent(StringUtils.isEmpty(routeShortName) ? "all" : routeShortName);
+			body.appendChild(link);
 			
-			//Element p = doc.createElement("p");
-			//body.appendChild(p);
+			Element p = doc.createElement("p");
+			p.setTextContent("Route ");
+			p.appendChild(link);
+			body.appendChild(p);
 			
 			Element table = doc.createElement("table");
 			table.setAttribute("border", "1");
@@ -259,7 +264,7 @@ public class HtmlUtils {
 			transformer.transform(new DOMSource(doc), new StreamResult(writer));
 			String output = writer.getBuffer().toString(); //.replaceAll("\n|\r", "");
 
-			System.err.println("xml result: \n" + output);
+			// System.err.println("xml result: \n" + output);
 			
 			return output;
 		
